@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema({
   officeBranch: {
     type: String,
   },
-  employeeId: {
+  employeeID: {
     type: String,
   },
   verified: {

@@ -2,24 +2,25 @@ import Users from "../models/users.js";
 import Branch from "../models/branch.js";
 import { imageUploadToBase64 } from "../Methods/uploadImages.js";
 import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
+import { ResetTokenGernate } from "../Methods/authMethods.js";
 
 //Employee created Api
 const registerEmployee = async (req, res) => {
   try {
     const {
       name,
-      employeeId,
       email,
+      employeeID,
       phone,
       role,
       officeBranch,
       companyId,
       profileImage,
     } = req.body;
-
+    // console.log(req.body);
     if (
       !name ||
-      !employeeId ||
+      !employeeID ||
       !email ||
       !phone ||
       !role ||
@@ -32,9 +33,15 @@ const registerEmployee = async (req, res) => {
         .status(422)
         .json({ status: false, error: "All fields are required" });
     }
+
+    const Emailcheck = await Users.findOne({ email });
+    if (Emailcheck)
+      return res
+        .status(409)
+        .json({ message: " email allready exist", status: false });
     const NewUser = new Users({
       name,
-      employeeId,
+      employeeID,
       email,
       phone,
       role,
@@ -68,7 +75,7 @@ const registerEmployee = async (req, res) => {
     //Email send for password Create
     const detail = { _id: NewUser._id, email: NewUser.email };
     const token = await ResetTokenGernate(detail);
-    const link = `${process.env.CLIENT_URL}/${token}/${NewUser.email}`;
+    const link = `${process.env.CLIENT_URL}/resetPassword/${token}/${NewUser._id}`;
     mailTransport().sendMail({
       from: process.env.EMAIL,
       to: email,

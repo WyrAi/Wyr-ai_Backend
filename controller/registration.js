@@ -10,6 +10,7 @@ import Role from "../models/role.js";
 import { hashPassword } from "../middleware/authMiddleware.js";
 import { TokenGernate } from "../Methods/authMethods.js";
 
+//Super person create api
 const register = async (req, res) => {
   try {
     const { role, name, email, password, cpassword, phoneNumber, verified } =
@@ -64,7 +65,7 @@ const register = async (req, res) => {
       .json({ message: "User created", status: 200, token });
   } catch (error) {
     console.log(error);
-  }
+  } 
 };
 
 //OTP send on email api function

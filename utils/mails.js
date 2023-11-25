@@ -28,7 +28,7 @@ export const resetpasswordTemplet = (link) =>
  <html>
  <head>
    <meta charset="UTF-8">
-   <title>Password Reset</title>
+   <title>Password Reset</title> 
  </head>
  <body>
    <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
@@ -41,7 +41,7 @@ export const resetpasswordTemplet = (link) =>
        <td bgcolor="#ffffff" style="padding: 40px 30px;">
         <p>Hello,</p>
          <p>You have requested to create your password. Please click on the link below to reset your password:</p>
-         <p><a href="${resetLink}">Reset Password</a></p>
+         <p><a href="${link}">Reset Password</a></p>
          <p>If you did not request a password reset, please ignore this email.</p>
          <p>Best regards,</p>
          <p>Your Platform Team</p>
