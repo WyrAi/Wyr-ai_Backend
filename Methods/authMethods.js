@@ -6,5 +6,11 @@ const TokenGernate = async (UserCheck) => {
   });
   return token;
 };
+const ResetTokenGernate = async (UserCheck) => {
+  const token = JWT.sign({ _id: UserCheck._id }, process.env.JWT_SECRET, {
+    expiresIn: "30",
+  });
+  return token;
+};
 
-export { TokenGernate };
+export { TokenGernate, ResetTokenGernate };

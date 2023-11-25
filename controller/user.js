@@ -1,31 +1,30 @@
 import Users from "../models/users.js";
 import Branch from "../models/branch.js";
 import { imageUploadToBase64 } from "../Methods/uploadImages.js";
-import { mailTransport } from "../utils/mails.js";
+import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
 
-//Admin Add Api
+//Employee created Api
 const registerEmployee = async (req, res) => {
   try {
     const {
       name,
-      employeeID,
+      employeeId,
       email,
       phone,
-      roleId,
-      branchId,
-      CompanyID,
       role,
+      officeBranch,
+      companyId,
       profileImage,
     } = req.body;
 
     if (
       !name ||
-      !employeeID ||
+      !employeeId ||
       !email ||
       !phone ||
-      !roleId ||
-      !branchId ||
-      !CompanyID ||
+      !role ||
+      !officeBranch ||
+      !companyId ||
       !role ||
       !profileImage
     ) {
@@ -35,23 +34,19 @@ const registerEmployee = async (req, res) => {
     }
     const NewUser = new Users({
       name,
-      employeeID,
+      employeeId,
       email,
       phone,
-      assignRole: roleId,
-      addOfficeBranch: branchId,
-      CompanyID,
+      role,
+      officeBranch,
+      companyId,
       role,
     });
-
-    const ProfilImage = await imageUploadToBase64(profileImage);
-
-    NewUser.profileImage = ProfilImage[0];
 
     await NewUser.save();
 
     await Branch.findByIdAndUpdate(
-      { _id: branchId },
+      { _id: officeBranch },
       {
         $push: {
           employee: NewUser._id,
@@ -59,15 +54,31 @@ const registerEmployee = async (req, res) => {
       }
     );
 
-    return res
-      .status(201)
-      .json({ message: "New Employee create", status: true });
+    res.status(201).json({ message: "New Employee create", status: true });
+    const ProfilImage = await imageUploadToBase64(profileImage);
+
+    // NewUser.profileImage = ProfilImage[0];
+    await Users.findByIdAndUpdate(
+      { _id: NewUser._id },
+      {
+        profileImage: ProfilImage[0],
+      }
+    );
+
+    //Email send for password Create
+    const detail = { _id: NewUser._id, email: NewUser.email };
+    const token = await ResetTokenGernate(detail);
+    const link = `${process.env.CLIENT_URL}/${token}/${NewUser.email}`;
+    mailTransport().sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Create",
+      html: resetpasswordTemplet(link),
+    });
   } catch (error) {
     console.log(error);
   }
 };
-
-//Employee Create Api
 
 const GetAllEmployeesWithAllBranch = async (req, res) => {
   try {

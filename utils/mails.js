@@ -1,7 +1,5 @@
 import nodemailer from "nodemailer";
 
-
-
 export const generateOtp = () => {
   var otp = Math.floor(1000 + Math.random() * 9000);
   return {
@@ -24,6 +22,40 @@ export function mailTransport() {
 
   return transport;
 }
+
+export const resetpasswordTemplet = (link) =>
+  ` <!DOCTYPE html>
+ <html>
+ <head>
+   <meta charset="UTF-8">
+   <title>Password Reset</title>
+ </head>
+ <body>
+   <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
+     <tr>
+       <td align="center" bgcolor="#f8f8f8" style="padding: 40px 0;">
+         <h1>Password Reset</h1>
+       </td>
+     </tr>
+     <tr>
+       <td bgcolor="#ffffff" style="padding: 40px 30px;">
+        <p>Hello,</p>
+         <p>You have requested to create your password. Please click on the link below to reset your password:</p>
+         <p><a href="${resetLink}">Reset Password</a></p>
+         <p>If you did not request a password reset, please ignore this email.</p>
+         <p>Best regards,</p>
+         <p>Your Platform Team</p>
+       </td>
+     </tr>
+     <tr>
+       <td bgcolor="#f8f8f8" align="center" style="padding: 20px 0;">
+         <p style="margin: 0; font-size: 12px;">&copy; 2023 Your Platform. All rights reserved.</p>
+       </td>
+     </tr>
+   </table>
+ </body>
+ </html>
+`;
 
 export const generateEmailTemplet = (code) => `
  <!DOCTYPE html>
