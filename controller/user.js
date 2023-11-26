@@ -4,6 +4,7 @@ import { imageUploadToBase64 } from "../Methods/uploadImages.js";
 import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
 import { ResetTokenGernate } from "../Methods/authMethods.js";
 import { hashPassword } from "../middleware/authMiddleware.js";
+import jwt from "jsonwebtoken";
 
 //Employee created Api
 const registerEmployee = async (req, res) => {
@@ -76,7 +77,7 @@ const registerEmployee = async (req, res) => {
     //Email send for password Create
     const detail = { _id: NewUser._id, email: NewUser.email };
     const token = await ResetTokenGernate(detail);
-    const link = `${process.env.CLIENT_URL}/resetPassword/${token}`;
+    const link = `${process.env.CLIENT_URL}/resetPassword/${token}/`;
     mailTransport().sendMail({
       from: process.env.EMAIL,
       to: email,
@@ -113,8 +114,6 @@ const getEmployeesFromBuVen = async (req, res) => {
       $or: [{ _id: buyer_id }, { _id: vender_id }],
     });
 
-    console.log(buyerEmployee);
-
     return res.status(200).json(buyerEmployee);
   } catch (error) {
     console.log(error);
@@ -125,13 +124,15 @@ const getEmployeesFromBuVen = async (req, res) => {
 const UserPasswordSave = async (req, res) => {
   try {
     const { Password, confirmPassword, token } = req.body;
-    const { email, _id } = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(email, _id);
     if (!Password || !confirmPassword || !token) {
       return res
         .status(400)
         .json({ error: "All fields are required", status: 400 });
     }
+    const tokenValue = jwt.verify(token, process.env.RESET_SECERT);
+    if (tokenValue)
+      return res.status(400).json({ error: "Password link is expired" });
+    const { _id } = tokenValue;
 
     if (Password !== confirmPassword)
       return res.status(400).json({ error: "Password not match" });
