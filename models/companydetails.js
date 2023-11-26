@@ -29,6 +29,10 @@ const companydetailsSchema = new mongoose.Schema({
   companyimage: {
     type: String, // add required after getting storage
   },
+  companyRole: {
+    type: String,
+    required: true,
+  },
   Branches: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,12 +40,18 @@ const companydetailsSchema = new mongoose.Schema({
     },
   ],
 
-  customRoles:[
+  customRoles: [
     {
-      type:mongoose.Schema.Types.ObjectId,
-      ref:"Role"
-    }
-  ]
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+    },
+  ],
+  companyRelations: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Companydetails",
+    },
+  ],
 });
 
 const Companydetails = mongoose.model("Companydetails", companydetailsSchema);

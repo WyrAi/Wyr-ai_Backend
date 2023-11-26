@@ -3,6 +3,7 @@ import Branch from "../models/branch.js";
 import { imageUploadToBase64 } from "../Methods/uploadImages.js";
 import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
 import { ResetTokenGernate } from "../Methods/authMethods.js";
+import { hashPassword } from "../middleware/authMiddleware.js";
 
 //Employee created Api
 const registerEmployee = async (req, res) => {
@@ -135,11 +136,14 @@ const UserPasswordSave = async (req, res) => {
     if (Password !== confirmPassword)
       return res.status(400).json({ error: "Password not match" });
 
+    const hashpassword = await hashPassword(Password);
+    const confirmHashPassword = await hashPassword(confirmPassword);
+
     await Users.findByIdAndUpdate(
       { _id: _id },
       {
-        password: Password,
-        cpassword: confirmPassword,
+        password: hashpassword,
+        cpassword: confirmHashPassword,
       }
     );
 

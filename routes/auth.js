@@ -40,6 +40,7 @@ import multer from "multer";
 import formidable from "express-formidable";
 import TokenVerify from "../middleware/authMiddleware.js";
 import Authenticate from "../middleware/authenticate.js";
+import { companyRelationShip } from "../controller/relationShipController.js";
 const router = express.Router();
 const storage = multer.memoryStorage(); // Use memory storage for multiple files
 const upload = multer({ storage });
@@ -73,7 +74,12 @@ router.route("/getAllBranches/:id").get(Authenticate, getAllBranchesByCompany);
 router.route("/roles").post(Authenticate, roles);
 
 //------------------------------//
-//
+
+//Relationship Api
+router.route("/companyRelationShip").post(companyRelationShip);
+
+//----------------------------//
+
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
 // upload.fields([

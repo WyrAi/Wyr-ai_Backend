@@ -19,13 +19,14 @@ const Authenticate = async (req, res, next) => {
     const rootUser = await User.findOne(
       { _id: verifyToken._id },
       { _id: 1, name: 1, email: 1 }
-    );
+    ).populate("role", "name _id");
 
     if (!rootUser) {
       return res.status(401).json({ error: "Invalid token" });
     }
-  
+
     req.user = rootUser._id;
+    req.roleName = rootUser.role.name;
 
     next();
   } catch (error) {

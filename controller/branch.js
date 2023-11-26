@@ -6,7 +6,7 @@ const branch = async (req, res) => {
   try {
     const { branchName, location, country, city, pincode } =
       req.body.branchInfo;
-
+    console.log(req.body);
     const { id } = req.body;
 
     if (!branchName || !location || !country || !city || !pincode || !id) {

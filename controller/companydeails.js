@@ -41,6 +41,7 @@ const companydetails = async (req, res) => {
       country,
       city,
       pincode,
+      companyRole: req.roleName,
     }).save();
 
     await User.findByIdAndUpdate(_id, { companyId: AddCompany._id });
