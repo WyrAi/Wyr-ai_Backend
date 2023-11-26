@@ -17,7 +17,7 @@ const registerEmployee = async (req, res) => {
       companyId,
       profileImage,
     } = req.body;
-    // console.log(req.body);
+    console.log(req.body);
     if (
       !name ||
       !employeeID ||
@@ -75,7 +75,7 @@ const registerEmployee = async (req, res) => {
     //Email send for password Create
     const detail = { _id: NewUser._id, email: NewUser.email };
     const token = await ResetTokenGernate(detail);
-    const link = `${process.env.CLIENT_URL}/resetPassword/${token}/${NewUser._id}`;
+    const link = `${process.env.CLIENT_URL}/resetPassword/${token}`;
     mailTransport().sendMail({
       from: process.env.EMAIL,
       to: email,
@@ -123,21 +123,23 @@ const getEmployeesFromBuVen = async (req, res) => {
 // password Gernate Api
 const UserPasswordSave = async (req, res) => {
   try {
-    const { id } = req.user;
-    const { password, cpassword } = req.body;
-
-    if (password !== cpassword)
-      return res.status(400).json({ error: "Password not match" });
-
-    if (!id) {
-      return res.status(400).json({ error: "User not found" });
+    const { Password, confirmPassword, token } = req.body;
+    const { email, _id } = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(email, _id);
+    if (!Password || !confirmPassword || !token) {
+      return res
+        .status(400)
+        .json({ error: "All fields are required", status: 400 });
     }
 
+    if (Password !== confirmPassword)
+      return res.status(400).json({ error: "Password not match" });
+
     await Users.findByIdAndUpdate(
-      { _id: id },
+      { _id: _id },
       {
-        password: password,
-        cpassword: cpassword,
+        password: Password,
+        cpassword: confirmPassword,
       }
     );
 
@@ -151,4 +153,5 @@ export {
   registerEmployee,
   GetAllEmployeesWithAllBranch,
   getEmployeesFromBuVen,
+  UserPasswordSave,
 };

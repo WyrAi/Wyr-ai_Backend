@@ -3,6 +3,7 @@ import {
   registerEmployee,
   GetAllEmployeesWithAllBranch,
   getEmployeesFromBuVen,
+  UserPasswordSave,
 } from "../controller/user.js";
 import { roles } from "../controller/role.js";
 import {
@@ -59,7 +60,7 @@ router.route("/companydetails").post(Authenticate, companydetails);
 //UserInformation Api
 router.route("/UserInformation").get(Authenticate, UserInformation);
 router.route("/getAllSuperAdmin").get(GetAllUsers);
-
+router.route("/userPassword").post(UserPasswordSave);
 //-------------------------//
 
 //Branch Api
