@@ -4,13 +4,10 @@ import {
   GetAllEmployeesWithAllBranch,
   getEmployeesFromBuVen,
   UserPasswordSave,
+  BranchEmployee,
 } from "../controller/user.js";
 import { roles } from "../controller/role.js";
-import {
-  branch,
-  GetAllEmployeesWithBranch,
-  getAllBranchesByCompany,
-} from "../controller/branch.js";
+import { branch, getAllBranchesByCompany } from "../controller/branch.js";
 import { message } from "../controller/whatsapp.js";
 import {
   purchaseOrders,
@@ -36,14 +33,10 @@ import {
   GetAllUsers,
 } from "../controller/registration.js";
 import { login } from "../controller/login.js";
-import multer from "multer";
-import formidable from "express-formidable";
 import TokenVerify from "../middleware/authMiddleware.js";
 import Authenticate from "../middleware/authenticate.js";
 import { companyRelationShip } from "../controller/relationShipController.js";
 const router = express.Router();
-const storage = multer.memoryStorage(); // Use memory storage for multiple files
-const upload = multer({ storage });
 
 // Signup Page Routes
 
@@ -62,6 +55,8 @@ router.route("/companydetails").post(Authenticate, companydetails);
 router.route("/UserInformation").get(Authenticate, UserInformation);
 router.route("/getAllSuperAdmin").get(GetAllUsers);
 router.route("/userPassword").post(UserPasswordSave);
+router.route("/getAllEmployess/:_id").get(GetAllEmployeesWithAllBranch);
+router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 //-------------------------//
 
 //Branch Api
@@ -95,8 +90,6 @@ router.route("/updateEmploye/:id").put(updateEmploye);
 router.route("/login").post(login);
 router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
-router.route("/getAllEmployessWithBranch/:id").get(GetAllEmployeesWithBranch);
-router.route("/getAllEmployess/:id").get(GetAllEmployeesWithAllBranch);
 router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);

@@ -5,7 +5,8 @@ import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
 import { ResetTokenGernate } from "../Methods/authMethods.js";
 import { hashPassword } from "../middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
-
+import Companydetails from "../models/companydetails.js";
+import User from "../models/users.js";
 //Employee created Api
 const registerEmployee = async (req, res) => {
   try {
@@ -89,18 +90,41 @@ const registerEmployee = async (req, res) => {
   }
 };
 
+//api working on frontend veiwAllUsers
 const GetAllEmployeesWithAllBranch = async (req, res) => {
   try {
-    const { id } = req.params;
-    const AllEmployee = await Users.find(
-      { CompanyID: id },
-      { name: 1, employeeID: 1, email: 1, profileImage: 1, assignRole: 1 }
-    ).populate({
-      path: "assignRole",
-      select: "name",
-    });
+    const { _id } = req.params;
 
-    return res.status(200).json(AllEmployee);
+    if (!_id) return res.status(400).json({ message: "No Company Found" });
+
+    let AllEmployee = await User.find(
+      { companyId: _id },
+      { password: 0, cpassword: 0, verified: 0 }
+    ).populate("role", "name");
+
+    AllEmployee = AllEmployee.filter((user) => user.employeeID);
+
+    if (AllEmployee) return res.status(200).json(AllEmployee);
+    else return res.status(404).json({ message: "No Employee Found" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//api get the employees by particular branch
+const BranchEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) return res.status(400).json({ message: "No Branch Found" });
+
+    const AllEmployee = await User.find(
+      { officeBranch: id },
+      { password: 0, cpassword: 0, verified: 0 }
+    ).populate("role", "name");
+
+    if (AllEmployee) return res.status(200).json(AllEmployee);
+    else return res.status(404).json({ message: "No Employee Found" });
   } catch (error) {
     console.log(error);
   }
@@ -159,4 +183,5 @@ export {
   GetAllEmployeesWithAllBranch,
   getEmployeesFromBuVen,
   UserPasswordSave,
+  BranchEmployee,
 };

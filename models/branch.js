@@ -34,10 +34,12 @@ const BranchSchema = new mongoose.Schema({
   employee: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Employee",
+      ref: "User",
     },
   ],
 });
+
+BranchSchema.set("strictPopulate", false);
 
 const Branch = mongoose.model("Branch", BranchSchema);
 
