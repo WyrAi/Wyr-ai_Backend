@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-
-const RelationshipSchema = mongoose.Schema(
+// import crypto from "crypto";
+const RelationshipSchema = new mongoose.Schema(
   {
     SenderRelationId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,9 +17,21 @@ const RelationshipSchema = mongoose.Schema(
       required: true,
       default: "Pending",
     },
+    HashKey: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
+
+// RelationshipSchema.pre("save", function (next) {
+
+//   console.log(hash);
+//   this.HashKey = hash;
+
+//   next();
+// });
 
 const Relationship = mongoose.model("Relationship", RelationshipSchema);
 

@@ -35,7 +35,11 @@ import {
 import { login } from "../controller/login.js";
 import TokenVerify from "../middleware/authMiddleware.js";
 import Authenticate from "../middleware/authenticate.js";
-import { companyRelationShip } from "../controller/relationShipController.js";
+import {
+  companyRelationShip,
+  displayRelations,
+  getAllCompanyByRole,
+} from "../controller/relationShipController.js";
 const router = express.Router();
 
 // Signup Page Routes
@@ -72,6 +76,8 @@ router.route("/roles").post(Authenticate, roles);
 
 //Relationship Api
 router.route("/companyRelationShip").post(companyRelationShip);
+router.route("/companyRelationShip/:id").get(displayRelations);
+router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 
 //----------------------------//
 

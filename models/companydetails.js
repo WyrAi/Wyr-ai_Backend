@@ -39,7 +39,6 @@ const companydetailsSchema = new mongoose.Schema({
       ref: "Branch",
     },
   ],
-
   customRoles: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -48,8 +47,14 @@ const companydetailsSchema = new mongoose.Schema({
   ],
   companyRelations: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Companydetails",
+      companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Companydetails",
+      },
+      relationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Relationship",
+      },
     },
   ],
 });
