@@ -39,6 +39,8 @@ import {
   companyRelationShip,
   displayRelations,
   getAllCompanyByRole,
+  ApprovedRelationShip,
+  RejectedRelationShip,
 } from "../controller/relationShipController.js";
 const router = express.Router();
 
@@ -78,6 +80,8 @@ router.route("/roles").post(Authenticate, roles);
 router.route("/companyRelationShip").post(companyRelationShip);
 router.route("/companyRelationShip/:id").get(displayRelations);
 router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
+router.route("/rejectedRelationship/:id").put(RejectedRelationShip);
+router.route("/approvedRelationship/:id").put(ApprovedRelationShip);
 
 //----------------------------//
 

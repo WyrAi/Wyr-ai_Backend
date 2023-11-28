@@ -183,10 +183,10 @@ export const ApprovedRelationShip = async (req, res) => {
           _id: id,
         },
         {
-          Status: "Rejected",
+          Status: "Registered",
         }
       );
-      return res.status(200).json({ message: "Rejected", status: 200 });
+      return res.status(200).json({ message: "Registered", status: 200 });
     } else {
       return res
         .status(400)
