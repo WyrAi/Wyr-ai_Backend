@@ -97,9 +97,7 @@ export const displayRelations = async (req, res) => {
       );
 
     if (AllData.length > 0)
-      return res
-        .status(200)
-        .json({ message: "Data", status: 200, data: AllData });
+      return res.status(200).json({ message: "Data", status: 200, AllData });
   } catch (error) {
     console.log(error);
   }
