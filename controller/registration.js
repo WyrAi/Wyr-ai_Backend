@@ -65,7 +65,7 @@ const register = async (req, res) => {
       .json({ message: "User created", status: 200, token });
   } catch (error) {
     console.log(error);
-  } 
+  }
 };
 
 //OTP send on email api function
@@ -162,29 +162,29 @@ const UserInformation = async (req, res) => {
 
 //Show all the superAdmin Companies for SuperAdmin
 
-const GetAllUsers = async (req, res) => {
-  try {
-    const Data = await User.find({}, { role: 1, companyId: 1 })
-      .populate("role", {
-        name: 1,
-      })
-      .populate("companyId", {
-        _id: 1,
-        name: 1,
-        address: 1,
-        country: 1,
-        city: 1,
-        pincode: 1,
-      });
+// const GetAllUsers = async (req, res) => {
+//   try {
+//     const Data = await User.find({}, { role: 1, companyId: 1 })
+//       .populate("role", {
+//         name: 1,
+//       })
+//       .populate("companyId", {
+//         _id: 1,
+//         name: 1,
+//         address: 1,
+//         country: 1,
+//         city: 1,
+//         pincode: 1,
+//       });
 
-    if (Data) {
-      // console.log(Data);
-    }
-    return res.status(404).json({ message: "user not found" });
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     if (Data) {
+//       // console.log(Data);
+//     }
+//     return res.status(404).json({ message: "user not found" });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 // //show all the user in PO
 // const GetAllUsers = async (req, res) => {
@@ -239,4 +239,4 @@ const GetAllUsers = async (req, res) => {
 //   }
 // };
 
-export { register, verifyEmail, OTPGernate, UserInformation, GetAllUsers };
+export { register, verifyEmail, OTPGernate, UserInformation };

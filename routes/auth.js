@@ -30,7 +30,7 @@ import {
   OTPGernate,
   UserInformation,
   // UserInformation,
-  GetAllUsers,
+  // GetAllUsers,
 } from "../controller/registration.js";
 import { login } from "../controller/login.js";
 import TokenVerify from "../middleware/authMiddleware.js";
@@ -59,7 +59,7 @@ router.route("/companydetails").post(Authenticate, companydetails);
 
 //UserInformation Api
 router.route("/UserInformation").get(Authenticate, UserInformation);
-router.route("/getAllSuperAdmin").get(GetAllUsers);
+// router.route("/getAllSuperAdmin").get(GetAllUsers);
 router.route("/userPassword").post(UserPasswordSave);
 router.route("/getAllEmployess/:_id").get(GetAllEmployeesWithAllBranch);
 router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
