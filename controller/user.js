@@ -134,11 +134,23 @@ const getEmployeesFromBuVen = async (req, res) => {
   try {
     const { buyer_id, vender_id } = req.params;
 
-    const buyerEmployee = await Users.find({
-      $or: [{ _id: buyer_id }, { _id: vender_id }],
-    });
+    if (!buyer_id || !vender_id)
+      return res.status(400).json({ message: "No Company Found" });
 
-    return res.status(200).json(buyerEmployee);
+    const buyerEmployee = await User.find(
+      {
+        $or: [{ companyId: buyer_id }, { companyId: vender_id }],
+      },
+      { password: 0, cpassword: 0, verified: 0 }
+    )
+      .populate("role", "name")
+      .populate("officeBranch", "country city pincode ");
+    let allData = [];
+    if (buyerEmployee) {
+      allData = buyerEmployee.filter((value) => value.employeeID);
+    }
+
+    return res.status(200).json(allData);
   } catch (error) {
     console.log(error);
   }
@@ -178,9 +190,6 @@ const UserPasswordSave = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
-
-
-
 
 export {
   registerEmployee,

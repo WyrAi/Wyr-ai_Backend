@@ -32,7 +32,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   officeBranch: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Branch",
   },
   employeeID: {
     type: String,

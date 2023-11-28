@@ -79,12 +79,18 @@ router.route("/roles").post(Authenticate, roles);
 //Relationship Api
 router.route("/companyRelationShip").post(companyRelationShip);
 router.route("/companyRelationShip/:id").get(displayRelations);
-router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 router.route("/rejectedRelationship/:id").put(RejectedRelationShip);
 router.route("/approvedRelationship/:id").put(ApprovedRelationShip);
 
 //----------------------------//
 
+//Purcahse Order Api
+router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
+router
+  .route("/getAllEmployess/:buyer_id/:vender_id")
+  .get(getEmployeesFromBuVen);
+
+//--------------------------------//
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
 // upload.fields([
@@ -100,8 +106,5 @@ router.route("/updateEmploye/:id").put(updateEmploye);
 router.route("/login").post(login);
 router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
-router
-  .route("/getAllEmployess/:buyer_id/:vender_id")
-  .get(getEmployeesFromBuVen);
 
 export default router;
