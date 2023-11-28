@@ -93,7 +93,7 @@ export const displayRelations = async (req, res) => {
       .populate("companyRelations.relationId")
       .populate(
         "companyRelations.companyId",
-        "name address country city pincode"
+        "name address country city pincode companyimage"
       );
 
     if (AllData.length > 0)
@@ -156,10 +156,10 @@ export const RejectedRelationShip = async (req, res) => {
           _id: id,
         },
         {
-          Status: "Rejected",
+          Status: "Unverified",
         }
       );
-      return res.status(200).json({ message: "Rejected", status: 200 });
+      return res.status(200).json({ message: "Unverified", status: 200 });
     } else {
       return res
         .status(400)

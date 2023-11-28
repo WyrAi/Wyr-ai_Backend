@@ -15,7 +15,7 @@ const RelationshipSchema = new mongoose.Schema(
     Status: {
       type: String,
       required: true,
-      default: "Pending",
+      default: "Unregistered",
     },
     HashKey: {
       type: String,
