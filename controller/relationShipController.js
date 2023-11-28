@@ -113,28 +113,25 @@ export const getAllCompanyByRole = async (req, res) => {
       {
         companyRelations: 1,
       }
-    ).populate(
-      "companyRelations.companyId",
-      "_id name addres country city pincode companyRole"
-    );
+    )
+      .populate(
+        "companyRelations.companyId",
+        "_id name addres country city pincode companyRole"
+      )
+      .populate("companyRelations.relationId");
 
-    let AllFields;
+    let AllFields = {};
 
     if (AllRelations.length > 0) {
-      AllFields = {
-        Buyer: AllRelations[0].companyRelations.filter(
-          (data) => data.companyId.companyRole == "Buyer"
-        ),
-        Factory: AllRelations[0].companyRelations.filter(
-          (data) => data.companyId.companyRole == "Factory"
-        ),
-        "QC Agency": AllRelations[0].companyRelations.filter(
-          (data) => data.companyId.companyRole == "QC Agency"
-        ),
-        "Buying Agency": AllRelations[0].companyRelations.filter(
-          (data) => data.companyId.companyRole == "Buying Agency"
-        ),
-      };
+      const roles = ["Buyer", "Factory", "QC Agency", "Buying Agency"];
+
+      roles.forEach((role) => {
+        AllFields[role] = AllRelations[0].companyRelations.filter(
+          (data) =>
+            data.companyId.companyRole === role &&
+            data.relationId.Status === "Registered"
+        );
+      });
     } else {
       return res.status(400).json({ message: "No Data", status: 400 });
     }
