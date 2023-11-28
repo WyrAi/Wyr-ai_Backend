@@ -89,7 +89,12 @@ export const displayRelations = async (req, res) => {
         _id: id,
       },
       { companyRelations: 1 }
-    ).populate("companyRelations.relationId");
+    )
+      .populate("companyRelations.relationId")
+      .populate(
+        "companyRelations.companyId",
+        "name address country city pincode"
+      );
 
     if (AllData.length > 0)
       return res
@@ -137,6 +142,56 @@ export const getAllCompanyByRole = async (req, res) => {
     }
 
     return res.status(200).json({ message: "Data", status: 200, AllFields });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Rejected Relationship Api
+export const RejectedRelationShip = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (id) {
+      await Relationship.findByIdAndUpdate(
+        {
+          _id: id,
+        },
+        {
+          Status: "Rejected",
+        }
+      );
+      return res.status(200).json({ message: "Rejected", status: 200 });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Relationship is required", status: 400 });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Approved Relationship Api
+export const ApprovedRelationShip = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (id) {
+      await Relationship.findByIdAndUpdate(
+        {
+          _id: id,
+        },
+        {
+          Status: "Rejected",
+        }
+      );
+      return res.status(200).json({ message: "Rejected", status: 200 });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Relationship is required", status: 400 });
+    }
   } catch (error) {
     console.log(error);
   }
