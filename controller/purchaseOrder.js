@@ -3,7 +3,6 @@ import { imageUploadToBase64 } from "../Methods/uploadImages.js";
 import User from "../models/users.js";
 
 const purchaseOrders = async (req, res) => {
-  console.log("req.body", req.body);
   try {
     const {
       buyer,
@@ -18,12 +17,9 @@ const purchaseOrders = async (req, res) => {
       status,
       poNumber,
     } = req.body;
-    console.log(req.body);
     if (
-      !nameOfBuyer ||
-      !addOfBuyer ||
-      !nameOfVendor ||
-      !addOfVendor ||
+      !buyer ||
+      !vendor ||
       !shiptoName ||
       !shiptoAdd ||
       !shipVia ||
@@ -55,8 +51,6 @@ const purchaseOrders = async (req, res) => {
       status,
       poNumber,
     });
-
-    console.log(NewPurchaseOrder);
 
     const Error = [];
 
@@ -125,14 +119,14 @@ const purchaseOrders = async (req, res) => {
     console.log(Error);
 
     await NewPurchaseOrder.save();
-
+     
     res
       .status(200)
       .json({ message: "New Purachese Order Created", NewPurchaseOrder });
 
-    await User.findByIdAndUpdate(
+    await User.updateMany(
       {
-        _id: assignedPeople,
+        _id: { $in: assignedPeople },
       },
       {
         $push: {
@@ -164,6 +158,7 @@ const PuracheseOrderDraft = async (req, res) => {
       status,
       poNumber,
     } = req.body;
+    const { id } = req.params;
     console.log(req.body);
 
     const PuracheseOrderImage = (await imageUploadToBase64(purchaseDoc)) || "";
@@ -240,11 +235,11 @@ const PuracheseOrderDraft = async (req, res) => {
 
     await User.findByIdAndUpdate(
       {
-        _id: assignedPeople,
+        _id: id,
       },
       {
         $push: {
-          poList: NewPurchaseOrder._id,
+          draftPoList: NewPurchaseOrder._id,
         },
       }
     );

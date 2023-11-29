@@ -47,6 +47,12 @@ const UserSchema = new mongoose.Schema({
       ref: "PurchaseOrder",
     },
   ],
+  draftPoList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PurchaseOrder",
+    },
+  ],
 });
 
 const User = mongoose.model("User", UserSchema);
