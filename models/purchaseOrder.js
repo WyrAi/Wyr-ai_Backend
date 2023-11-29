@@ -5,12 +5,12 @@ const purchaseOrderSchema = new mongoose.Schema({
     required: true,
   },
   buyer: {
-    name: { type: String, required: true },
-    completeAddress: { type: String, required: true },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Companydetails",
   },
   vendor: {
-    name: { type: String, required: true },
-    completeAddress: { type: String, required: true },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Companydetails",
   },
   shipTo: {
     name: { type: String, required: true },
@@ -20,7 +20,8 @@ const purchaseOrderSchema = new mongoose.Schema({
   },
   assignedPeople: [
     {
-      email: { type: String, required: true },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   ],
   products: [
@@ -67,13 +68,11 @@ const purchaseOrderSchema = new mongoose.Schema({
       ],
     },
   ],
-
   status: {
     type: String,
     default: "Pending Approval",
-    enum: ["Drafts", "Publish", "Pending Approval", "Factory Approved"],
+    enum: ["Drafts", "Published", "Pending Approval", "Factory Approved"],
   },
-
   poNumber: {
     type: String,
     required: true,

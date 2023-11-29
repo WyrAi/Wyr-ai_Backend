@@ -1,21 +1,18 @@
 import PurchaseOrder from "../models/purchaseOrder.js";
 import { imageUploadToBase64 } from "../Methods/uploadImages.js";
+import User from "../models/users.js";
 
 const purchaseOrders = async (req, res) => {
   console.log("req.body", req.body);
   try {
     const {
-      nameOfBuyer,
-      addOfBuyer,
-      nameOfVendor,
-      addOfVendor,
+      buyer,
+      vendor,
       shiptoName,
       shiptoAdd,
       shipVia,
       shipDate,
-      totalCarton,
-      inv_number,
-      assignPeople,
+      assignedPeople,
       products,
       purchaseDoc,
       status,
@@ -31,36 +28,30 @@ const purchaseOrders = async (req, res) => {
       !shiptoAdd ||
       !shipVia ||
       !shipDate ||
-      !assignPeople ||
+      !assignedPeople ||
       !products ||
-      !poNumber
+      !poNumber ||
+      !status
     ) {
-      return res
-        .status(422)
-        .json({
-          status: 422,
-          error: "Please provide all the necessary fields",
-        });
+      return res.status(422).json({
+        status: 422,
+        error: "Please provide all the necessary fields",
+      });
     }
 
     const PuracheseOrderImage = await imageUploadToBase64(purchaseDoc);
+
     let NewPurchaseOrder = new PurchaseOrder({
       purchaseDoc: PuracheseOrderImage,
-      buyer: {
-        name: nameOfBuyer,
-        completeAddress: addOfBuyer,
-      },
-      vendor: {
-        name: nameOfVendor,
-        completeAddress: addOfVendor,
-      },
+      buyer,
+      vendor,
       shipTo: {
         name: shiptoName,
         completeAddress: shiptoAdd,
         shipVia,
         shippingDate: shipDate,
       },
-      assignedPeople: [{ email: assignPeople }],
+      assignedPeople,
       status,
       poNumber,
     });
@@ -135,35 +126,181 @@ const purchaseOrders = async (req, res) => {
 
     await NewPurchaseOrder.save();
 
-    return res
+    res
       .status(200)
       .json({ message: "New Purachese Order Created", NewPurchaseOrder });
+
+    await User.findByIdAndUpdate(
+      {
+        _id: assignedPeople,
+      },
+      {
+        $push: {
+          poList: NewPurchaseOrder._id,
+        },
+      }
+    );
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error", error });
   }
 };
 
-const getPurchaseOrder = async (req, res) => {
+//Draft Po Api
+
+const PuracheseOrderDraft = async (req, res) => {
+  console.log("req.body", req.body);
   try {
-    const { fields } = req.params;
-    let Order = null;
-    if (fields == "All") {
-      Order = await PurchaseOrder.find(
-        {},
-        { _id: 1, purchaseDoc: 1, buyer: 1, status: 1 }
-      );
-    } else {
-      Order = await PurchaseOrder.find(
-        { status: fields },
-        { _id: 1, purchaseDoc: 1, buyer: 1, status: 1 }
-      );
+    const {
+      buyer,
+      vendor,
+      shiptoName,
+      shiptoAdd,
+      shipVia,
+      shipDate,
+      assignedPeople,
+      products,
+      purchaseDoc,
+      status,
+      poNumber,
+    } = req.body;
+    console.log(req.body);
+
+    const PuracheseOrderImage = (await imageUploadToBase64(purchaseDoc)) || "";
+
+    let NewPurchaseOrder = new PurchaseOrder({
+      purchaseDoc: PuracheseOrderImage,
+      buyer,
+      vendor,
+      shipTo: {
+        name: shiptoName,
+        completeAddress: shiptoAdd,
+        shipVia,
+        shippingDate: shipDate,
+      },
+      assignedPeople,
+      status,
+      poNumber,
+    });
+
+    console.log(NewPurchaseOrder);
+
+    const Error = [];
+
+    for (let i = 0; i < products.length; i++) {
+      const {
+        styleId,
+        styleName,
+        quantity,
+        color,
+        weight,
+        weightTolerance,
+        length,
+        lengthTolerance,
+        height,
+        width,
+        aql,
+        images,
+        widthTolerance,
+        heightTolerance,
+        comments,
+      } = products[i];
+
+      const productImages = (await imageUploadToBase64(images)) || "";
+
+      NewPurchaseOrder.products.push({
+        styleId,
+        styleName,
+        quantity,
+        color,
+        weight,
+        length,
+        height,
+        width,
+        aql,
+        weightTolerance,
+        lengthTolerance,
+        widthTolerance,
+        heightTolerance,
+        comments,
+        images: productImages,
+      });
     }
-    res.status(200).json({ message: "All orders send", Order });
+
+    if (Error.length > 0) {
+      return res.status(400).json({ status: 422, Error });
+    }
+    console.log(Error);
+
+    await NewPurchaseOrder.save();
+
+    res
+      .status(200)
+      .json({ message: "New Purachese Order Created", NewPurchaseOrder });
+
+    await User.findByIdAndUpdate(
+      {
+        _id: assignedPeople,
+      },
+      {
+        $push: {
+          poList: NewPurchaseOrder._id,
+        },
+      }
+    );
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error in fetching branch " });
+    console.log(error);
+    return res.status(500).json({ message: "Error", error });
   }
 };
 
-export { purchaseOrders, getPurchaseOrder };
+// Purchase Order Display api
+const purchaseOrderGet = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const Data = await User.find(
+      { _id: id },
+      {
+        poList: 1,
+      }
+    ).populate({
+      path: "PurchaseOrder",
+      select: "purchaseDoc status poNumber",
+    });
+
+    console.log(Data);
+    return res.status(200).json({ message: "Data send", Data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// const getPurchaseOrder = async (req, res) => {
+//   try {
+//     const { fields } = req.params;
+//     let Order = null;
+//     if (fields == "All") {
+//       Order = await PurchaseOrder.find(
+//         {},
+//         { _id: 1, purchaseDoc: 1, buyer: 1, status: 1 }
+//       );
+//     } else {
+//       Order = await PurchaseOrder.find(
+//         { status: fields },
+//         { _id: 1, purchaseDoc: 1, buyer: 1, status: 1 }
+//       );
+//     }
+//     res.status(200).json({ message: "All orders send", Order });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Server error in fetching branch " });
+//   }
+// };
+
+export {
+  purchaseOrders,
+  // getPurchaseOrder,
+  purchaseOrderGet,
+  PuracheseOrderDraft,
+};

@@ -41,6 +41,12 @@ const UserSchema = new mongoose.Schema({
   verified: {
     type: Boolean,
   },
+  poList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PurchaseOrder",
+    },
+  ],
 });
 
 const User = mongoose.model("User", UserSchema);

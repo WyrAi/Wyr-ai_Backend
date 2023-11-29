@@ -11,7 +11,7 @@ import { branch, getAllBranchesByCompany } from "../controller/branch.js";
 import { message } from "../controller/whatsapp.js";
 import {
   purchaseOrders,
-  getPurchaseOrder,
+  // getPurchaseOrder,
 } from "../controller/purchaseOrder.js";
 import { Packinglist } from "../controller/packing.js";
 import {
@@ -42,6 +42,7 @@ import {
   ApprovedRelationShip,
   RejectedRelationShip,
 } from "../controller/relationShipController.js";
+// import User from "../models/users.js";
 const router = express.Router();
 
 // Signup Page Routes
@@ -89,6 +90,7 @@ router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);
+router.route("/purchaseOrder").post(purchaseOrders);
 
 //--------------------------------//
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
@@ -98,13 +100,22 @@ router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 //   { name: "documents", maxCount: 8 },
 // ]),
 router.route("/message").post(message);
-router.route("/purchaseOrder").post(purchaseOrders);
 router.route("/packinglist").post(Packinglist);
 router.route("/deleteEmploye").delete(deleteEmploye);
 router.route("/getrole").get(getRole);
 router.route("/updateEmploye/:id").put(updateEmploye);
 router.route("/login").post(login);
-router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
+// router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
+
+// router.route("/testing").post(async (req, res) => {
+//   const { multiple } = req.body;
+
+//   const data = await User.find({
+//     _id: multiple,
+//   });
+
+//   console.log(data);
+// });
 
 export default router;
