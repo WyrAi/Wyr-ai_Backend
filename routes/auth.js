@@ -12,6 +12,7 @@ import { message } from "../controller/whatsapp.js";
 import {
   purchaseOrders,
   purchaseOrderGet,
+  PuracheseOrderDraft,
   // getPurchaseOrder,
 } from "../controller/purchaseOrder.js";
 import { Packinglist } from "../controller/packing.js";
@@ -93,6 +94,7 @@ router
   .get(getEmployeesFromBuVen);
 router.route("/purchaseOrder").post(purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
+router.route("/PuracheseOrderDraft/:id").get(PuracheseOrderDraft);
 
 //--------------------------------//
 

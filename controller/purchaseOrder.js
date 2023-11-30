@@ -259,19 +259,26 @@ const purchaseOrderGet = async (req, res) => {
       {
         poList: 1,
         name: 1,
-        role : 1
+        companyId: 1,
       }
-    ).populate({
-      path: "poList",
-      select: "purchaseDoc status poNumber buyer",
-      populate: { path: "buyer", select: "name" },
-    });
+    )
+      .populate("companyId", "companyRole")
+      .populate({
+        path: "poList",
+        select: "purchaseDoc status poNumber buyer",
+        populate: { path: "buyer", select: "name" },
+      });
+    let Response = Data;
 
-
-
-    // console.log(Data);
+    if (Data.companyId.companyRole == "Factory") {
+      Response = Data.poList.filter(
+        (value) =>
+          Data.companyId.companyRole == "Factory" && value.status == "Published"
+      );
+    }
+    console.log(Data);
     if (Data) {
-      return res.status(200).json({ message: "Data send", Data });
+      return res.status(200).json({ message: "Data send", Response });
     }
     return res.status(400).json({ message: "No data found" });
   } catch (error) {
