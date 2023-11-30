@@ -53,6 +53,18 @@ const UserSchema = new mongoose.Schema({
       ref: "PurchaseOrder",
     },
   ],
+  plList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Packing",
+    },
+  ],
+  draftPlList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Packing",
+    },
+  ],
 });
 
 // UserSchema.set("strictPopulate", false);

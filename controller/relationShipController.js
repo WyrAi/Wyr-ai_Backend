@@ -122,6 +122,7 @@ export const getAllCompanyByRole = async (req, res) => {
         "_id name addres country city pincode companyRole"
       )
       .populate("companyRelations.relationId");
+      
 
     let AllFields = {};
 

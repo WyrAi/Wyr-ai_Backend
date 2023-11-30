@@ -44,6 +44,11 @@ import {
   ApprovedRelationShip,
   RejectedRelationShip,
 } from "../controller/relationShipController.js";
+
+import {
+  QcAssignmentRolePeoples,
+  PoGetFromUser,
+} from "../controller/packingListController.js";
 // import User from "../models/users.js";
 const router = express.Router();
 
@@ -70,7 +75,7 @@ router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 
 //Branch Api
 router.route("/branch").post(Authenticate, branch);
-router.route("/getAllBranches/:id").get(Authenticate, getAllBranchesByCompany);
+router.route("/getAllBranches/:id/").get(Authenticate, getAllBranchesByCompany);
 
 //------------------------------//
 
@@ -97,6 +102,11 @@ router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
 
 //--------------------------------//
+
+//Packing List
+router.route("/qcAssignmentRolePeoples/:id").get(QcAssignmentRolePeoples);
+router.route("/PoGetFromUser/:id/:buyerId").get(PoGetFromUser);
+//------------------------------//
 
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 

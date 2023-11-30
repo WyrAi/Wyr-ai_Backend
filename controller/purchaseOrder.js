@@ -258,6 +258,7 @@ const purchaseOrderGet = async (req, res) => {
       { _id: id },
       {
         poList: 1,
+        draftPoList: 1,
         name: 1,
         companyId: 1,
       }
@@ -265,6 +266,11 @@ const purchaseOrderGet = async (req, res) => {
       .populate("companyId", "companyRole")
       .populate({
         path: "poList",
+        select: "purchaseDoc status poNumber buyer",
+        populate: { path: "buyer", select: "name" },
+      })
+      .populate({
+        path: "draftPoList",
         select: "purchaseDoc status poNumber buyer",
         populate: { path: "buyer", select: "name" },
       });
@@ -276,7 +282,7 @@ const purchaseOrderGet = async (req, res) => {
           Data.companyId.companyRole == "Factory" && value.status == "Published"
       );
     }
-    console.log(Data);
+    // console.log(Data);
     if (Data) {
       return res.status(200).json({ message: "Data send", Response });
     }

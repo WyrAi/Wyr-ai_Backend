@@ -39,26 +39,26 @@ const purchaseOrderSchema = new mongoose.Schema({
       weightTolerance: {
         type: Number,
         required: true,
-        min: -100,
-        max: 100,
+        // min: -100,
+        // max: 100,
       },
       lengthTolerance: {
         type: Number,
         required: true,
-        min: -100,
-        max: 100,
+        // min: -100,
+        // max: 100,
       },
       widthTolerance: {
         type: Number,
         required: true,
-        min: -100,
-        max: 100,
+        // min: -100,
+        // max: 100,
       },
       heightTolerance: {
         type: Number,
         required: true,
-        min: -100,
-        max: 100,
+        // min: -100,
+        // max: 100,
       },
       comments: [
         {
