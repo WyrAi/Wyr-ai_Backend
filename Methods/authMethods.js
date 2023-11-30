@@ -8,7 +8,7 @@ const TokenGernate = async (UserCheck) => {
 };
 const ResetTokenGernate = async (UserCheck) => {
   const token = JWT.sign(UserCheck, process.env.RESET_SECERT, {
-    expiresIn: "30m",
+    expiresIn: "1d",
   });
   return token;
 };

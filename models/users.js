@@ -55,5 +55,7 @@ const UserSchema = new mongoose.Schema({
   ],
 });
 
+// UserSchema.set("strictPopulate", false);
+
 const User = mongoose.model("User", UserSchema);
 export default User;

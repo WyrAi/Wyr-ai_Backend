@@ -11,7 +11,8 @@ import { branch, getAllBranchesByCompany } from "../controller/branch.js";
 import { message } from "../controller/whatsapp.js";
 import {
   purchaseOrders,
-  // getPurchaseOrder, 
+  purchaseOrderGet,
+  // getPurchaseOrder,
 } from "../controller/purchaseOrder.js";
 import { Packinglist } from "../controller/packing.js";
 import {
@@ -91,8 +92,10 @@ router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);
 router.route("/purchaseOrder").post(purchaseOrders);
+router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 
 //--------------------------------//
+
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
 // upload.fields([

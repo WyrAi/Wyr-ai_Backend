@@ -119,7 +119,7 @@ const purchaseOrders = async (req, res) => {
     console.log(Error);
 
     await NewPurchaseOrder.save();
-     
+
     res
       .status(200)
       .json({ message: "New Purachese Order Created", NewPurchaseOrder });
@@ -254,18 +254,26 @@ const purchaseOrderGet = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const Data = await User.find(
+    const Data = await User.findOne(
       { _id: id },
       {
         poList: 1,
+        name: 1,
+        role : 1
       }
     ).populate({
-      path: "PurchaseOrder",
-      select: "purchaseDoc status poNumber",
+      path: "poList",
+      select: "purchaseDoc status poNumber buyer",
+      populate: { path: "buyer", select: "name" },
     });
 
-    console.log(Data);
-    return res.status(200).json({ message: "Data send", Data });
+
+
+    // console.log(Data);
+    if (Data) {
+      return res.status(200).json({ message: "Data send", Data });
+    }
+    return res.status(400).json({ message: "No data found" });
   } catch (error) {
     console.log(error);
   }

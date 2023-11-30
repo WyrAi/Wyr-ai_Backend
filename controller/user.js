@@ -166,7 +166,8 @@ const UserPasswordSave = async (req, res) => {
         .json({ error: "All fields are required", status: 400 });
     }
     const tokenValue = jwt.verify(token, process.env.RESET_SECERT);
-    if (tokenValue)
+    console.log(tokenValue);
+    if (!tokenValue)
       return res.status(400).json({ error: "Password link is expired" });
     const { _id } = tokenValue;
 
