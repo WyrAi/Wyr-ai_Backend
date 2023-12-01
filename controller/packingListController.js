@@ -3,7 +3,7 @@ import User from "../models/users.js";
 //Qc Assignment Role Persons get api
 export const QcAssignmentRolePeoples = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // get the user id
     const Response = await User.find(
       { companyId: id },
       {
@@ -33,7 +33,7 @@ export const QcAssignmentRolePeoples = async (req, res) => {
 //Po get form user and check the byer is avilable in po
 export const PoGetFromUser = async (req, res) => {
   try {
-    const { id, buyerId } = req.params;
+    const { id, buyerId } = req.params; // get the user id and selective buyer id
 
     if (id) {
       const Response = await User.find(
@@ -53,6 +53,32 @@ export const PoGetFromUser = async (req, res) => {
 
       return res.status(200).json({ message: "Data all send", Response });
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//User Branches Get
+export const UserBranchesGet = async (req, res) => {
+  try {
+    const { id } = req.params; // get the company Id
+
+    if (id) {
+      const Response = await Companydetails.findOne(
+        {
+          _id: id,
+        },
+        {
+          Branches: 1,
+        }
+      ).populate({
+        path: "Branches",
+        select: "branchName country _id",
+      });
+
+      return res.status(200).json({ message: "Data all send", Response });
+    }
+    return res.status(400).json({ message: "company not found" });
   } catch (error) {
     console.log(error);
   }

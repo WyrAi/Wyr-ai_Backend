@@ -48,7 +48,10 @@ import {
 import {
   QcAssignmentRolePeoples,
   PoGetFromUser,
+  UserBranchesGet,
 } from "../controller/packingListController.js";
+
+import { GetEmployeesofBranch } from "../controller/QcController.js";
 // import User from "../models/users.js";
 const router = express.Router();
 
@@ -106,7 +109,13 @@ router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
 //Packing List
 router.route("/qcAssignmentRolePeoples/:id").get(QcAssignmentRolePeoples);
 router.route("/PoGetFromUser/:id/:buyerId").get(PoGetFromUser);
+router.route("/UserBranchesGet/:id").get(UserBranchesGet);
 //------------------------------//
+
+//Qc
+router.route("/GetEmployeesofBranch/:branchId").get(GetEmployeesofBranch);
+
+//--------------------------------//
 
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
