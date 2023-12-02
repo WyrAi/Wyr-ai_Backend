@@ -1,3 +1,4 @@
+import Companydetails from "../models/companydetails.js";
 import User from "../models/users.js";
 
 //Qc Assignment Role Persons get api
