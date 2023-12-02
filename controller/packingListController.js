@@ -3,7 +3,7 @@ import User from "../models/users.js";
 //Qc Assignment Role Persons get api
 export const QcAssignmentRolePeoples = async (req, res) => {
   try {
-    const { id } = req.params; // get the user id
+    const { id } = req.params; // get the company id
     const Response = await User.find(
       { companyId: id },
       {
@@ -43,7 +43,8 @@ export const PoGetFromUser = async (req, res) => {
         }
       ).populate({
         path: "poList",
-        select: "buyer products.styleId products.styleName products.images",
+        select:
+          "buyer poNumber products.styleId products.styleName products.images",
         match: { buyer: buyerId },
         populate: {
           path: "buyer",
