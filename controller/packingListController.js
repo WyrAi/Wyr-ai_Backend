@@ -3,7 +3,7 @@ import User from "../models/users.js";
 //Qc Assignment Role Persons get api
 export const QcAssignmentRolePeoples = async (req, res) => {
   try {
-    const { id } = req.params; // get the user id
+    const { id } = req.params; // get the company id
     const Response = await User.find(
       { companyId: id },
       {

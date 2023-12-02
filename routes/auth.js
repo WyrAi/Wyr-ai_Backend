@@ -74,6 +74,7 @@ router.route("/UserInformation").get(Authenticate, UserInformation);
 router.route("/userPassword").post(UserPasswordSave);
 router.route("/getAllEmployess/:_id").get(GetAllEmployeesWithAllBranch);
 router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
+router.route("/registerEmployee").post(Authenticate, registerEmployee);
 //-------------------------//
 
 //Branch Api
@@ -117,7 +118,6 @@ router.route("/GetEmployeesofBranch/:branchId").get(GetEmployeesofBranch);
 
 //--------------------------------//
 
-router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
 // upload.fields([
 //   { name: "image", maxCount: 1 },
