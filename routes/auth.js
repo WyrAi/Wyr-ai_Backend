@@ -71,14 +71,9 @@ router.route("/companydetails").post(Authenticate, companydetails);
 //UserInformation Api
 router.route("/UserInformation").get(Authenticate, UserInformation);
 // router.route("/getAllSuperAdmin").get(GetAllUsers);
-router.route("/userPassword").post( UserPasswordSave);
-router
-  .route("/getAllEmployess/:_id")
-  .get(Authenticate, GetAllEmployeesWithAllBranch);
-router
-  .route("/getAllEmployessWithBranch/:id")
-  .get(Authenticate, BranchEmployee);
-router.route("/registerEmployee").post(TokenVerify, registerEmployee);
+router.route("/userPassword").post(UserPasswordSave);
+router.route("/getAllEmployess/:_id").get(GetAllEmployeesWithAllBranch);
+router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 //-------------------------//
 
 //Branch Api
@@ -121,6 +116,8 @@ router.route("/UserBranchesGet/:id").get(UserBranchesGet);
 router.route("/GetEmployeesofBranch/:branchId").get(GetEmployeesofBranch);
 
 //--------------------------------//
+
+router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
 // upload.fields([
 //   { name: "image", maxCount: 1 },
