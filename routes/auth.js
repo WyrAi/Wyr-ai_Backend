@@ -113,7 +113,7 @@ router.route("/qcAssignmentRolePeoples/:id").get(QcAssignmentRolePeoples);
 router.route("/PoGetFromUser/:id/:buyerId").get(PoGetFromUser);
 router.route("/UserBranchesGet/:id").get(UserBranchesGet);
 router.route("/PLCreate/:id").post(PLCreate);
-router.route("/PlDisplay/:id").post(PlDisplay);
+router.route("/PlDisplay/:id").get(PlDisplay);
 //------------------------------//
 // ------------------------------//
 
