@@ -1,78 +1,92 @@
 import mongoose from "mongoose";
 
-
 const packingSchema = new mongoose.Schema({
-
-  buyer: {
+  buyerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Companydetails"
+    ref: "Companydetails",
   },
 
-  factory: {
+  factoryId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Companydetails"
+    ref: "Companydetails",
   },
-
-  totalcartoon: {
+  qcHeadId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  qcId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Companydetails",
+  },
+  totalCarton: {
     type: Number,
-    required: true
+    required: true,
   },
   invoicenumber: {
     type: Number,
-    required: true
-
+    required: true,
   },
-  slots: [
+  slotOfInspection: [
     {
       type: String,
-      required: true
-    }
-  ],
-
-  products: [
-    {
-      styleId: { type: String, required: true },
-      styleName: { type: String, required: true },
-      quantity: Number,
-      color: { type: String, required: true },
-      weight: { type: Number, required: true },
-      length: { type: Number, required: true },
-      height: { type: Number, required: true },
-      width: { type: Number, required: true },
-      aql: { type: Number, required: true },
-      assignfactory: [{
-        name: { type: String, required: true }
-      }]
+      required: true,
     },
   ],
-  drafts: {
-    type: Boolean,
-    default: false
+  packingListFiles: {
+    type: String,
   },
-  pendingqc: {
-    type: Boolean,
-    default: false
-  },
-  scheduled: {
-    type: Boolean,
-    default: false
-  },
-  inprogress: {
-    type: Boolean,
-    default: false
-  },
-  pendingapproval: {
-    type: Boolean,
-    default: false
-  },
-  completed: {
-    type: Boolean,
-    default: false
-  }
 
-
+  PurchaseOrder: [
+    {
+      po_Number: {
+        type: String,
+        required: true,
+      },
+      products: [
+        {
+          images: [
+            {
+              type: String,
+            },
+          ],
+          branch: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Branch",
+          },
+          from: {
+            type: String,
+            required: true,
+          },
+          quantityPerBox: {
+            type: Number,
+            required: true,
+          },
+          styleId: {
+            type: String,
+            required: true,
+          },
+          styleName: {
+            type: String,
+            required: true,
+          },
+          to: {
+            type: String,
+            required: true,
+          },
+          totalBox: {
+            type: Number,
+            required: true,
+          },
+          totalQuantity: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
+    },
+  ],
 });
 
-const Packing = mongoose.model('Packing', packingSchema);
+const Packing = mongoose.model("Packing", packingSchema);
 
 export default Packing;
