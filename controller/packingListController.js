@@ -1,5 +1,7 @@
 import Companydetails from "../models/companydetails.js";
 import User from "../models/users.js";
+import Packing from "../models/packinglist.js";
+import { imageUploadToBase64 } from "../Methods/uploadImages.js";
 
 //Qc Assignment Role Persons get api
 export const QcAssignmentRolePeoples = async (req, res) => {
@@ -81,6 +83,87 @@ export const UserBranchesGet = async (req, res) => {
       return res.status(200).json({ message: "Data all send", Response });
     }
     return res.status(400).json({ message: "company not found" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const PLCreate = async (req, res) => {
+  try {
+    const {
+      buyerId,
+      factoryId,
+      qcHeadId,
+      qcId,
+      totalCarton,
+      slotOfInspection,
+      addpurchaseOrder,
+      packingListFiles,
+    } = req.body;
+    console.log(req.body);
+
+    if (
+      !buyerId ||
+      !factoryId ||
+      !qcHeadId ||
+      !qcId ||
+      !totalCarton ||
+      !slotOfInspection ||
+      !addpurchaseOrder
+    )
+      return res.status(400).json({ message: "All fields are required" });
+    const packingFiles = await imageUploadToBase64(packingListFiles);
+    const NewPl = new Packing({
+      buyerId,
+      factoryId,
+      qcHeadId,
+      qcId,
+      totalCarton,
+      slotOfInspection,
+      packingListFiles: packingFiles,
+    });
+
+    let Error = [];
+
+    for (let i = 0; i < addpurchaseOrder.length; i++) {
+      const { po_Number } = addpurchaseOrder[i];
+      if (!po_Number) {
+        Error.push(`Product ${i + 1} fields are required`);
+      } else {
+        NewPl.PurchaseOrder.push({
+          po_Number,
+        });
+
+        for (let j = 0; j < addpurchaseOrder[i].products.length; j++) {
+          const {
+            images,
+            branch,
+            from,
+            quantityPerBox,
+            styleId,
+            styleName,
+            to,
+            totalBox,
+            totalQuantity,
+          } = addpurchaseOrder[i].products[j];
+
+          NewPl.PurchaseOrder[i].products.push({
+            images,
+            branch,
+            from,
+            quantityPerBox,
+            styleId,
+            styleName,
+            to,
+            totalBox,
+            totalQuantity,
+          });
+        }
+      }
+    }
+
+    await NewPl.save();
+    return res.status(200).json({ message: "Packing List Created", NewPl });
   } catch (error) {
     console.log(error);
   }
