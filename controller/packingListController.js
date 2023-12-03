@@ -90,6 +90,7 @@ export const UserBranchesGet = async (req, res) => {
 
 export const PLCreate = async (req, res) => {
   try {
+    const { id } = req.params;
     const {
       buyerId,
       factoryId,
@@ -113,7 +114,7 @@ export const PLCreate = async (req, res) => {
     )
       return res.status(400).json({ message: "All fields are required" });
     const packingFiles = await imageUploadToBase64(packingListFiles);
-    const NewPl = new Packing({
+    let NewPl = new Packing({
       buyerId,
       factoryId,
       qcHeadId,
@@ -163,7 +164,16 @@ export const PLCreate = async (req, res) => {
     }
 
     await NewPl.save();
-    return res.status(200).json({ message: "Packing List Created", NewPl });
+    res.status(200).json({ message: "Packing List Created" });
+    const ids = [id, qcHeadId]
+    await User.updateMany({
+      _id: { $in: ids }
+    }, {
+      $push: {
+        plList: NewPl._id
+      }
+    })
+
   } catch (error) {
     console.log(error);
   }
