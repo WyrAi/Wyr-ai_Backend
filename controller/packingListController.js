@@ -113,7 +113,7 @@ export const PLCreate = async (req, res) => {
     )
       return res.status(400).json({ message: "All fields are required" });
     const packingFiles = await imageUploadToBase64(packingListFiles);
-    const NewPl = new Packing({
+    let NewPl = new Packing({
       buyerId,
       factoryId,
       qcHeadId,
@@ -126,12 +126,12 @@ export const PLCreate = async (req, res) => {
     let Error = [];
 
     for (let i = 0; i < addpurchaseOrder.length; i++) {
-      const { po_Number } = addpurchaseOrder[i];
-      if (!po_Number) {
+      const { poNumber } = addpurchaseOrder[i];
+      if (!poNumber) {
         Error.push(`Product ${i + 1} fields are required`);
       } else {
         NewPl.PurchaseOrder.push({
-          po_Number,
+          po_Number: poNumber,
         });
 
         for (let j = 0; j < addpurchaseOrder[i].products.length; j++) {
