@@ -178,3 +178,46 @@ export const PLCreate = async (req, res) => {
     console.log(error);
   }
 };
+
+
+export const PlDisplay = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const Data = await User.findOne(
+      { _id: id },
+      {
+        plList: 1,
+        draftPlList: 1,
+        name: 1,
+        companyId: 1,
+      }
+    )
+      .populate("companyId", "companyRole")
+      .populate({
+        path: "plList",
+        select: "purchaseDoc buyer _id",
+        populate: { path: "buyer", select: "name" },
+      })
+      .populate({
+        path: "draftPoList",
+        select: "purchaseDoc buyer _id",
+        populate: { path: "buyer", select: "name" },
+      });
+    let Response = Data;
+
+    // if (Data.companyId.companyRole == "Factory") {
+    //   Response = Data.poList.filter(
+    //     (value) =>
+    //       Data.companyId.companyRole == "Factory" && value.status == "Published"
+    //   );
+    // }
+    // console.log(Data);
+    if (Data) {
+      return res.status(200).json({ message: "Data send", Response });
+    }
+    return res.status(400).json({ message: "No data found" });
+  } catch (error) {
+    console.log(error);
+  }
+}

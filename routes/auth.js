@@ -50,6 +50,7 @@ import {
   PoGetFromUser,
   UserBranchesGet,
   PLCreate,
+  PlDisplay
 } from "../controller/packingListController.js";
 
 import { GetEmployeesofBranch } from "../controller/QcController.js";
@@ -112,6 +113,7 @@ router.route("/qcAssignmentRolePeoples/:id").get(QcAssignmentRolePeoples);
 router.route("/PoGetFromUser/:id/:buyerId").get(PoGetFromUser);
 router.route("/UserBranchesGet/:id").get(UserBranchesGet);
 router.route("/PLCreate/:id").post(PLCreate);
+router.route("/PlDisplay/:id").post(PlDisplay);
 //------------------------------//
 // ------------------------------//
 

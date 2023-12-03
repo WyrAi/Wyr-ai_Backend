@@ -36,6 +36,10 @@ const packingSchema = new mongoose.Schema({
     type: String,
   },
 
+  Status : {
+    
+  },
+
   PurchaseOrder: [
     {
       po_Number: {
