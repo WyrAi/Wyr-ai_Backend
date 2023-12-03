@@ -85,3 +85,11 @@ export const UserBranchesGet = async (req, res) => {
     console.log(error);
   }
 };
+
+export const PLCreate = async () =>{
+  try {
+    const {} = req.body
+  } catch (error) {
+    console.log(error);
+  }
+}

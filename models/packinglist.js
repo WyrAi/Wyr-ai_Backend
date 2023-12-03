@@ -4,13 +4,13 @@ import mongoose from "mongoose";
 const packingSchema = new mongoose.Schema({
          
     buyer: {
-        name: { type: String, required: true },
-        completeAddress: { type: String, required: true },
+       type : mongoose.Schema.Types.ObjectId,
+       ref : "Companydetails"
       },
      
     factory: {
-        name: { type: String, required: true },
-        completeAddress: { type: String, required: true },
+      type : mongoose.Schema.Types.ObjectId,
+      ref : "Companydetails"
     },
 
     totalcartoon:{
