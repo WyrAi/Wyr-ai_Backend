@@ -1,3 +1,4 @@
+import Packing from "../models/packinglist.js";
 import User from "../models/users.js";
 
 //Branch employees but not get the Assign/Unassign QC role employee
@@ -33,12 +34,19 @@ export const GetEmployeesofBranch = async (req, res) => {
 export const getPlData = async (req, res) => {
   try {
     const { id } = req.params; // get the Pl id from params;
+    // console.log(id);
+    if (id != undefined) {
+      const Response = await Packing.findOne({ _id: id })
+        .populate("buyerId", "name address country city _id")
+        .populate("factoryId", "name address country city _id")
+        .populate("qcId", "name address country city _id")
+        .populate("qcHeadId", "name _id")
+        .populate("PurchaseOrder.products.branch", "branchName ");
 
-    const Response = await Packing.findOne({ _id: id })
-      .populate("buyerId", "name address country city")
-      .populate("factoryId", "name address country city")
-      .populate("qcId", "name address country city")
-      .populate("qcHeadId", "name address country city");
+      if (Response)
+        return res.status(200).json({ message: "Data send", Response });
+    }
+    return res.status(400).json({ message: "Pl Id is required" });
   } catch (error) {
     console.log(error);
   }

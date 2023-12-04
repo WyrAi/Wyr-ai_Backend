@@ -292,6 +292,15 @@ const purchaseOrderGet = async (req, res) => {
   }
 };
 
+
+const PurchaseOrderChange = async (req,res) =>{
+  try {
+    const {id} = req.params;//
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 // const getPurchaseOrder = async (req, res) => {
 //   try {
 //     const { fields } = req.params;

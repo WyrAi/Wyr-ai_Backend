@@ -50,10 +50,10 @@ import {
   PoGetFromUser,
   UserBranchesGet,
   PLCreate,
-  PlDisplay
+  PlDisplay,
 } from "../controller/packingListController.js";
 
-import { GetEmployeesofBranch } from "../controller/QcController.js";
+import { GetEmployeesofBranch, getPlData } from "../controller/QcController.js";
 // import User from "../models/users.js";
 const router = express.Router();
 
@@ -119,6 +119,7 @@ router.route("/PlDisplay/:id").get(PlDisplay);
 
 //Qc
 router.route("/GetEmployeesofBranch/:branchId").get(GetEmployeesofBranch);
+router.route("/getPlData/:id").get(getPlData);
 
 //--------------------------------//
 

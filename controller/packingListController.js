@@ -211,7 +211,7 @@ export const PlDisplay = async (req, res) => {
     let Response = Data;
 
     if (Data.companyId.companyRole == "QC Agency") {
-      Response = Data.poList.filter(
+      Response = Data.plList.filter(
         (value) =>
           Data.companyId.companyRole == "QC Agency" &&
           value.status == "Approved"
