@@ -204,7 +204,7 @@ export const PlDisplay = async (req, res) => {
         populate: { path: "buyerId", select: "name" },
       })
       .populate({
-        path: "draftPoList",
+        path: "draftPlList",
         select: "purchaseDoc buyerId _id",
         populate: { path: "buyerId", select: "name" },
       });
