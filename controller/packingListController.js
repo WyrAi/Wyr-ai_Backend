@@ -100,6 +100,7 @@ export const PLCreate = async (req, res) => {
       slotOfInspection,
       addpurchaseOrder,
       packingListFiles,
+      Status,
     } = req.body;
     console.log(req.body);
 
@@ -110,7 +111,8 @@ export const PLCreate = async (req, res) => {
       !qcId ||
       !totalCarton ||
       !slotOfInspection ||
-      !addpurchaseOrder
+      !addpurchaseOrder ||
+      !Status
     )
       return res.status(400).json({ message: "All fields are required" });
     const packingFiles = await imageUploadToBase64(packingListFiles);
@@ -122,6 +124,7 @@ export const PLCreate = async (req, res) => {
       totalCarton,
       slotOfInspection,
       packingListFiles: packingFiles,
+      Status,
     });
 
     let Error = [];
@@ -165,20 +168,21 @@ export const PLCreate = async (req, res) => {
 
     await NewPl.save();
     res.status(200).json({ message: "Packing List Created" });
-    const ids = [id, qcHeadId]
-    await User.updateMany({
-      _id: { $in: ids }
-    }, {
-      $push: {
-        plList: NewPl._id
+    const ids = [id, qcHeadId];
+    await User.updateMany(
+      {
+        _id: { $in: ids },
+      },
+      {
+        $push: {
+          plList: NewPl._id,
+        },
       }
-    })
-
+    );
   } catch (error) {
     console.log(error);
   }
 };
-
 
 export const PlDisplay = async (req, res) => {
   try {
@@ -196,22 +200,23 @@ export const PlDisplay = async (req, res) => {
       .populate("companyId", "companyRole")
       .populate({
         path: "plList",
-        select: "purchaseDoc buyer _id",
-        populate: { path: "buyer", select: "name" },
+        select: "purchaseDoc buyerId _id",
+        populate: { path: "buyerId", select: "name" },
       })
       .populate({
         path: "draftPoList",
-        select: "purchaseDoc buyer _id",
-        populate: { path: "buyer", select: "name" },
+        select: "purchaseDoc buyerId _id",
+        populate: { path: "buyerId", select: "name" },
       });
     let Response = Data;
 
-    // if (Data.companyId.companyRole == "Factory") {
-    //   Response = Data.poList.filter(
-    //     (value) =>
-    //       Data.companyId.companyRole == "Factory" && value.status == "Published"
-    //   );
-    // }
+    if (Data.companyId.companyRole == "QC Agency") {
+      Response = Data.poList.filter(
+        (value) =>
+          Data.companyId.companyRole == "QC Agency" &&
+          value.status == "Approved"
+      );
+    }
     // console.log(Data);
     if (Data) {
       return res.status(200).json({ message: "Data send", Response });
@@ -220,4 +225,4 @@ export const PlDisplay = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};

@@ -36,8 +36,10 @@ const packingSchema = new mongoose.Schema({
     type: String,
   },
 
-  Status : {
-    
+  Status: {
+    type: String,
+    required: true,
+    enum: ["Pending Approval", "Approved", "Draft"],
   },
 
   PurchaseOrder: [
