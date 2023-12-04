@@ -165,20 +165,21 @@ export const PLCreate = async (req, res) => {
 
     await NewPl.save();
     res.status(200).json({ message: "Packing List Created" });
-    const ids = [id, qcHeadId]
-    await User.updateMany({
-      _id: { $in: ids }
-    }, {
-      $push: {
-        plList: NewPl._id
+    const ids = [id, qcHeadId];
+    await User.updateMany(
+      {
+        _id: { $in: ids },
+      },
+      {
+        $push: {
+          plList: NewPl._id,
+        },
       }
-    })
-
+    );
   } catch (error) {
     console.log(error);
   }
 };
-
 
 export const PlDisplay = async (req, res) => {
   try {
@@ -196,13 +197,13 @@ export const PlDisplay = async (req, res) => {
       .populate("companyId", "companyRole")
       .populate({
         path: "plList",
-        select: "purchaseDoc buyer _id",
-        populate: { path: "buyer", select: "name" },
+        select: "purchaseDoc buyerId _id",
+        populate: { path: "buyerId", select: "name" },
       })
       .populate({
-        path: "draftPoList",
-        select: "purchaseDoc buyer _id",
-        populate: { path: "buyer", select: "name" },
+        path: "draftPlList",
+        select: "purchaseDoc buyerId _id",
+        populate: { path: "buyerId", select: "name" },
       });
     let Response = Data;
 
@@ -220,4 +221,4 @@ export const PlDisplay = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
