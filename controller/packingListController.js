@@ -100,7 +100,7 @@ export const PLCreate = async (req, res) => {
       slotOfInspection,
       addpurchaseOrder,
       packingListFiles,
-      Status,
+      status,
     } = req.body;
     console.log(req.body);
 
@@ -112,10 +112,10 @@ export const PLCreate = async (req, res) => {
       !totalCarton ||
       !slotOfInspection ||
       !addpurchaseOrder ||
-      !Status
+      !status
     )
       return res.status(400).json({ message: "All fields are required" });
-    const packingFiles = await imageUploadToBase64(packingListFiles);
+    const packingFiles = (await imageUploadToBase64(packingListFiles)) || " ";
     let NewPl = new Packing({
       buyerId,
       factoryId,
@@ -124,7 +124,7 @@ export const PLCreate = async (req, res) => {
       totalCarton,
       slotOfInspection,
       packingListFiles: packingFiles,
-      Status,
+      status,
     });
 
     let Error = [];
@@ -200,12 +200,12 @@ export const PlDisplay = async (req, res) => {
       .populate("companyId", "companyRole")
       .populate({
         path: "plList",
-        select: "purchaseDoc buyerId _id",
+        select: "packingListFiles buyerId _id status",
         populate: { path: "buyerId", select: "name" },
       })
       .populate({
         path: "draftPlList",
-        select: "purchaseDoc buyerId _id",
+        select: "packingListFiles buyerId _id status",
         populate: { path: "buyerId", select: "name" },
       });
     let Response = Data;

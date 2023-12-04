@@ -35,8 +35,7 @@ const packingSchema = new mongoose.Schema({
   packingListFiles: {
     type: String,
   },
-
-  Status: {
+  status: {
     type: String,
     required: true,
     enum: ["Pending Approval", "Approved", "Draft"],

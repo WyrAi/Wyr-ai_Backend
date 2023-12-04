@@ -28,3 +28,18 @@ export const GetEmployeesofBranch = async (req, res) => {
     console.log(error);
   }
 };
+
+//send the selective data form plDatabase
+export const getPlData = async (req, res) => {
+  try {
+    const { id } = req.params; // get the Pl id from params;
+
+    const Response = await Packing.findOne({ _id: id })
+      .populate("buyerId", "name address country city")
+      .populate("factoryId", "name address country city")
+      .populate("qcId", "name address country city")
+      .populate("qcHeadId", "name address country city");
+  } catch (error) {
+    console.log(error);
+  }
+};
