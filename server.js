@@ -18,7 +18,7 @@ const port = process.env.PORT || 5000;
 // app.use(express.static(publicDir));
 app.set("view engine", "hbs");
 app.use(morgan("dev"));
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
