@@ -144,6 +144,7 @@ const UserInformation = async (req, res) => {
       email: 1,
       phone: 1,
       companyId: 1,
+      officeBranch: 1,
     })
       .populate("companyId", {
         documentimage: 0,

@@ -54,6 +54,12 @@ import {
 } from "../controller/packingListController.js";
 
 import { GetEmployeesofBranch, getPlData } from "../controller/QcController.js";
+import {
+  AllInformationGet,
+  InformationAdd,
+  InformationCommentAdd,
+  InformationDelete,
+} from "../controller/informationController.js";
 // import User from "../models/users.js";
 const router = express.Router();
 
@@ -122,6 +128,14 @@ router.route("/GetEmployeesofBranch/:branchId").get(GetEmployeesofBranch);
 router.route("/getPlData/:id").get(getPlData);
 
 //--------------------------------//
+
+//Informations Api
+router.route("/InformationAdd").post(InformationAdd);
+router.route("/AllInformationGet").get(AllInformationGet);
+router.route("/InformationCommentAdd/:id").put(InformationCommentAdd);
+router.route("/InformationDelete/:id").delete(InformationDelete);
+
+//-------------------------------//
 
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
