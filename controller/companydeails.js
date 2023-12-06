@@ -14,8 +14,7 @@ const companydetails = async (req, res) => {
       !address ||
       !country ||
       !city ||
-      !pincode ||
-      !companyImage
+      !pincode
     ) {
       return res
         .status(400)
@@ -29,11 +28,11 @@ const companydetails = async (req, res) => {
         .status(409)
         .json({ message: "Company allready exist", status: 409 });
 
-    if (fileUpload.length < 0) {
-      return res
-        .status(400)
-        .json({ message: "All fields are required", status: 400 });
-    }
+    // if (fileUpload.length < 0) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "All fields are required", status: 400 });
+    // }
 
     const AddCompany = await new Companydetails({
       name,
@@ -51,16 +50,25 @@ const companydetails = async (req, res) => {
       status: 201,
     });
 
-    const documentimage = await imageUploadToBase64(fileUpload);
-    const companyimage = await imageUploadToBase64(companyImage);
+    let documentimage = "";
+    let companyimage = ""
 
-    await Companydetails.findByIdAndUpdate(
-      { _id: AddCompany._id },
-      {
-        companyimage,
-        documentimage,
-      }
-    );
+    if (fileUpload > 0) {
+      documentimage = await imageUploadToBase64(fileUpload);
+    }
+    if (companyImage) {
+      companyimage = await imageUploadToBase64(companyImage);
+    }
+    if (documentimage || companyimage) {
+      await Companydetails.findByIdAndUpdate(
+        { _id: AddCompany._id },
+        {
+          companyimage,
+          documentimage,
+        }
+      );
+    }
+
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
