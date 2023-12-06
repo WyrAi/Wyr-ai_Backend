@@ -4,6 +4,9 @@ import User from "../models/users.js";
 
 const purchaseOrders = async (req, res) => {
   try {
+    const bodySizeInBytes = JSON.stringify(req.body).length;
+    console.log("Request body size:", bodySizeInBytes, "bytes");
+
     const {
       buyer,
       vendor,
@@ -292,14 +295,13 @@ const purchaseOrderGet = async (req, res) => {
   }
 };
 
-
-const PurchaseOrderChange = async (req,res) =>{
+const PurchaseOrderChange = async (req, res) => {
   try {
-    const {id} = req.params;//
+    const { id } = req.params; //
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 // const getPurchaseOrder = async (req, res) => {
 //   try {

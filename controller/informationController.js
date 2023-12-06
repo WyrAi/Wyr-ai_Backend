@@ -45,7 +45,7 @@ export const InformationCommentAdd = async (req, res) => {
     const { id } = req.params;
 
     const { comment } = req.body;
-
+    console.log(id, comment);
     if (!id || !comment) {
       return res.status(400).json({ message: "All details are required" });
     } else {
