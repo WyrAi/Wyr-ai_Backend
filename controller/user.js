@@ -65,17 +65,18 @@ const registerEmployee = async (req, res) => {
     );
 
     res.status(201).json({ message: "New Employee create", status: true });
-    // if (ProfileImage) {
-    //   const ProfilImage = await imageUploadToBase64(profileImage);
-    // }
 
-    // // NewUser.profileImage = ProfilImage[0];
-    // await Users.findByIdAndUpdate(
-    //   { _id: NewUser._id },
-    //   {
-    //     profileImage: ProfilImage[0],
-    //   }
-    // );
+    if (profileImage) {
+      const ProfilImage = await imageUploadToBase64(profileImage);
+      await Users.findByIdAndUpdate(
+        { _id: NewUser._id },
+        {
+          profileImage: ProfilImage[0],
+        }
+      );
+    }
+
+    // NewUser.profileImage = ProfilImage[0];
 
     //Email send for password Create
     const detail = { _id: NewUser._id, email: NewUser.email };
