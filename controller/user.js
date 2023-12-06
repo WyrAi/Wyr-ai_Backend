@@ -29,8 +29,8 @@ const registerEmployee = async (req, res) => {
       !role ||
       !officeBranch ||
       !companyId ||
-      !role ||
-      !profileImage
+      !role
+      // !profileImage
     ) {
       return res
         .status(422)
@@ -65,15 +65,17 @@ const registerEmployee = async (req, res) => {
     );
 
     res.status(201).json({ message: "New Employee create", status: true });
-    const ProfilImage = await imageUploadToBase64(profileImage);
+    // if (ProfileImage) {
+    //   const ProfilImage = await imageUploadToBase64(profileImage);
+    // }
 
-    // NewUser.profileImage = ProfilImage[0];
-    await Users.findByIdAndUpdate(
-      { _id: NewUser._id },
-      {
-        profileImage: ProfilImage[0],
-      }
-    );
+    // // NewUser.profileImage = ProfilImage[0];
+    // await Users.findByIdAndUpdate(
+    //   { _id: NewUser._id },
+    //   {
+    //     profileImage: ProfilImage[0],
+    //   }
+    // );
 
     //Email send for password Create
     const detail = { _id: NewUser._id, email: NewUser.email };
@@ -166,7 +168,7 @@ const UserPasswordSave = async (req, res) => {
         .json({ error: "All fields are required", status: 400 });
     }
     const tokenValue = jwt.verify(token, process.env.RESET_SECERT);
-    
+
     if (!tokenValue)
       return res.status(400).json({ error: "Password link is expired" });
     const { _id } = tokenValue;
