@@ -59,6 +59,8 @@ import {
   InformationAdd,
   InformationCommentAdd,
   InformationDelete,
+  InformationComentDelete,
+  InformationComentUpdate,
 } from "../controller/informationController.js";
 // import User from "../models/users.js";
 const router = express.Router();
@@ -133,7 +135,13 @@ router.route("/getPlData/:id").get(getPlData);
 router.route("/InformationAdd").post(InformationAdd);
 router.route("/AllInformationGet").get(AllInformationGet);
 router.route("/InformationCommentAdd/:id").put(InformationCommentAdd);
+router
+  .route("/InformationComentUpdate/:id/:index")
+  .put(InformationComentUpdate);
 router.route("/InformationDelete/:id").delete(InformationDelete);
+router
+  .route("/InformationComentDelete/:id/:index")
+  .delete(InformationComentDelete);
 
 //-------------------------------//
 
