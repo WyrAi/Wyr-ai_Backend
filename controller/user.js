@@ -7,6 +7,7 @@ import { hashPassword } from "../middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
 import Companydetails from "../models/companydetails.js";
 import User from "../models/users.js";
+
 //Employee created Api
 const registerEmployee = async (req, res) => {
   try {
@@ -20,7 +21,7 @@ const registerEmployee = async (req, res) => {
       companyId,
       profileImage,
     } = req.body;
-    console.log(req.body);
+    
     if (
       !name ||
       !employeeID ||
