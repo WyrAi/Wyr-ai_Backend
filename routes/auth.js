@@ -5,9 +5,14 @@ import {
   getEmployeesFromBuVen,
   UserPasswordSave,
   BranchEmployee,
+  registerEmployeeDelete,
 } from "../controller/user.js";
-import { roles } from "../controller/role.js";
-import { branch, getAllBranchesByCompany } from "../controller/branch.js";
+import { roles, roleDelete } from "../controller/role.js";
+import {
+  branch,
+  getAllBranchesByCompany,
+  BranchDelete,
+} from "../controller/branch.js";
 import { message } from "../controller/whatsapp.js";
 import {
   purchaseOrders,
@@ -31,8 +36,7 @@ import {
   verifyEmail,
   OTPGernate,
   UserInformation,
-  // UserInformation,
-  // GetAllUsers,
+  UserInformationDelete,
 } from "../controller/registration.js";
 import { login } from "../controller/login.js";
 import TokenVerify from "../middleware/authMiddleware.js";
@@ -43,6 +47,7 @@ import {
   getAllCompanyByRole,
   ApprovedRelationShip,
   RejectedRelationShip,
+  deleteRelation,
 } from "../controller/relationShipController.js";
 
 import {
@@ -84,17 +89,20 @@ router.route("/UserInformation").get(Authenticate, UserInformation);
 router.route("/userPassword").post(UserPasswordSave);
 router.route("/getAllEmployess/:_id").get(GetAllEmployeesWithAllBranch);
 router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
+router.route("/registerEmployee").post(TokenVerify, registerEmployee);
+router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
+router.route("/registerEmployeeDelete/:id").delete(registerEmployeeDelete);
 //-------------------------//
 
 //Branch Api
 router.route("/branch").post(Authenticate, branch);
-router.route("/getAllBranches/:id/").get(Authenticate, getAllBranchesByCompany);
-
+router.route("/getAllBranches/:id").get(Authenticate, getAllBranchesByCompany);
+router.route("/BranchDelete/:id").delete(BranchDelete);
 //------------------------------//
 
 //Role APi
 router.route("/roles").post(Authenticate, roles);
-
+router.route("/roleDelete/:roleId/:companyId").delete(Authenticate, roleDelete);
 //------------------------------//
 
 //Relationship Api
@@ -102,7 +110,7 @@ router.route("/companyRelationShip").post(companyRelationShip);
 router.route("/companyRelationShip/:id").get(displayRelations);
 router.route("/rejectedRelationship/:id").put(RejectedRelationShip);
 router.route("/approvedRelationship/:id").put(ApprovedRelationShip);
-
+router.route("/deleteRelation/:relationId").delete(deleteRelation);
 //----------------------------//
 
 //Purcahse Order Api
@@ -113,7 +121,6 @@ router
 router.route("/purchaseOrder").post(purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
-
 //--------------------------------//
 
 //Packing List
@@ -144,8 +151,6 @@ router
   .delete(InformationComentDelete);
 
 //-------------------------------//
-
-router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 
 // upload.fields([
 //   { name: "image", maxCount: 1 },

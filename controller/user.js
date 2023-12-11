@@ -1,6 +1,9 @@
 import Users from "../models/users.js";
 import Branch from "../models/branch.js";
-import { imageUploadToBase64 } from "../Methods/uploadImages.js";
+import {
+  imageUploadToBase64,
+  imageuploadImageDelete,
+} from "../Methods/uploadImages.js";
 import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
 import { ResetTokenGernate } from "../Methods/authMethods.js";
 import { hashPassword } from "../middleware/authMiddleware.js";
@@ -21,7 +24,7 @@ const registerEmployee = async (req, res) => {
       companyId,
       profileImage,
     } = req.body;
-    
+
     if (
       !name ||
       !employeeID ||
@@ -196,10 +199,33 @@ const UserPasswordSave = async (req, res) => {
   }
 };
 
+const registerEmployeeDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const UserInformation = await Users.findByIdAndDelete({ _id: id });
+
+    await Branch.findByIdAndUpdate(
+      { _id: UserInformation.officeBranch },
+      {
+        $pull: {
+          employee: id,
+        },
+      }
+    );
+
+    res.status(200).json("Successfully delete ");
+
+    await imageuploadImageDelete(UserInformation.profileImage);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   registerEmployee,
   GetAllEmployeesWithAllBranch,
   getEmployeesFromBuVen,
   UserPasswordSave,
+  registerEmployeeDelete,
   BranchEmployee,
 };
