@@ -201,8 +201,8 @@ const UserPasswordSave = async (req, res) => {
 
 const registerEmployeeDelete = async (req, res) => {
   try {
-    const { id } = req.params;
-    const UserInformation = await Users.findByIdAndDelete({ _id: id });
+    const { id } = req.body;
+    const UserInformation = await Users.deleteMany({ _id: id });
 
     await Branch.findByIdAndUpdate(
       { _id: UserInformation.officeBranch },

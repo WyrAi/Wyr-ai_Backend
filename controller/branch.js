@@ -90,7 +90,7 @@ const BranchDelete = async (req, res) => {
     if (id) {
       const BranchData = await Branch.findOne({ _id: id });
       if (BranchData) {
-        if (BranchData.employee) {
+        if (BranchData.employee > 0) {
           return res
             .status(400)
             .json({ message: "Keep first Delete all employees" });
