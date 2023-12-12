@@ -56,7 +56,7 @@ export const getPlData = async (req, res) => {
 export const updatePlData = async (req, res) => {
   try {
     const { id } = req.params;
-    const { PurchaseOrder, slotOfInspection } = req.body;
+    const { PurchaseOrder, slotOfInspection, status } = req.body;
     // console.log(id);
 
     const plData = await Packing.findOne({ _id: id });
@@ -71,12 +71,15 @@ export const updatePlData = async (req, res) => {
     // );
     // if (indexToUpdate !== -1) {
     plData.slotOfInspection = slotOfInspection;
+    plData.status = status;
     // }
     await plData.save();
+    let AllEmployees = [];
 
     for (let i = 0; i < PurchaseOrder.length; i++) {
       for (let j = 0; j < PurchaseOrder[i].products.length; j++) {
-        const response = await Packing.updateOne(
+        AllEmployees.push(PurchaseOrder[i].products[j].qcPerson);
+        await Packing.updateOne(
           { _id: id },
           {
             $set: {
@@ -97,7 +100,20 @@ export const updatePlData = async (req, res) => {
       }
     }
 
-    return res.status(200).json({ message: "Pl update" });
+    res.status(200).json({ message: "Pl update" });
+
+    if (AllEmployees > 0) {
+      await User.updateMany(
+        {
+          _id: { $in: AllEmployees },
+        },
+        {
+          $push: {
+            poList: id,
+          },
+        }
+      );
+    }
   } catch (error) {
     console.log(error);
   }
