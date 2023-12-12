@@ -5,7 +5,6 @@ const packingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Companydetails",
   },
-
   factoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Companydetails",
@@ -30,6 +29,10 @@ const packingSchema = new mongoose.Schema({
     {
       date: Date,
       time: String,
+      // status: {
+      //   type: Boolean,
+      //   default: false,
+      // },
     },
   ],
   packingListFiles: {
@@ -38,9 +41,8 @@ const packingSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ["Pending Approval", "Approved", "Draft"],
+    enum: ["Pending Approval", "Approved", "Draft",""],
   },
-
   PurchaseOrder: [
     {
       po_Number: {
@@ -85,6 +87,10 @@ const packingSchema = new mongoose.Schema({
           totalQuantity: {
             type: Number,
             required: true,
+          },
+          qcPerson: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
           },
         },
       ],

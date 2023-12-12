@@ -58,7 +58,12 @@ import {
   PlDisplay,
 } from "../controller/packingListController.js";
 
-import { GetEmployeesofBranch, getPlData } from "../controller/QcController.js";
+import {
+  GetEmployeesofBranch,
+  getPlData,
+  updatePlData,
+} from "../controller/QcController.js";
+
 import {
   AllInformationGet,
   InformationAdd,
@@ -135,6 +140,7 @@ router.route("/PlDisplay/:id").get(PlDisplay);
 //Qc
 router.route("/GetEmployeesofBranch/:branchId").get(GetEmployeesofBranch);
 router.route("/getPlData/:id").get(getPlData);
+router.route("/updatePlData/:id").put(updatePlData);
 
 //--------------------------------//
 

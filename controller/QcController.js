@@ -1,6 +1,7 @@
+import mongoose from "mongoose";
 import Packing from "../models/packinglist.js";
 import User from "../models/users.js";
-
+import moment from "moment";
 //Branch employees but not get the Assign/Unassign QC role employee
 export const GetEmployeesofBranch = async (req, res) => {
   try {
@@ -52,4 +53,52 @@ export const getPlData = async (req, res) => {
   }
 };
 
+export const updatePlData = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { PurchaseOrder, slotOfInspection } = req.body;
+    // console.log(id);
 
+    const plData = await Packing.findOne({ _id: id });
+    // console.log(plData);
+
+    // const indexToUpdate = plData.slotOfInspection.findIndex(
+    //   (slot) =>
+    //     moment(slot.date, moment.ISO_8601).format("YYYY-MM-DD hh:mm:ss A") ===
+    //       moment(slotOfInspection.date, moment.ISO_8601).format(
+    //         "YYYY-MM-DD hh:mm:ss A"
+    //       ) && slot.time === slotOfInspection.time
+    // );
+    // if (indexToUpdate !== -1) {
+    plData.slotOfInspection = slotOfInspection;
+    // }
+    await plData.save();
+
+    for (let i = 0; i < PurchaseOrder.length; i++) {
+      for (let j = 0; j < PurchaseOrder[i].products.length; j++) {
+        const response = await Packing.updateOne(
+          { _id: id },
+          {
+            $set: {
+              "PurchaseOrder.$[poNumber].products.$[id].qcPerson":
+                PurchaseOrder[i].products[j].qcPerson,
+            },
+          },
+          {
+            arrayFilters: [
+              { "poNumber.po_Number": PurchaseOrder[i].po_Number },
+              {
+                "id._id": PurchaseOrder[i].products[j]._id,
+              },
+            ],
+          }
+        );
+        // console.log(response);
+      }
+    }
+
+    return res.status(200).json({ message: "Pl update" });
+  } catch (error) {
+    console.log(error);
+  }
+};
