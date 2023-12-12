@@ -1,12 +1,16 @@
 import Users from "../models/users.js";
 import Branch from "../models/branch.js";
-import { imageUploadToBase64 } from "../Methods/uploadImages.js";
+import {
+  imageUploadToBase64,
+  imageuploadImageDelete,
+} from "../Methods/uploadImages.js";
 import { mailTransport, resetpasswordTemplet } from "../utils/mails.js";
 import { ResetTokenGernate } from "../Methods/authMethods.js";
 import { hashPassword } from "../middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
 import Companydetails from "../models/companydetails.js";
 import User from "../models/users.js";
+
 //Employee created Api
 const registerEmployee = async (req, res) => {
   try {
@@ -20,7 +24,7 @@ const registerEmployee = async (req, res) => {
       companyId,
       profileImage,
     } = req.body;
-    console.log(req.body);
+
     if (
       !name ||
       !employeeID ||
@@ -29,8 +33,8 @@ const registerEmployee = async (req, res) => {
       !role ||
       !officeBranch ||
       !companyId ||
-      !role ||
-      !profileImage
+      !role
+      // !profileImage
     ) {
       return res
         .status(422)
@@ -65,15 +69,18 @@ const registerEmployee = async (req, res) => {
     );
 
     res.status(201).json({ message: "New Employee create", status: true });
-    const ProfilImage = await imageUploadToBase64(profileImage);
+
+    if (profileImage) {
+      const ProfilImage = await imageUploadToBase64(profileImage);
+      await Users.findByIdAndUpdate(
+        { _id: NewUser._id },
+        {
+          profileImage: ProfilImage[0],
+        }
+      );
+    }
 
     // NewUser.profileImage = ProfilImage[0];
-    await Users.findByIdAndUpdate(
-      { _id: NewUser._id },
-      {
-        profileImage: ProfilImage[0],
-      }
-    );
 
     //Email send for password Create
     const detail = { _id: NewUser._id, email: NewUser.email };
@@ -166,7 +173,7 @@ const UserPasswordSave = async (req, res) => {
         .json({ error: "All fields are required", status: 400 });
     }
     const tokenValue = jwt.verify(token, process.env.RESET_SECERT);
-    
+
     if (!tokenValue)
       return res.status(400).json({ error: "Password link is expired" });
     const { _id } = tokenValue;
@@ -192,10 +199,33 @@ const UserPasswordSave = async (req, res) => {
   }
 };
 
+const registerEmployeeDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const UserInformation = await Users.findByIdAndDelete({ _id: id });
+
+    await Branch.findByIdAndUpdate(
+      { _id: UserInformation.officeBranch },
+      {
+        $pull: {
+          employee: id,
+        },
+      }
+    );
+
+    res.status(200).json("Successfully delete ");
+
+    await imageuploadImageDelete(UserInformation.profileImage);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   registerEmployee,
   GetAllEmployeesWithAllBranch,
   getEmployeesFromBuVen,
   UserPasswordSave,
+  registerEmployeeDelete,
   BranchEmployee,
 };

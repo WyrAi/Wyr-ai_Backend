@@ -161,6 +161,20 @@ const UserInformation = async (req, res) => {
   }
 };
 
+const UserInformationDelete = async (req, res) => {
+  try {
+    const _id = req.user;
+    const UserInfo = await User.findByIdAndDelete(_id);
+    if (UserInfo) {
+      res.status(200).json({ message: "Account Delete" });
+      await imageuploadImageDelete(UserInfo.profileImage);
+    }
+    res.status(404).json({ message: "Account not found" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 //Show all the superAdmin Companies for SuperAdmin
 
 // const GetAllUsers = async (req, res) => {
@@ -240,4 +254,10 @@ const UserInformation = async (req, res) => {
 //   }
 // };
 
-export { register, verifyEmail, OTPGernate, UserInformation };
+export {
+  register,
+  verifyEmail,
+  OTPGernate,
+  UserInformation,
+  UserInformationDelete,
+};

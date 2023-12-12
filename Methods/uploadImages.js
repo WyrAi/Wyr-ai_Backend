@@ -55,4 +55,21 @@ const imageUploadToBase64 = async (images) => {
   }
 };
 
-export { imageUpload, imageUploadToBase64 };
+const imageuploadImageDelete = async (image) => {
+  try {
+    const imagelink = image.split("/");
+    const imagename = imagelink[imagelink.length - 1].split(".")[0];
+    if (image) {
+      await cloudinary.uploader.destroy(imagename, (err, result) => {
+        if (result.result == "not found") {
+          console.log("image not found");
+        }
+        if (err) console.log("image not Upoload", err);
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { imageUpload, imageUploadToBase64, imageuploadImageDelete };

@@ -83,4 +83,43 @@ const GetAllEmployeesWithBranch = async (req, res) => {
   }
 };
 
-export { branch, GetAllEmployeesWithBranch, getAllBranchesByCompany };
+const BranchDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (id) {
+      const BranchData = await Branch.findOne({ _id: id });
+      if (BranchData) {
+        if (BranchData.employee) {
+          return res
+            .status(400)
+            .json({ message: "Keep first Delete all employees" });
+        } else {
+          await Branch.deleteOne({ _id: id });
+
+          await Companydetails.updateOne(
+            { Branches: id },
+            {
+              $pull: {
+                Branches: {
+                  $in: [id],
+                },
+              },
+            }
+          );
+          return res.status(200).json({ message: "Branch deleted" });
+        }
+      }
+      return res.status(400).json({ message: "Branch not found" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  branch,
+  GetAllEmployeesWithBranch,
+  getAllBranchesByCompany,
+  BranchDelete,
+};

@@ -46,4 +46,23 @@ const roles = async (req, res) => {
   }
 };
 
-export { roles };
+const roleDelete = async (req, res) => {
+  try {
+    const { roleId, companyId } = req.params;
+
+    await Role.findByIdAndDelete({ _id: roleId });
+    await Companydetails.findByIdAndUpdate(
+      { _id: companyId },
+      {
+        $pull: {
+          customRoles: roleId,
+        },
+      }
+    );
+    return res.status(200).json({ message: "Role deleted successfully" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { roles, roleDelete };

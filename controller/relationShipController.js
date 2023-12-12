@@ -122,7 +122,6 @@ export const getAllCompanyByRole = async (req, res) => {
         "_id name addres country city pincode companyRole"
       )
       .populate("companyRelations.relationId");
-      
 
     let AllFields = {};
 
@@ -191,6 +190,37 @@ export const ApprovedRelationShip = async (req, res) => {
         .status(400)
         .json({ message: "Relationship is required", status: 400 });
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteRelation = async (req, res) => {
+  try {
+    const { relationId } = req.params;
+
+    if (relationId) {
+      await Relationship.findByIdAndDelete({
+        _id: relationId,
+      });
+
+      await Companydetails.updateMany(
+        {
+          "companyRelations.relationId": relationId,
+        },
+        {
+          $pull: {
+            companyRelations: {
+              relationId: relationId,
+            },
+          },
+        }
+      );
+      return res.status(200).json({ message: "Deleted", status: 200 });
+    }
+    return res
+      .status(400)
+      .json({ message: "Relation is required", status: 400 });
   } catch (error) {
     console.log(error);
   }
