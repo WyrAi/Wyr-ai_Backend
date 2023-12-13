@@ -96,7 +96,7 @@ router.route("/getAllEmployess/:_id").get(GetAllEmployeesWithAllBranch);
 router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
-router.route("/registerEmployeeDelete/:id").delete(registerEmployeeDelete);
+router.route("/registerEmployeeDelete").delete(registerEmployeeDelete);
 //-------------------------//
 
 //Branch Api

@@ -209,14 +209,16 @@ export const PlDisplay = async (req, res) => {
         populate: { path: "buyerId", select: "name" },
       });
     let Response = Data;
-
+    // console.log(Response);
+    let QCStatus = ["Approved", "Qc Rejected", "Qc Approved"];
     if (Data.companyId.companyRole == "QC Agency") {
       Response = Data.plList.filter(
         (value) =>
           Data.companyId.companyRole == "QC Agency" &&
-          value.status == "Approved"
+          QCStatus.includes(value.status)
       );
     }
+
     // console.log(Data);
     if (Data) {
       return res.status(200).json({ message: "Data send", Response });
@@ -226,4 +228,3 @@ export const PlDisplay = async (req, res) => {
     console.log(error);
   }
 };
-
