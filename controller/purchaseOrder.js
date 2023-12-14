@@ -92,7 +92,11 @@ const purchaseOrders = async (req, res) => {
         Error.push(`Product ${i + 1} fields are required`);
       }
 
-      const productImages = await imageUploadToBase64(images);
+      let SetData = [];
+
+      for (let j = 0; j < images.length; j++) {
+        let data = await imageUploadToBase64(images[j]);
+      }
 
       NewPurchaseOrder.products.push({
         styleId,
@@ -109,7 +113,6 @@ const purchaseOrders = async (req, res) => {
         widthTolerance,
         heightTolerance,
         comments,
-        images: productImages,
       });
     }
 
@@ -292,14 +295,13 @@ const purchaseOrderGet = async (req, res) => {
   }
 };
 
-
-const PurchaseOrderChange = async (req,res) =>{
+const PurchaseOrderChange = async (req, res) => {
   try {
-    const {id} = req.params;//
+    const { id } = req.params; //
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 // const getPurchaseOrder = async (req, res) => {
 //   try {
