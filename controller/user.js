@@ -201,21 +201,29 @@ const UserPasswordSave = async (req, res) => {
 
 const registerEmployeeDelete = async (req, res) => {
   try {
-    const { id } = req.body;
-    const UserInformation = await Users.deleteMany({ _id: id });
+    const { checkedItems } = req.body;
+    // const UserInformation = await Users.deleteMany({ _id: { $in: id } });
+    let Users = await User.find({ _id: { $in: checkedItems } });
+    await User.deleteMany({ _id: { $in: checkedItems } });
 
-    await Branch.findByIdAndUpdate(
-      { _id: UserInformation.officeBranch },
-      {
-        $pull: {
-          employee: id,
-        },
-      }
-    );
+    for (let i = 0; i < Users.length; i++) {
+      await Branch.updateOne(
+        { _id: Users[i].officeBranch },
+        {
+          $pull: {
+            employee: Users[i]._id,
+          },
+        }
+      );
+    }
 
     res.status(200).json("Successfully delete ");
 
-    await imageuploadImageDelete(UserInformation.profileImage);
+    for (let j = 0; j < Users.length; j++) {
+      if (Users[j].profileImage) {
+        await imageuploadImageDelete(Users[j].profileImage);
+      }
+    }
   } catch (error) {
     console.log(error);
   }

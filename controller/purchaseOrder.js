@@ -95,7 +95,11 @@ const purchaseOrders = async (req, res) => {
         Error.push(`Product ${i + 1} fields are required`);
       }
 
-      const productImages = await imageUploadToBase64(images);
+      let SetData = [];
+
+      for (let j = 0; j < images.length; j++) {
+        let data = await imageUploadToBase64(images[j]);
+      }
 
       NewPurchaseOrder.products.push({
         styleId,
@@ -112,7 +116,6 @@ const purchaseOrders = async (req, res) => {
         widthTolerance,
         heightTolerance,
         comments,
-        images: productImages,
       });
     }
 
