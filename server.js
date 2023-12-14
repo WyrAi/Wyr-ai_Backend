@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import router from "./routes/auth.js";
 import morgan from "morgan";
+import { getUserByUsername,deleteSocketUser } from "./controller/notificationUser.js";
 // import hbs from "hbs";
 
 const app = express();
@@ -67,18 +68,18 @@ const getUser = (username) => {
   return onlineUsers.filter((user) => user.username === username);
 };
 
-const sendOfflineMessages = (socket,user) => {
+const sendOfflineMessages = (socket, user) => {
   const userOfflineMessages = offlineMessages[user];
 
-  console.log("userOfflineMessage",userOfflineMessages)
-  console.log("userOfflineMessage.length",userOfflineMessages.length)
+  console.log("userOfflineMessage", userOfflineMessages);
+  console.log("userOfflineMessage.length", userOfflineMessages.length);
 
   if (userOfflineMessages && userOfflineMessages.length > 0) {
-    console.log("fjadlsjfdslfkjasd")
     userOfflineMessages.forEach((message) => {
-      console.log("messagfe",message)
-      socket.emit("sendText", message);
+      console.log("messagfe", message);
+      // socket.emit("sendText", message);
     });
+    socket.emit("receive",message);
 
     delete offlineMessages[user];
   }
@@ -88,41 +89,28 @@ io.on("connection", (socket) => {
   socket.on("newUser", (user) => {
     console.log("user connected with", user, socket.id);
     addNewUser(user, socket.id);
-    sendOfflineMessages(socket,user);
+    sendOfflineMessages(socket, user);
   });
 
-  // socket.on("sendNotification", ({ senderName, receiverName, type }) => {
-  //   const receiver = getUser(receiverName);
-  //   io.to(receiver.socketId).emit("getNotification", {
-  //     senderName,
-  //     type,
-  //   });
-  // });
 
-  // socket.on("sendText", ({ senderName, receiverName, text }) => {
-  //   console.log("receivername",receiverName)
-  //   console.log("text",text)
-  //   const receiver = getUser(receiverName);
-  //   console.log("reciver",receiver)
-  //   console.log("senderName",senderName)
-  //   io.to(receiver.socketId).emit("getText", {
-  //     senderName,
-  //     text,
-  //   });
-  //   console.log("text", text);
-  // });
-
-  socket.on("sendText", ({ data }) => {
+  socket.on("sendText", async ({ data }) => {
     console.log("data", data);
 
     const { senderName, receiverName, text } = data;
 
     console.log("object", senderName, receiverName, text);
-    const receivers = getUser(receiverName);
+    // const receivers = getUser(receiverName);
+    const receivers = await getUserByUsername({
+      params: {
+        username: receiverName,
+      },
+    });
+    console.log("receivers",receivers)
     if (receivers.length) {
       console.log("receivers and message", receivers[0], text);
       receivers.forEach((receiver) => {
-        io.to(receiver.socketId).emit("getText", {
+        console.log("receivertext",receiver.socket)
+        io.to(receiver.socket).emit("getText", {
           senderName,
           text,
         });
@@ -132,13 +120,19 @@ io.on("connection", (socket) => {
         offlineMessages[receiverName] = [];
       }
       offlineMessages[receiverName].push({ receiverName, text });
-      console.log("offlineMessages",offlineMessages)
+      console.log("offlineMessages", offlineMessages);
     }
   });
 
-  socket.on("disconnect", () => {
-    removeUser(socket.id);
-    console.log("user with disconnected with", socket.id);
+  socket.on("remove", async(socket) => {
+    console.log("socket in disconnect",socket)
+    const receivers = await deleteSocketUser({
+      params: {
+        socket: socket,
+      },
+    });
+
+    console.log("user with disconnected with", socket);
   });
 });
 //===============================
