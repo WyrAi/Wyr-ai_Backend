@@ -85,9 +85,16 @@ const sendOfflineMessages = (socket, user) => {
   }
 };
 
+
+//notificationModel
+// const Notification=require('./models/notificationModel.js');
+import Message from "./models/notificationModel.js";
+//var user_id;
+
 io.on("connection", (socket) => {
   socket.on("newUser", (user) => {
     console.log("user connected with", user, socket.id);
+    //user_id=user;
     addNewUser(user, socket.id);
     sendOfflineMessages(socket, user);
   });
@@ -95,8 +102,12 @@ io.on("connection", (socket) => {
 
   socket.on("sendText", async ({ data }) => {
     console.log("data", data);
-
     const { senderName, receiverName, text } = data;
+    const newMessage = new Message({
+      userid:senderName,
+      messages: [{ receiverid:receiverName, texts: [{ message:text }] }],
+    });
+    await newMessage.save();
 
     console.log("object", senderName, receiverName, text);
     // const receivers = getUser(receiverName);
