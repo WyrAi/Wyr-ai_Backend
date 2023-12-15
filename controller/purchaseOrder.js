@@ -97,8 +97,14 @@ const purchaseOrders = async (req, res) => {
 
       let SetData = [];
 
-      for (let j = 0; j < images.length; j++) {
-        let data = await imageUploadToBase64(images[j]);
+      if (images.length > 0) {
+        for (let j = 0; j < images.length; j++) {
+          let data = await imageUploadToBase64(images[j].image);
+          SetData.push({
+            name: images[j].name,
+            image: data,
+          });
+        }
       }
 
       NewPurchaseOrder.products.push({
@@ -116,6 +122,7 @@ const purchaseOrders = async (req, res) => {
         widthTolerance,
         heightTolerance,
         comments,
+        images: SetData,
       });
     }
 
@@ -207,7 +214,19 @@ const PuracheseOrderDraft = async (req, res) => {
         comments,
       } = products[i];
 
-      const productImages = (await imageUploadToBase64(images)) || "";
+      // const productImages = (await imageUploadToBase64(images)) || "";
+
+      let SetData = [];
+
+      if (images.length > 0) {
+        for (let j = 0; j < images.length; j++) {
+          let data = await imageUploadToBase64(images[j].image);
+          SetData.push({
+            name: images[j].name,
+            image: data,
+          });
+        }
+      }
 
       NewPurchaseOrder.products.push({
         styleId,
@@ -224,7 +243,7 @@ const PuracheseOrderDraft = async (req, res) => {
         widthTolerance,
         heightTolerance,
         comments,
-        images: productImages,
+        images: SetData,
       });
     }
 
