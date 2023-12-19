@@ -6,8 +6,8 @@ import { HashMethod } from "../Methods/HashMethods.js";
 //RelationShip Api
 export const companyRelationShip = async (req, res) => {
   try {
-    const { role, reciverEmail, senderCompanyId } = req.body;
-
+    const { role, reciverEmail, senderCompanyId } = req.body || [];
+    console.log("10========>",reciverEmail);
     const userCheck = await User.findOne({ email: reciverEmail })
       .populate("role", "name")
       .populate("companyId", "_id ");
@@ -76,7 +76,86 @@ export const companyRelationShip = async (req, res) => {
   }
 };
 
+// export const companyRelationShip = async (req, res) => {
+//   try {
+//     const { role, reciverEmail, senderCompanyId } = req.body || [];
+    
+//     // Ensure reciverEmail is an array
+//     if (!Array.isArray(reciverEmail)) {
+//       return res.status(400).json({ message: "ReciverEmail should be an array", status: 400 });
+//     }
+
+//     for (const email of reciverEmail) {
+//       const userCheck = await User.findOne({ email })
+//         .populate("role", "name")
+//         .populate("companyId", "_id ");
+
+//       if (!userCheck) {
+//         console.log(`User not exist for email: ${email}`);
+//         // Handle this case as needed, for example, continue to the next iteration
+//         continue;
+//       }
+
+//       if (role !== userCheck.role.name) {
+//         return res.status(400).json({ message: `This is not a ${role} for email: ${email}`, status: 400 });
+//       }
+
+//       const hashInput = [
+//         senderCompanyId.toString(),
+//         userCheck.companyId._id.toString(),
+//       ];
+
+//       const hash = HashMethod(hashInput);
+
+//       const relationshipCheck = await Relationship.find({ HashKey: hash });
+
+//       if (relationshipCheck.length > 0) {
+//         console.log(`Relation already exists for email: ${email}`);
+//         // Handle this case as needed, for example, continue to the next iteration
+//         continue;
+//       }
+
+//       const newRelation = await Relationship({
+//         SenderRelationId: senderCompanyId,
+//         ReceiverRelationId: userCheck.companyId._id,
+//         HashKey: hash,
+//       }).save();
+
+//       await Companydetails.findByIdAndUpdate(
+//         { _id: userCheck.companyId._id },
+//         {
+//           $push: {
+//             companyRelations: {
+//               companyId: senderCompanyId,
+//               relationId: newRelation._id,
+//             },
+//           },
+//         }
+//       );
+
+//       await Companydetails.findByIdAndUpdate(
+//         { _id: senderCompanyId },
+//         {
+//           $push: {
+//             companyRelations: {
+//               companyId: userCheck.companyId._id,
+//               relationId: newRelation._id,
+//             },
+//           },
+//         }
+//       );
+//     }
+
+//     res.status(200).json({ message: "Requests sent successfully", status: 200 });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Internal Server Error", status: 500 });
+//   }
+// };
+
+
 //Display RelationShips by Companyies
+
 export const displayRelations = async (req, res) => {
   try {
     const { id } = req.params;
