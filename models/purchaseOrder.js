@@ -35,7 +35,12 @@ const purchaseOrderSchema = new mongoose.Schema({
       height: { type: Number, required: true },
       width: { type: Number, required: true },
       aql: { type: Number, required: true },
-      images: [{ type: String }],
+      images: [
+        {
+          name: String,
+          image: String,
+        },
+      ],
       weightTolerance: {
         type: Number,
         required: true,

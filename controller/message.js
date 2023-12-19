@@ -7,14 +7,12 @@ const Getmessages = async (req, res) => {
     const messages = await Message.findOne({recipient});
 
     res.status(200).json(messages.message);
-    // const response = await messages.json()
     console.log("message",messages.message)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Create a new message
 const Postmessage = async (req, res) => {
   console.log("req.body", req.body);
   const { recipient, sender, message } = req.body;

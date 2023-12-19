@@ -36,7 +36,8 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
+import Message from "./models/message.js";
+import Notification from "./models/notificationMessageModel.js";
 app.use("/api", router);
 
 const uri = process.env.ATLAS_URI; // Connection string for MongoDB
@@ -51,76 +52,102 @@ connection.once("open", () => {
 let onlineUsers = [];
 const offlineMessages = {};
 
-const addNewUser = (username, socketId) => {
-  !onlineUsers.some(
-    (user) => user.username === username && user.socketId === socketId
-  ) && onlineUsers.push({ username, socketId });
-  console.log("user", onlineUsers);
-};
-
 const removeUser = (socketId) => {
   onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
   // console.log("socketID removed user:",user.username,socketId)
 };
 
-const getUser = (username) => {
-  console.log("username in get user", username);
-  return onlineUsers.filter((user) => user.username === username);
-};
+async function saveMessage(sender, receiver, text) {
+  const existingNotification = await Notification.findOne({ receiverid: receiver });
 
-const sendOfflineMessages = (socket, user) => {
-  const userOfflineMessages = offlineMessages[user];
-
-  console.log("userOfflineMessage", userOfflineMessages);
-  console.log("userOfflineMessage.length", userOfflineMessages.length);
-
-  if (userOfflineMessages && userOfflineMessages.length > 0) {
-    userOfflineMessages.forEach((message) => {
-      console.log("messagfe", message);
-      // socket.emit("sendText", message);
+  if (existingNotification) {
+    // If the notification for the receiver exists, push a new message
+    existingNotification.messages.push({
+      message: text,
     });
-    socket.emit("receive",message);
 
-    delete offlineMessages[user];
+    await existingNotification.save();
+  } else {
+    // If the notification for the receiver doesn't exist, create a new notification
+    const newNotification = new Notification({
+      receiverid: receiver,
+      messages: [
+        {
+          message: text,
+        },
+      ],
+    });
+
+    await newNotification.save();
   }
-};
+}
 
+import NotificationUser from "./models/notificationUser.js";
 io.on("connection", (socket) => {
   socket.on("newUser", (user) => {
     console.log("user connected with", user, socket.id);
-    addNewUser(user, socket.id);
-    sendOfflineMessages(socket, user);
   });
 
 
-  socket.on("sendText", async ({ data }) => {
-    console.log("data", data);
+  socket.on("sendText", async ({data} ) => {
+    //console.log("data", data);
 
-    const { senderName, receiverName, text } = data;
+    const receiverData = await NotificationUser.find({});
+    const receiverName = [...new Set(receiverData.map(item => item.user))];
 
-    console.log("object", senderName, receiverName, text);
+    const { senderName, text } = data ;
+    // if (!senderName || !text) {
+    //   return res.status(400).json({ message: "Missing required fields", status: 400 });
+    // }
+    
+    // console.log("103====>",senderName);
+    // console.log("76===>",receiverName);
+    if (Array.isArray(receiverName)) {
+      for (const receiver of receiverName) {
+        await saveMessage(senderName, receiver, text);
+      }
+    } else {
+      await saveMessage(senderName, receiverName, text);
+    }
+
+
+    // const existingMessage = await Message.findOne({ userid: senderName, senderid: senderName });
+    // if (existingMessage) {
+    //   await Message.updateOne(
+    //     { userid: senderName, senderid: senderName, "messages.receiverid": receiverName },
+    //     { $push: { "messages.$.texts": { message: text } } }
+    //   );
+    // } else {
+    //   const newMessage = new Message({
+    //     userid: senderName,
+    //     senderid: senderName,
+    //     messages: [{ receiverid: receiverName, texts: [{ message: text }] }],
+    //   });
+    
+    //   console.log("newMessage ===> ", newMessage);
+    //   await newMessage.save();
+    // }
+    //console.log("object", senderName, text);
     // const receivers = getUser(receiverName);
+   
+    
     const receivers = await getUserByUsername({
-      params: {
-        username: receiverName,
+      body: {
+        username: receiverName
       },
     });
-    console.log("receivers",receivers)
+    console.log("receivers===>",receivers)
     if (receivers.length) {
-      console.log("receivers and message", receivers[0], text);
+      //console.log("receivers and message", receivers[0], text);
       receivers.forEach((receiver) => {
-        console.log("receivertext",receiver.socket)
+        //console.log("receivertext",receiver.socket)
         io.to(receiver.socket).emit("getText", {
           senderName,
           text,
         });
       });
     } else {
-      if (!offlineMessages[receiverName]) {
-        offlineMessages[receiverName] = [];
-      }
-      offlineMessages[receiverName].push({ receiverName, text });
-      console.log("offlineMessages", offlineMessages);
+      
     }
   });
 
@@ -135,7 +162,7 @@ io.on("connection", (socket) => {
     console.log("user with disconnected with", socket);
   });
 });
-//===============================
+
 
 server.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
