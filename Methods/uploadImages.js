@@ -7,6 +7,7 @@ cloudinary.config({
 
 const imageUpload = async (images) => {
   try {
+    console.log(images);
     if (!images.length) {
       const ImageUploadLink = await cloudinary.uploader.upload(images.path);
       return ImageUploadLink.url;

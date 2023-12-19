@@ -1,152 +1,174 @@
 import PurchaseOrder from "../models/purchaseOrder.js";
-import { imageUploadToBase64 } from "../Methods/uploadImages.js";
+import { imageUpload, imageUploadToBase64 } from "../Methods/uploadImages.js";
 import User from "../models/users.js";
 
 const purchaseOrders = async (req, res) => {
   try {
-    const bodySizeInBytes = JSON.stringify(req.body).length;
-    console.log("Request body size:", bodySizeInBytes, "bytes");
+    // const bodySizeInBytes = JSON.stringify(req.body).length;
+    // console.log("Request body size:", bodySizeInBytes, "bytes");
+    console.log(req.fields);
+    // console.log(req.files);
+    const inputData = req.fields;
+    const products = Object.keys(inputData)
+      .filter((key) => key.startsWith("products"))
+      .map((key) => JSON.parse(inputData[key]));
 
-    const {
-      buyer,
-      vendor,
-      shiptoName,
-      shiptoAdd,
-      shipVia,
-      shipDate,
-      assignedPeople,
-      products,
-      purchaseDoc,
-      status,
-      poNumber,
-    } = req.body;
-    if (
-      !buyer ||
-      !vendor ||
-      !shiptoName ||
-      !shiptoAdd ||
-      !shipVia ||
-      !shipDate ||
-      !assignedPeople ||
-      !products ||
-      !poNumber ||
-      !status
-    ) {
-      return res.status(422).json({
-        status: 422,
-        error: "Please provide all the necessary fields",
-      });
-    }
+    console.log(products, "Products");
 
-    const PuracheseOrderImage = await imageUploadToBase64(purchaseDoc);
+    const assignedPeople = Object.keys(inputData)
+      .filter((key) => key.startsWith("assignedPeople"))
+      .map((key) => JSON.parse(inputData[key]));
 
-    let NewPurchaseOrder = new PurchaseOrder({
-      purchaseDoc: PuracheseOrderImage,
-      buyer,
-      vendor,
-      shipTo: {
-        name: shiptoName,
-        completeAddress: shiptoAdd,
-        shipVia,
-        shippingDate: shipDate,
-      },
-      assignedPeople,
-      status,
-      poNumber,
-    });
+    console.log(products[0].images[0]);
+    const ImageLink = await imageUpload(products[0].images[0].file);
+    console.log(ImageLink);
 
-    const Error = [];
+    // return res.json(res.fields)
+    console.log(assignedPeople);
+    const purchaseDoc = req.files.purchaseDoc;
+    // const {
+    //   buyer,
+    //   vendor,
+    //   shiptoName,
+    //   shiptoAdd,
+    //   shipVia,
+    //   shipDate,
+    //   // assignedPeople,
+    //   // products,
+    //   // purchaseDoc,
+    //   status,
+    //   poNumber,
+    // } = req.fields;
+    // if (
+    //   !buyer ||
+    //   !vendor ||
+    //   !shiptoName ||
+    //   !shiptoAdd ||
+    //   !shipVia ||
+    //   !shipDate ||
+    //   !assignedPeople ||
+    //   !products ||
+    //   !poNumber ||
+    //   !status
+    // ) {
+    //   return res.status(422).json({
+    //     status: 422,
+    //     error: "Please provide all the necessary fields",
+    //   });
+    // }
 
-    for (let i = 0; i < products.length; i++) {
-      const {
-        styleId,
-        styleName,
-        quantity,
-        color,
-        weight,
-        weightTolerance,
-        length,
-        lengthTolerance,
-        height,
-        width,
-        aql,
-        images,
-        widthTolerance,
-        heightTolerance,
-        comments,
-      } = products[i];
+    // const PuracheseOrderImage = await imageUpload(purchaseDoc);
+    // console.log(PuracheseOrderImage);
+    // let NewPurchaseOrder = new PurchaseOrder({
+    //   purchaseDoc: PuracheseOrderImage,
+    //   buyer,
+    //   vendor,
+    //   shipTo: {
+    //     name: shiptoName,
+    //     completeAddress: shiptoAdd,
+    //     shipVia,
+    //     shippingDate: shipDate,
+    //   },
+    //   assignedPeople,
+    //   status,
+    //   poNumber,
+    // });
 
-      if (
-        !styleId ||
-        !styleName ||
-        !quantity ||
-        !color ||
-        !weight ||
-        !weightTolerance ||
-        !length ||
-        !lengthTolerance ||
-        !height ||
-        !width ||
-        !aql ||
-        !images ||
-        !widthTolerance ||
-        !heightTolerance
-      ) {
-        Error.push(`Product ${i + 1} fields are required`);
-      }
+    // const Error = [];
 
-      let SetData = [];
+    // for (let i = 0; i < products.length; i++) {
+    //   const {
+    //     styleId,
+    //     styleName,
+    //     quantity,
+    //     color,
+    //     weight,
+    //     weightTolerance,
+    //     length,
+    //     lengthTolerance,
+    //     height,
+    //     width,
+    //     aql,
+    //     images,
+    //     widthTolerance,
+    //     heightTolerance,
+    //     comments,
+    //   } = products[i];
 
-      if (images.length > 0) {
-        for (let j = 0; j < images.length; j++) {
-          let data = await imageUploadToBase64(images[j].image);
-          SetData.push({
-            name: images[j].name,
-            image: data,
-          });
-        }
-      }
+    //   if (
+    //     !styleId ||
+    //     !styleName ||
+    //     !quantity ||
+    //     !color ||
+    //     !weight ||
+    //     !weightTolerance ||
+    //     !length ||
+    //     !lengthTolerance ||
+    //     !height ||
+    //     !width ||
+    //     !aql ||
+    //     !images ||
+    //     !widthTolerance ||
+    //     !heightTolerance
+    //   ) {
+    //     Error.push(`Product ${i + 1} fields are required`);
+    //   }
 
-      NewPurchaseOrder.products.push({
-        styleId,
-        styleName,
-        quantity,
-        color,
-        weight,
-        length,
-        height,
-        width,
-        aql,
-        weightTolerance,
-        lengthTolerance,
-        widthTolerance,
-        heightTolerance,
-        comments,
-        images: SetData,
-      });
-    }
+    //   let SetData = [];
 
-    if (Error.length > 0) {
-      return res.status(400).json({ status: 422, Error });
-    }
-    console.log(Error);
+    //   if (images.length > 0) {
+    //     for (let j = 0; j < images.length; j++) {
+    //       console.log(images[j]);
+    //       console.log(images[j].file);
+    //       let data = await imageUpload(images[j].file);
+    //       console.log(data);
+    //       SetData.push({
+    //         name: images[j].name,
+    //         image: data,
+    //       });
+    //     }
+    //   }
 
-    await NewPurchaseOrder.save();
+    //   console.log(SetData);
 
-    res
-      .status(200)
-      .json({ message: "New Purachese Order Created", NewPurchaseOrder });
+    //   NewPurchaseOrder.products.push({
+    //     styleId,
+    //     styleName,
+    //     quantity,
+    //     color,
+    //     weight,
+    //     length,
+    //     height,
+    //     width,
+    //     aql,
+    //     weightTolerance,
+    //     lengthTolerance,
+    //     widthTolerance,
+    //     heightTolerance,
+    //     comments,
+    //     images: SetData,
+    //   });
+    // }
 
-    await User.updateMany(
-      {
-        _id: { $in: assignedPeople },
-      },
-      {
-        $push: {
-          poList: NewPurchaseOrder._id,
-        },
-      }
-    );
+    // if (Error.length > 0) {
+    //   return res.status(400).json({ status: 422, Error });
+    // }
+    // console.log(Error);
+
+    // // await NewPurchaseOrder.save();
+
+    res.status(200).json({ message: "New Purachese Order Created" });
+
+    // await User.updateMany(
+    //   {
+    //     _id: { $in: assignedPeople },
+    //   },
+    //   {
+    //     $push: {
+    //       poList: NewPurchaseOrder._id,
+    //     },
+    //   }
+    // );
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error", error });
@@ -220,7 +242,7 @@ const PuracheseOrderDraft = async (req, res) => {
 
       if (images.length > 0) {
         for (let j = 0; j < images.length; j++) {
-          let data = await imageUploadToBase64(images[j].image);
+          let data = await imageUploadToBase64(images[j].file);
           SetData.push({
             name: images[j].name,
             image: data,
@@ -346,6 +368,13 @@ const PurchaseOrderChange = async (req, res) => {
 //     res.status(500).json({ error: "Server error in fetching branch " });
 //   }
 // };
+
+const PurchaseOrderDelete = async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export {
   purchaseOrders,

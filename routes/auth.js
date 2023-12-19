@@ -6,6 +6,7 @@ import {
   UserPasswordSave,
   BranchEmployee,
   registerEmployeeDelete,
+  UserPasswordReset,
 } from "../controller/user.js";
 import { roles, roleDelete } from "../controller/role.js";
 import {
@@ -73,6 +74,7 @@ import {
   InformationComentUpdate,
 } from "../controller/informationController.js";
 // import User from "../models/users.js";
+import formidable from "express-formidable";
 const router = express.Router();
 
 // Signup Page Routes
@@ -97,6 +99,7 @@ router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
 router.route("/registerEmployeeDelete").delete(registerEmployeeDelete);
+router.route("/UserPasswordReset").post(UserPasswordReset);
 //-------------------------//
 
 //Branch Api
@@ -123,7 +126,7 @@ router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);
-router.route("/purchaseOrder").post(purchaseOrders);
+router.route("/purchaseOrder").post(formidable(), purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
 //--------------------------------//
