@@ -48,14 +48,14 @@ const Notification = async (req, res) => {
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.body;
-    console.log("51======>",username);
+    //console.log("51======>",username);
 
     if (!username || !Array.isArray(username)) {
       return res.status(400).json({ message: "Invalid input", status: 400 });
     }
 
      const users = await NotificationUser.find({ user: { $in: username } });
-     console.log("getusers 58====>",users);
+    // console.log("getusers 58====>",users);
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "Users not found", status: 404 });
     }
