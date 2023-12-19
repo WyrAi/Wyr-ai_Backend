@@ -1,7 +1,8 @@
 // routes/notificationUser.js
 import NotificationUser from "../models/notificationUser.js";
+import Notification from "../models/notificationMessageModel.js";
 
-const Notification = async (req, res) => {
+const Notification1 = async (req, res) => {
   try {
     const { user, socket } = req.body;
     console.log("req.body",req.body)
@@ -115,6 +116,66 @@ const getusername = async (req, res) => {
       }
     }
   };
+
+  const getNotification = async (req, res) => {
+    try {
+      const email = req.params.email;
+      console.log("Email:", email);
+      const notifications = await Notification.aggregate([
+        {
+          $match: { receiverid: email }
+        },
+        {
+          $unwind: "$messages"
+        },
+        {
+          $project: {
+            _id:0,
+            messageId: "$messages._id",
+            message: "$messages.message",
+            seen: "$messages.seen"
+          }
+        }
+      ])
+  
+      //console.log("Aggregated Notifications:", notifications);
+      res.json(notifications);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
   
 
-export {Notification,getUserByUsername,deleteSocketUser,getusername};
+  const updateSeenStatus = async (req, res) => {
+    try {
+      const { receiverid, messageId } = req.body;
+
+      const receiver = await Notification.findOne({ _id: receiverid });
+      console.log(receiver)
+      if (!receiver) {
+        return res.status(404).json({ message: "Receiver not found" });
+      }
+  
+      const messageToUpdate = receiver.messages.find(
+        (message) => message._id.toString() === messageId
+      );
+      console.log(messageToUpdate);
+      if (!messageToUpdate) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+  
+      messageToUpdate.seen = true;
+      await receiver.save();
+  
+      res.json({ message: "Notification status updated successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+  
+  
+  
+
+export {Notification,getUserByUsername,deleteSocketUser,getusername,getNotification,updateSeenStatus};
