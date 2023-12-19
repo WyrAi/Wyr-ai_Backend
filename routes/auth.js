@@ -73,7 +73,7 @@ import {
   InformationComentUpdate,
 } from "../controller/informationController.js";
 
-import { Notification, deleteSocketUser, getUserByUsername } from "../controller/notificationUser.js";
+import { Notification, deleteSocketUser, getUserByUsername, getusername } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
 const router = express.Router();
 
@@ -175,8 +175,9 @@ router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
 
 router.route("/socketuser").post(Notification)
-router.route("/getsocketuser/:username").get(getUserByUsername)
+router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
+router.route("/getuser").get(getusername);
 //jnsdknjbsdiuh 
 
 // router.route("/testing").post(async (req, res) => {
