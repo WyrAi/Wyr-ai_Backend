@@ -6,6 +6,7 @@ import {
   UserPasswordSave,
   BranchEmployee,
   registerEmployeeDelete,
+  getAllPurmishReciver,
 } from "../controller/user.js";
 import { roles, roleDelete } from "../controller/role.js";
 import {
@@ -18,6 +19,7 @@ import {
   purchaseOrders,
   purchaseOrderGet,
   PuracheseOrderDraft,
+  purchesOrderVerifiedPeople,
   // getPurchaseOrder,
 } from "../controller/purchaseOrder.js";
 import { Packinglist } from "../controller/packing.js";
@@ -73,7 +75,7 @@ import {
   InformationComentUpdate,
 } from "../controller/informationController.js";
 
-import { Notification, deleteSocketUser, getUserByUsername, getusername } from "../controller/notificationUser.js";
+import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
 const router = express.Router();
 
@@ -99,6 +101,8 @@ router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
 router.route("/registerEmployeeDelete").delete(registerEmployeeDelete);
+router.route("/listAllReciverPurmished").post(getAllPurmishReciver);
+
 //-------------------------//
 
 //Branch Api
@@ -128,6 +132,7 @@ router
 router.route("/purchaseOrder").post(purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
+router.route("/purchesOrderpeopleList",).post(purchesOrderVerifiedPeople)
 //--------------------------------//
 
 //Packing List
@@ -178,6 +183,10 @@ router.route("/socketuser").post(Notification)
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
+router.route("/getnotification/:email").post(getNotification)
+router.route("/updatenotifactionstatus").post(updateSeenStatus);
+
+
 //jnsdknjbsdiuh 
 
 // router.route("/testing").post(async (req, res) => {
