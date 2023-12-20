@@ -138,8 +138,8 @@ const getusername = async (req, res) => {
         }
       ])
   
-      //console.log("Aggregated Notifications:", notifications);
-      res.json(notifications);
+    console.log("Aggregated Notifications:", notifications);
+      res.status(200).json({status:200,msg:"notification data",data:notifications});
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -149,23 +149,17 @@ const getusername = async (req, res) => {
 
   const updateSeenStatus = async (req, res) => {
     try {
-      const { receiverid, messageId } = req.body;
-
-      const receiver = await Notification.findOne({ _id: receiverid });
-      console.log(receiver)
+      const { receiverid } = req.body;
+      console.log("receiverid",req.body);
+      const receiver = await Notification.findOne({ receiverid: receiverid });
+  
       if (!receiver) {
         return res.status(404).json({ message: "Receiver not found" });
       }
   
-      const messageToUpdate = receiver.messages.find(
-        (message) => message._id.toString() === messageId
-      );
-      console.log(messageToUpdate);
-      if (!messageToUpdate) {
-        return res.status(404).json({ message: "Message not found" });
-      }
-  
-      messageToUpdate.seen = true;
+      receiver.messages.forEach((message) => {
+        message.seen = true;
+      });
       await receiver.save();
   
       res.json({ message: "Notification status updated successfully" });
@@ -174,6 +168,7 @@ const getusername = async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
+  
   
   
   

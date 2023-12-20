@@ -2,6 +2,7 @@ import { getUserByUsername,deleteSocketUser } from "../controller/notificationUs
 import User from "../models/users.js";
 import Notification from "../models/notificationMessageModel.js";
 import Role from "../models/role.js";
+import NotificationUser from "../models/notificationUser.js";
 const socket = (io) => {
     let onlineUsers = [];
     const offlineMessages = {};
@@ -36,9 +37,18 @@ const socket = (io) => {
 
 
     io.on("connection", (socket) => {
-         socket.on("newUser", (user) => {
-          console.log("user connected with", user, socket.id);
-         });
+      socket.on("newUser", async (user) => {
+        try {
+          const notification = new NotificationUser({
+            user: user,
+            socket: socket.id 
+          });
+          await notification.save(); 
+          console.log("User connected with", user, "and socket ID", socket.id);
+        } catch (error) {
+          console.error("Error saving notification:", error);
+        }
+      });
 
          socket.on("RelationshipsText", async ({data} ) => {
           const { senderName, text } = data ;      
