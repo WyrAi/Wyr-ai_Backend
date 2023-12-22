@@ -63,8 +63,8 @@ const ReportEmailSend = async (req, res) => {
     // fileStream.close();
     res.status(200).json({ message: "Email sent successfully", status: true });
 
-    await VideoLink.deleteMany();
-    await Information.deleteMany();
+    // await VideoLink.deleteMany();
+    // await Information.deleteMany();
   } catch (error) {
     console.log(error);
   }
