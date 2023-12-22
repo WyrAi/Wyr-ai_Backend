@@ -1,174 +1,169 @@
 import PurchaseOrder from "../models/purchaseOrder.js";
-import { imageUpload, imageUploadToBase64 } from "../Methods/uploadImages.js";
+import {
+  ImageUploadByFile,
+  imageUpload,
+  imageUploadToBase64,
+} from "../Methods/uploadImages.js";
 import User from "../models/users.js";
 
 const purchaseOrders = async (req, res) => {
   try {
-    // const bodySizeInBytes = JSON.stringify(req.body).length;
-    // console.log("Request body size:", bodySizeInBytes, "bytes");
-    console.log(req.fields);
-    // console.log(req.files);
-    const inputData = req.fields;
-    const products = Object.keys(inputData)
+    const inputData = req.files;
+
+    const fieldsValue = req.fields;
+
+    const products = Object.keys(fieldsValue)
       .filter((key) => key.startsWith("products"))
-      .map((key) => JSON.parse(inputData[key]));
+      .map((key) => JSON.parse(fieldsValue[key]));
 
-    console.log(products, "Products");
-
-    const assignedPeople = Object.keys(inputData)
+    const assignedPeople = Object.keys(fieldsValue)
       .filter((key) => key.startsWith("assignedPeople"))
-      .map((key) => JSON.parse(inputData[key]));
+      .map((key) => JSON.parse(fieldsValue[key]));
 
-    console.log(products[0].images[0]);
-    const ImageLink = await imageUpload(products[0].images[0].file);
-    console.log(ImageLink);
-
-    // return res.json(res.fields)
-    console.log(assignedPeople);
     const purchaseDoc = req.files.purchaseDoc;
-    // const {
-    //   buyer,
-    //   vendor,
-    //   shiptoName,
-    //   shiptoAdd,
-    //   shipVia,
-    //   shipDate,
-    //   // assignedPeople,
-    //   // products,
-    //   // purchaseDoc,
-    //   status,
-    //   poNumber,
-    // } = req.fields;
-    // if (
-    //   !buyer ||
-    //   !vendor ||
-    //   !shiptoName ||
-    //   !shiptoAdd ||
-    //   !shipVia ||
-    //   !shipDate ||
-    //   !assignedPeople ||
-    //   !products ||
-    //   !poNumber ||
-    //   !status
-    // ) {
-    //   return res.status(422).json({
-    //     status: 422,
-    //     error: "Please provide all the necessary fields",
-    //   });
-    // }
+    const {
+      buyer,
+      vendor,
+      shiptoName,
+      shiptoAdd,
+      shipVia,
+      shipDate,
+      status,
+      poNumber,
+    } = req.fields;
+    if (
+      !buyer ||
+      !vendor ||
+      !shiptoName ||
+      !shiptoAdd ||
+      !shipVia ||
+      !shipDate ||
+      !assignedPeople ||
+      !products ||
+      !poNumber ||
+      !status
+    ) {
+      return res.status(422).json({
+        status: 422,
+        error: "Please provide all the necessary fields",
+      });
+    }
 
-    // const PuracheseOrderImage = await imageUpload(purchaseDoc);
-    // console.log(PuracheseOrderImage);
-    // let NewPurchaseOrder = new PurchaseOrder({
-    //   purchaseDoc: PuracheseOrderImage,
-    //   buyer,
-    //   vendor,
-    //   shipTo: {
-    //     name: shiptoName,
-    //     completeAddress: shiptoAdd,
-    //     shipVia,
-    //     shippingDate: shipDate,
-    //   },
-    //   assignedPeople,
-    //   status,
-    //   poNumber,
-    // });
+    const PuracheseOrderImage = await ImageUploadByFile(purchaseDoc);
+    let NewPurchaseOrder = new PurchaseOrder({
+      purchaseDoc: PuracheseOrderImage,
+      buyer,
+      vendor,
+      shipTo: {
+        name: shiptoName,
+        completeAddress: shiptoAdd,
+        shipVia,
+        shippingDate: shipDate,
+      },
+      assignedPeople,
+      status,
+      poNumber,
+    });
 
-    // const Error = [];
+    const Error = [];
 
-    // for (let i = 0; i < products.length; i++) {
-    //   const {
-    //     styleId,
-    //     styleName,
-    //     quantity,
-    //     color,
-    //     weight,
-    //     weightTolerance,
-    //     length,
-    //     lengthTolerance,
-    //     height,
-    //     width,
-    //     aql,
-    //     images,
-    //     widthTolerance,
-    //     heightTolerance,
-    //     comments,
-    //   } = products[i];
+    for (let i = 0; i < products.length; i++) {
+      const {
+        styleId,
+        styleName,
+        quantity,
+        color,
+        weight,
+        weightTolerance,
+        length,
+        lengthTolerance,
+        height,
+        width,
+        aql,
+        images,
+        widthTolerance,
+        heightTolerance,
+        comments,
+      } = products[i];
 
-    //   if (
-    //     !styleId ||
-    //     !styleName ||
-    //     !quantity ||
-    //     !color ||
-    //     !weight ||
-    //     !weightTolerance ||
-    //     !length ||
-    //     !lengthTolerance ||
-    //     !height ||
-    //     !width ||
-    //     !aql ||
-    //     !images ||
-    //     !widthTolerance ||
-    //     !heightTolerance
-    //   ) {
-    //     Error.push(`Product ${i + 1} fields are required`);
-    //   }
+      if (
+        !styleId ||
+        !styleName ||
+        !quantity ||
+        !color ||
+        !weight ||
+        !weightTolerance ||
+        !length ||
+        !lengthTolerance ||
+        !height ||
+        !width ||
+        !aql ||
+        !images ||
+        !widthTolerance ||
+        !heightTolerance
+      ) {
+        Error.push(`Product ${i + 1} fields are required`);
+      }
 
-    //   let SetData = [];
+      let SetData = [];
 
-    //   if (images.length > 0) {
-    //     for (let j = 0; j < images.length; j++) {
-    //       console.log(images[j]);
-    //       console.log(images[j].file);
-    //       let data = await imageUpload(images[j].file);
-    //       console.log(data);
-    //       SetData.push({
-    //         name: images[j].name,
-    //         image: data,
-    //       });
-    //     }
-    //   }
+      if (images.length > 0) {
+        let filterImages = images.filter((value) => value.file != "");
+        for (let j = 0; j < filterImages.length; j++) {
+          const ArrayImageData = Object.keys(inputData).filter((key) =>
+            key.startsWith(`productImage[${i}][${j}].${filterImages[j].name}`)
+          );
+          const ArrayImageDataValue = ArrayImageData.map(
+            (key) => inputData[key]
+          );
 
-    //   console.log(SetData);
+          let data = await ImageUploadByFile(ArrayImageDataValue[0]);
+          SetData.push({
+            name: filterImages[j].name,
+            image: data,
+          });
+        }
+      }
 
-    //   NewPurchaseOrder.products.push({
-    //     styleId,
-    //     styleName,
-    //     quantity,
-    //     color,
-    //     weight,
-    //     length,
-    //     height,
-    //     width,
-    //     aql,
-    //     weightTolerance,
-    //     lengthTolerance,
-    //     widthTolerance,
-    //     heightTolerance,
-    //     comments,
-    //     images: SetData,
-    //   });
-    // }
+      NewPurchaseOrder.products.push({
+        styleId,
+        styleName,
+        quantity,
+        color,
+        weight,
+        length,
+        height,
+        width,
+        aql,
+        weightTolerance,
+        lengthTolerance,
+        widthTolerance,
+        heightTolerance,
+        comments,
+        images: SetData,
+      });
+    }
 
-    // if (Error.length > 0) {
-    //   return res.status(400).json({ status: 422, Error });
-    // }
-    // console.log(Error);
+    if (Error.length > 0) {
+      return res.status(400).json({ status: 422, Error });
+    }
 
-    // // await NewPurchaseOrder.save();
+    await NewPurchaseOrder.save();
 
-    res.status(200).json({ message: "New Purachese Order Created" });
+    res
+      .status(200)
+      .json({ message: "New Purachese Order Created", NewPurchaseOrder });
 
-    // await User.updateMany(
-    //   {
-    //     _id: { $in: assignedPeople },
-    //   },
-    //   {
-    //     $push: {
-    //       poList: NewPurchaseOrder._id,
-    //     },
-    //   }
-    // );
+    await User.updateMany(
+      {
+        _id: { $in: assignedPeople },
+      },
+      {
+        $push: {
+          poList: NewPurchaseOrder._id,
+        },
+      }
+    );
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error", error });

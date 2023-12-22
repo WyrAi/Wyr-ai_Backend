@@ -75,6 +75,16 @@ import {
 } from "../controller/informationController.js";
 // import User from "../models/users.js";
 import formidable from "express-formidable";
+import {
+  ReportEmailSend,
+  VideoCheck,
+  createVideoLink,
+} from "../controller/videLinkController.js";
+import multer from "multer";
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
 const router = express.Router();
 
 // Signup Page Routes
@@ -126,7 +136,9 @@ router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);
-router.route("/purchaseOrder").post(formidable(), purchaseOrders);
+router
+  .route("/purchaseOrder")
+  .post(formidable({ multiples: true }), purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
 //--------------------------------//
@@ -161,6 +173,13 @@ router
 
 //-------------------------------//
 
+//VideoLink
+router.route("/createVideoLink").post(createVideoLink);
+router
+  .route("/ReportEmailSend")
+  .post(formidable({ multiples: true }), ReportEmailSend);
+router.route("/VideoCheck").get(VideoCheck);
+// formidable({ multiples: true })
 // upload.fields([
 //   { name: "image", maxCount: 1 },
 //   { name: "documents", maxCount: 8 },

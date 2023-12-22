@@ -31,7 +31,8 @@
     "nodemailer": "^6.9.7",
     "socket.io": "^4.7.2",
     "stripe": "^14.4.0",
-    "twilio": "^3.69.0"
+    "twilio": "^3.69.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

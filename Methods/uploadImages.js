@@ -1,13 +1,35 @@
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 cloudinary.config({
   cloud_name: "dobbygr2i",
   api_key: "853536877481681",
   api_secret: "fyAo5AewC_kg4Nu6zyeD0Q2oX4c",
 });
 
+const ImageUploadByFile = async (images) => {
+  try {
+    const ImageUploadLink = await cloudinary.uploader.upload(images.path, {
+      resource_type: "auto",
+    });
+    return ImageUploadLink.url;
+  } catch (error) {
+    console.error("Error uploading images:", error);
+  }
+};
+
 const imageUpload = async (images) => {
   try {
     console.log(images);
+    // if (fs.existsSync(images.file.path)) {
+    //   const ImageUploadLink = await cloudinary.uploader.upload(
+    //     images.file.path,
+    //     {
+    //       resource_type: "auto",
+    //     }
+    //   );
+    //   return ImageUploadLink.url;
+    // }
+
     if (!images.length) {
       const ImageUploadLink = await cloudinary.uploader.upload(images.path);
       return ImageUploadLink.url;
@@ -73,4 +95,9 @@ const imageuploadImageDelete = async (image) => {
   }
 };
 
-export { imageUpload, imageUploadToBase64, imageuploadImageDelete };
+export {
+  imageUpload,
+  imageUploadToBase64,
+  imageuploadImageDelete,
+  ImageUploadByFile,
+};

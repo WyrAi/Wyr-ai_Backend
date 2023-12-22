@@ -23,6 +23,39 @@ export function mailTransport() {
   return transport;
 }
 
+export const downloadLinkTemplate = (downloadLink) =>
+  ` <!DOCTYPE html>
+ <html>
+ <head>
+   <meta charset="UTF-8">
+   <title>Download PDF</title> 
+ </head>
+ <body>
+   <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
+     <tr>
+       <td align="center" bgcolor="#f8f8f8" style="padding: 40px 0;">
+         <h1>Download Your PDF</h1>
+       </td>
+     </tr>
+     <tr>
+       <td bgcolor="#ffffff" style="padding: 40px 30px;">
+         <p>Click the link below to download your PDF:</p>
+         <p>${downloadLink}</p>
+         <p>If you did not request this download, please ignore this email.</p>
+         <p>Best regards,</p>
+         <p>Your Platform Team</p>
+       </td>
+     </tr>
+     <tr>
+       <td bgcolor="#f8f8f8" align="center" style="padding: 20px 0;">
+         <p style="margin: 0; font-size: 12px;">&copy; ${new Date().getFullYear()} Your Platform. All rights reserved.</p>
+       </td>
+     </tr>
+   </table>
+ </body>
+ </html>
+`;
+
 export const resetpasswordTemplet = (link) =>
   ` <!DOCTYPE html>
  <html>
