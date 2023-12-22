@@ -73,6 +73,8 @@ import {
   InformationComentDelete,
   InformationComentUpdate,
 } from "../controller/informationController.js";
+
+import { Notification, deleteSocketUser, getUserByUsername, getusername } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
 import formidable from "express-formidable";
 import {
@@ -192,6 +194,13 @@ router.route("/updateEmploye/:id").put(updateEmploye);
 router.route("/login").post(login);
 // router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
+
+
+router.route("/socketuser").post(Notification)
+router.route("/getsocketuser").get(getUserByUsername)
+router.route("/deletesocketuser/:username").delete(deleteSocketUser)
+router.route("/getuser").get(getusername);
+//jnsdknjbsdiuh 
 
 // router.route("/testing").post(async (req, res) => {
 //   const { multiple } = req.body;
