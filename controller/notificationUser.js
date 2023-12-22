@@ -49,11 +49,15 @@ const Notification1 = async (req, res) => {
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.body;
+
+    //console.log("51======>",username);
+
     if (!username || !Array.isArray(username)) {
       return res.status(400).json({ message: "Invalid input", status: 400 });
     }
 
      const users = await NotificationUser.find({ user: { $in: username } });
+
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "Users not found", status: 404 });
     }
@@ -112,6 +116,7 @@ const getusername = async (req, res) => {
     }
   };
 
+
   // const getNotification = async (req, res) => {
   //   try {
   //     const email = req.params.email;
@@ -141,11 +146,12 @@ const getusername = async (req, res) => {
   //   }
   // };
   
+
   const getNotification = async (req, res) => {
     try {
       const email = req.params.email;
       console.log("Email:", email);
-  
+
       const notifications = await Notification.find({ receiverid: email })
         .select({ 'messages._id': 1, 'messages.message': 1, 'messages.seen': 1, _id: 0 })
         .lean()
@@ -165,12 +171,10 @@ const getusername = async (req, res) => {
       console.log("Flattened Notifications:", flattenedNotifications);
   
       res.status(200).json({ status: 200, msg: "notification data", data: flattenedNotifications });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  };
+
+
   
+
 
   const updateSeenStatus = async (req, res) => {
     try {
@@ -193,5 +197,4 @@ const getusername = async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
-  
 export {Notification,getUserByUsername,deleteSocketUser,getusername,getNotification,updateSeenStatus};

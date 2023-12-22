@@ -7,7 +7,7 @@ import NotificationUser from "../models/notificationUser.js";
 const socket = (io) => {
     let onlineUsers = [];
     const offlineMessages = {};
-    const socketToUserId = {};
+    const socketToUserId = {}
 
     const removeUser = (socketId) => {
         onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
@@ -32,11 +32,9 @@ const socket = (io) => {
               },
             ],
           })
-
           await newNotification.save();
         }
       }
-
  
     io.on("connection", (socket) => {
       socket.on("newUser", async (user) => {
@@ -59,6 +57,7 @@ const socket = (io) => {
       socket.on("RelationshipsText", async ({data} ) => {
           const { senderName, text } = data ;
           const usersWithEmail = await User.find({ email: senderName }).select('companyId').exec();
+
           const companyId = usersWithEmail[0]?.companyId;
           const usersWithCompanyId = await User.find({ companyId: companyId })
             .populate({
@@ -87,6 +86,26 @@ const socket = (io) => {
           } else {
             await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
           }
+      
+          // const existingMessage = await Message.findOne({ userid: senderName, senderid: senderName });
+          // if (existingMessage) {
+          //   await Message.updateOne(
+          //     { userid: senderName, senderid: senderName, "messages.receiverid": receiverName },
+          //     { $push: { "messages.$.texts": { message: text } } }
+          //   );
+          // } else {
+          //   const newMessage = new Message({
+          //     userid: senderName,
+          //     senderid: senderName,
+          //     messages: [{ receiverid: receiverName, texts: [{ message: text }] }],
+          //   });
+          
+          //   console.log("newMessage ===> ", newMessage);
+          //   await newMessage.save();
+          // }
+          //console.log("object", senderName, text);
+          // const receivers = getUser(receiverName);
+
          
           const receivers = await getUserByUsername({
             body: {
@@ -105,6 +124,7 @@ const socket = (io) => {
           });
 
         socket.on("purchesText", async ({data} ) => {
+
             const { senderName, text } = data ||[] ;      
             const targetEmail = senderName;
             const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
@@ -307,9 +327,11 @@ const socket = (io) => {
               socket: socket,
             },
           });
+
           console.log("user with disconnected with", socket);
           //localStorage.removeItem("socketId");
           });
+
       });
   };
   export { socket };

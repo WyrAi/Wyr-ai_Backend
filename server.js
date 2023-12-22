@@ -8,8 +8,6 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import router from "./routes/auth.js";
 import morgan from "morgan";
-import cookieParser from "cookie-parser";
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -33,7 +31,6 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(cookieParser());
 import Notification from "./models/notificationMessageModel.js";
 import User from "./models/users.js";
 import Role from "./models/role.js";
