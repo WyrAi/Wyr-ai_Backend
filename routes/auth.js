@@ -79,7 +79,7 @@ import {
 
 //import dashboard controller methods.
 import { getPoStatus } from "../controller/dashboardController.js";
-import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
+import { Notification1, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
 import formidable from "express-formidable";
 import {
@@ -205,7 +205,7 @@ router.route("/login").post(login);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
 
-router.route("/socketuser").post(Notification)
+router.route("/socketuser").post(Notification1)
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
