@@ -76,7 +76,7 @@ import {
 } from "../controller/informationController.js";
 
 //import dashboard controller methods.
-import { getPoStatus } from "../controller/dashboardController.js";
+import { getPoStatus, getlatestaddeduser, getusercount } from "../controller/dashboardController.js";
 
 import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
@@ -168,10 +168,6 @@ router
 
 //-------------------------------//
 
-// upload.fields([
-//   { name: "image", maxCount: 1 },
-//   { name: "documents", maxCount: 8 },
-// ]),
 router.route("/message").post(message);
 router.route("/packinglist").post(Packinglist);
 router.route("/deleteEmploye").delete(deleteEmploye);
@@ -182,6 +178,8 @@ router.route("/login").post(login);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
 
+
+//notification route
 router.route("/socketuser").post(Notification)
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
@@ -192,9 +190,10 @@ router.route("/updatenotifactionstatus").post(updateSeenStatus);
 
 //dashboard routes.
 router.route("/postatuslist").post(getPoStatus);
+router.route("/usercount").post(getusercount);
+router.route("/getrecentaddeduser").post(getlatestaddeduser);
 
 
-//jnsdknjbsdiuh 
 
 // router.route("/testing").post(async (req, res) => {
 //   const { multiple } = req.body;
