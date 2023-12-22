@@ -10,6 +10,7 @@ import { hashPassword } from "../middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
 import Companydetails from "../models/companydetails.js";
 import User from "../models/users.js";
+import Role from "../models/role.js";
 
 //Employee created Api
 const registerEmployee = async (req, res) => {
@@ -229,6 +230,42 @@ const registerEmployeeDelete = async (req, res) => {
   }
 };
 
+const getAllPurmishReciver=async(req,res)=>{
+  try {
+    const targetEmail = req.body.email;
+
+    const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
+    //console.log("231=====>",usersWithEmail)
+    const companyId = usersWithEmail[0]?.companyId;
+    //console.log("234====>",companyId);
+    const usersWithCompanyId = await User.find({ companyId: companyId })
+      .populate({
+        path: 'role',
+        model: 'Role',
+      })
+      .lean() 
+      .exec();
+
+    const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(user => {
+      const role = user.role;
+
+      if (role && role.SelectAccess.relationshipManagement) {
+        const relationshipManagementStrings = role.SelectAccess.relationshipManagement.map(value => value.toString());
+        return relationshipManagementStrings.includes('Add/Edit Company');
+      }
+
+      return false;
+    });
+  console.log("258====>",usersWithAddEditCompanyPermission);
+    const emailsWithAddEditCompanyPermission = usersWithAddEditCompanyPermission.map(user => user.email);
+
+    res.json({ success: true, emails: emailsWithAddEditCompanyPermission });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+}
+
 export {
   registerEmployee,
   GetAllEmployeesWithAllBranch,
@@ -236,4 +273,5 @@ export {
   UserPasswordSave,
   registerEmployeeDelete,
   BranchEmployee,
+  getAllPurmishReciver
 };
