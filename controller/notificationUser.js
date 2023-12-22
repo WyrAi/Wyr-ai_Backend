@@ -49,22 +49,17 @@ const Notification1 = async (req, res) => {
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.body;
-    //console.log("51======>",username);
-
     if (!username || !Array.isArray(username)) {
       return res.status(400).json({ message: "Invalid input", status: 400 });
     }
 
      const users = await NotificationUser.find({ user: { $in: username } });
-    // console.log("getusers 58====>",users);
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "Users not found", status: 404 });
     }
-   //res.status(200).send(users);
    return users;
   } catch (error) {
     console.error("Error getting users by usernames:", error);
-
     if (res) {
       res.status(500).send("Internal Server Error");
     } else {
@@ -117,29 +112,59 @@ const getusername = async (req, res) => {
     }
   };
 
+  // const getNotification = async (req, res) => {
+  //   try {
+  //     const email = req.params.email;
+  //     console.log("Email:", email);
+  //     const notifications = await Notification.aggregate([
+  //       {
+  //         $match: { receiverid: email }
+  //       },
+  //       {
+  //         $unwind: "$messages"
+  //       },
+  //       {
+  //         $project: {
+  //           _id:0,
+  //           messageId: "$messages._id",
+  //           message: "$messages.message",
+  //           seen: "$messages.seen"
+  //         }
+  //       }
+  //     ])
+  
+  //   console.log("Aggregated Notifications:", notifications);
+  //     res.status(200).json({status:200,msg:"notification data",data:notifications});
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ error: "Internal Server Error" });
+  //   }
+  // };
+  
   const getNotification = async (req, res) => {
     try {
       const email = req.params.email;
       console.log("Email:", email);
-      const notifications = await Notification.aggregate([
-        {
-          $match: { receiverid: email }
-        },
-        {
-          $unwind: "$messages"
-        },
-        {
-          $project: {
-            _id:0,
-            messageId: "$messages._id",
-            message: "$messages.message",
-            seen: "$messages.seen"
-          }
-        }
-      ])
   
-    console.log("Aggregated Notifications:", notifications);
-      res.status(200).json({status:200,msg:"notification data",data:notifications});
+      const notifications = await Notification.find({ receiverid: email })
+        .select({ 'messages._id': 1, 'messages.message': 1, 'messages.seen': 1, _id: 0 })
+        .lean()
+        .exec();
+  
+      const flattenedNotifications = notifications.reduce((result, notification) => {
+        if (notification.messages && notification.messages.length > 0) {
+          result.push(...notification.messages.map(message => ({
+            messageId: message._id,
+            message: message.message,
+            seen: message.seen
+          })));
+        }
+        return result;
+      }, []);
+  
+      console.log("Flattened Notifications:", flattenedNotifications);
+  
+      res.status(200).json({ status: 200, msg: "notification data", data: flattenedNotifications });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
@@ -169,8 +194,4 @@ const getusername = async (req, res) => {
     }
   };
   
-  
-  
-  
-
 export {Notification,getUserByUsername,deleteSocketUser,getusername,getNotification,updateSeenStatus};

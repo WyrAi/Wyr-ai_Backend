@@ -1,3 +1,4 @@
+
 import { getUserByUsername,deleteSocketUser } from "../controller/notificationUser.js";
 import User from "../models/users.js";
 import Notification from "../models/notificationMessageModel.js";
@@ -6,6 +7,7 @@ import NotificationUser from "../models/notificationUser.js";
 const socket = (io) => {
     let onlineUsers = [];
     const offlineMessages = {};
+    const socketToUserId = {};
 
     const removeUser = (socketId) => {
         onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
@@ -29,31 +31,34 @@ const socket = (io) => {
                 message: text,
               },
             ],
-          });
-      
+          })
+
           await newNotification.save();
         }
       }
 
-
+ 
     io.on("connection", (socket) => {
       socket.on("newUser", async (user) => {
         try {
+          //localStorage.setItem("socketId",socket.id);
           const notification = new NotificationUser({
             user: user,
             socket: socket.id 
           });
-          await notification.save(); 
+          await notification.save();
+          socket.emit('sockeid',socket.id);
+          console.log("socketId", socket.id);
+         
           console.log("User connected with", user, "and socket ID", socket.id);
         } catch (error) {
           console.error("Error saving notification:", error);
         }
       });
 
-         socket.on("RelationshipsText", async ({data} ) => {
-          const { senderName, text } = data ;      
-          const targetEmail = senderName;
-          const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
+      socket.on("RelationshipsText", async ({data} ) => {
+          const { senderName, text } = data ;
+          const usersWithEmail = await User.find({ email: senderName }).select('companyId').exec();
           const companyId = usersWithEmail[0]?.companyId;
           const usersWithCompanyId = await User.find({ companyId: companyId })
             .populate({
@@ -82,35 +87,15 @@ const socket = (io) => {
           } else {
             await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
           }
-      
-          // const existingMessage = await Message.findOne({ userid: senderName, senderid: senderName });
-          // if (existingMessage) {
-          //   await Message.updateOne(
-          //     { userid: senderName, senderid: senderName, "messages.receiverid": receiverName },
-          //     { $push: { "messages.$.texts": { message: text } } }
-          //   );
-          // } else {
-          //   const newMessage = new Message({
-          //     userid: senderName,
-          //     senderid: senderName,
-          //     messages: [{ receiverid: receiverName, texts: [{ message: text }] }],
-          //   });
-          
-          //   console.log("newMessage ===> ", newMessage);
-          //   await newMessage.save();
-          // }
-          //console.log("object", senderName, text);
-          // const receivers = getUser(receiverName);
-
          
           const receivers = await getUserByUsername({
             body: {
               username: emailsWithAddEditCompanyPermission
             },
-          });
-         
+          })
           if (receivers.length) {
             receivers.forEach((receiver) => {
+              console.log("receiver>id",receiver.socket);
               io.to(receiver.socket).emit("getText", {
                 senderName,
                 text,
@@ -119,7 +104,7 @@ const socket = (io) => {
           } 
           });
 
-         socket.on("purchesText", async ({data} ) => {
+        socket.on("purchesText", async ({data} ) => {
             const { senderName, text } = data ||[] ;      
             const targetEmail = senderName;
             const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
@@ -316,18 +301,15 @@ const socket = (io) => {
           }); 
 
           socket.on("remove", async(socket) => {
-          console.log("socket in disconnect",socket)
+
           const receivers = await deleteSocketUser({
             params: {
               socket: socket,
             },
           });
-
-
-      
           console.log("user with disconnected with", socket);
+          //localStorage.removeItem("socketId");
           });
-
       });
   };
   export { socket };
