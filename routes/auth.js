@@ -6,6 +6,7 @@ import {
   UserPasswordSave,
   BranchEmployee,
   registerEmployeeDelete,
+  UserPasswordReset,
   getAllPurmishReciver,
 } from "../controller/user.js";
 import { roles, roleDelete } from "../controller/role.js";
@@ -80,6 +81,17 @@ import {
 import { getPoStatus } from "../controller/dashboardController.js";
 import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
+import formidable from "express-formidable";
+import {
+  ReportEmailSend,
+  VideoCheck,
+  createVideoLink,
+} from "../controller/videLinkController.js";
+import multer from "multer";
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
 const router = express.Router();
 
 // Signup Page Routes
@@ -104,6 +116,8 @@ router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
 router.route("/registerEmployeeDelete").delete(registerEmployeeDelete);
+router.route("/UserPasswordReset").post(UserPasswordReset);
+
 router.route("/listAllReciverPurmished").post(getAllPurmishReciver);
 
 //-------------------------//
@@ -132,7 +146,9 @@ router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);
-router.route("/purchaseOrder").post(purchaseOrders);
+router
+  .route("/purchaseOrder")
+  .post(formidable({ multiples: true }), purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
 router.route("/purchesOrderpeopleList",).post(purchesOrderVerifiedPeople)
@@ -168,6 +184,13 @@ router
 
 //-------------------------------//
 
+//VideoLink
+router.route("/createVideoLink").post(createVideoLink);
+router
+  .route("/ReportEmailSend")
+  .post(formidable({ multiples: true }), ReportEmailSend);
+router.route("/VideoCheck").get(VideoCheck);
+// formidable({ multiples: true })
 // upload.fields([
 //   { name: "image", maxCount: 1 },
 //   { name: "documents", maxCount: 8 },

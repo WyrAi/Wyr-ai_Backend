@@ -230,6 +230,31 @@ const registerEmployeeDelete = async (req, res) => {
   }
 };
 
+
+const UserPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const UserInformation = await Users.findOne({ email });
+
+    if (UserInformation) {
+      const detail = { _id: UserInformation._id, email: UserInformation.email };
+      const token = await ResetTokenGernate(detail);
+      const link = `${process.env.CLIENT_URL}/resetPassword/${token}/`;
+      mailTransport().sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Password Create",
+        html: resetpasswordTemplet(link),
+      });
+
+      return res.status(200).json({ message: "Reset password link send" });
+    }
+    return res.status(404).json({ message: "User not found" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getAllPurmishReciver=async(req,res)=>{
   try {
     const targetEmail = req.body.email;
@@ -273,5 +298,6 @@ export {
   UserPasswordSave,
   registerEmployeeDelete,
   BranchEmployee,
+  UserPasswordReset,
   getAllPurmishReciver
 };
