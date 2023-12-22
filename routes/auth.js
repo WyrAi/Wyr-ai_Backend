@@ -7,6 +7,7 @@ import {
   BranchEmployee,
   registerEmployeeDelete,
   UserPasswordReset,
+  getAllPurmishReciver,
 } from "../controller/user.js";
 import { roles, roleDelete } from "../controller/role.js";
 import {
@@ -19,6 +20,7 @@ import {
   purchaseOrders,
   purchaseOrderGet,
   PuracheseOrderDraft,
+  purchesOrderVerifiedPeople,
   // getPurchaseOrder,
 } from "../controller/purchaseOrder.js";
 import { Packinglist } from "../controller/packing.js";
@@ -74,7 +76,10 @@ import {
   InformationComentUpdate,
 } from "../controller/informationController.js";
 
-import { Notification, deleteSocketUser, getUserByUsername, getusername } from "../controller/notificationUser.js";
+
+//import dashboard controller methods.
+import { getPoStatus } from "../controller/dashboardController.js";
+import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
 import formidable from "express-formidable";
 import {
@@ -112,6 +117,9 @@ router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
 router.route("/registerEmployeeDelete").delete(registerEmployeeDelete);
 router.route("/UserPasswordReset").post(UserPasswordReset);
+
+router.route("/listAllReciverPurmished").post(getAllPurmishReciver);
+
 //-------------------------//
 
 //Branch Api
@@ -143,6 +151,7 @@ router
   .post(formidable({ multiples: true }), purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
+router.route("/purchesOrderpeopleList",).post(purchesOrderVerifiedPeople)
 //--------------------------------//
 
 //Packing List
@@ -200,7 +209,14 @@ router.route("/socketuser").post(Notification)
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
-//jnsdknjbsdiuh 
+router.route("/getnotification/:email").get(getNotification);
+router.route("/updatenotifactionstatus").post(updateSeenStatus);
+
+
+//dashboard routes.
+router.route("/postatuslist").post(getPoStatus);
+
+
 
 // router.route("/testing").post(async (req, res) => {
 //   const { multiple } = req.body;

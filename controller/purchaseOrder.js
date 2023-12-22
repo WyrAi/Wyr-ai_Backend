@@ -342,6 +342,11 @@ const PurchaseOrderChange = async (req, res) => {
   }
 };
 
+
+const purchesOrderVerifiedPeople=async(req,res)=>{
+  res.send('dmffnnzdjfkn');
+}
+
 // const getPurchaseOrder = async (req, res) => {
 //   try {
 //     const { fields } = req.params;
@@ -376,4 +381,5 @@ export {
   // getPurchaseOrder,
   purchaseOrderGet,
   PuracheseOrderDraft,
+  purchesOrderVerifiedPeople
 };
