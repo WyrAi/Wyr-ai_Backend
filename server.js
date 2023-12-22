@@ -8,7 +8,6 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import router from "./routes/auth.js";
 import morgan from "morgan";
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -18,7 +17,8 @@ import { socket } from "./Methods/socketMethods.js";
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.VERCEL_URL,
+    // origin: process.env.VERCEL_URL,
+    origin: "http://localhost:5173/" ,
     methods: ["GET", "POST"],
   },
 });

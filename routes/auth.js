@@ -75,6 +75,9 @@ import {
   InformationComentUpdate,
 } from "../controller/informationController.js";
 
+
+//import dashboard controller methods.
+import { getPoStatus } from "../controller/dashboardController.js";
 import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
 // import User from "../models/users.js";
 const router = express.Router();
@@ -183,11 +186,14 @@ router.route("/socketuser").post(Notification)
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
-router.route("/getnotification/:email").post(getNotification)
+router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
 
 
-//jnsdknjbsdiuh 
+//dashboard routes.
+router.route("/postatuslist").post(getPoStatus);
+
+
 
 // router.route("/testing").post(async (req, res) => {
 //   const { multiple } = req.body;
