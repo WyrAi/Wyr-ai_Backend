@@ -42,7 +42,7 @@ const registerEmployee = async (req, res) => {
         .json({ status: false, error: "All fields are required" });
     }
 
-    const Emailcheck = await Users.findOne({ email });
+    const Emailcheck = await Users.findOne({ email: email.toLowerCase() });
     if (Emailcheck)
       return res
         .status(409)
@@ -50,7 +50,7 @@ const registerEmployee = async (req, res) => {
     const NewUser = new Users({
       name,
       employeeID,
-      email,
+      email: email.toLowerCase(),
       phone,
       role,
       officeBranch,

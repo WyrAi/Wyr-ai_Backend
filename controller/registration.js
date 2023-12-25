@@ -36,7 +36,7 @@ const register = async (req, res) => {
         .json({ message: "wrong information", status: 400 });
     }
 
-    const superAdminExist = await User.findOne({ email: email });
+    const superAdminExist = await User.findOne({ email: email.toLowerCase() });
     if (superAdminExist)
       return res.status(400).json({
         message: "User Allready exist",
@@ -51,7 +51,7 @@ const register = async (req, res) => {
     let newUser = await User({
       role: Role_id._id,
       name,
-      email,
+      email: email.toLowerCase(),
       password: hasPassword,
       cpassword: hasConPassword,
       phone: phoneNumber,
@@ -75,7 +75,7 @@ const OTPGernate = async (req, res) => {
     const { email } = req.params;
 
     if (email) {
-      const emailCheck = await User.findOne({ email });
+      const emailCheck = await User.findOne({ email: email.toLowerCase() });
       if (emailCheck)
         return res
           .status(409)
