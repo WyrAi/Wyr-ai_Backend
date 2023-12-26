@@ -1,6 +1,7 @@
 // routes/notificationUser.js
 import NotificationUser from "../models/notificationUser.js";
 import Notification from "../models/notificationMessageModel.js";
+import User from "../models/users.js";
 
 const Notification1 = async (req, res) => {
   try {
@@ -193,5 +194,20 @@ const getusername = async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
+
+  const getemailsofempolyes=async(req,res)=>{
+    try {
+      const { employeeIds } = req.body;
+      if (!employeeIds || !Array.isArray(employeeIds)) {
+        return res.status(400).json({ error: "Invalid input. 'employeeIds' should be an array." });
+      }
+      const emails = await User.find({ _id: { $in: employeeIds } }).select("email");
+      const emailArray = emails.map(employee => employee.email);
+      res.json({ emails: emailArray });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
   
-export {Notification,getUserByUsername,deleteSocketUser,getusername,getNotification,updateSeenStatus};
+export {Notification,getUserByUsername,deleteSocketUser,getusername,getNotification,updateSeenStatus,getemailsofempolyes};
