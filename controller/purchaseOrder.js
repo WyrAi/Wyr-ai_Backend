@@ -1,12 +1,26 @@
 import PurchaseOrder from "../models/purchaseOrder.js";
-import { imageUploadToBase64 } from "../Methods/uploadImages.js";
+import {
+  ImageUploadByFile,
+  imageUpload,
+  imageUploadToBase64,
+} from "../Methods/uploadImages.js";
 import User from "../models/users.js";
 
 const purchaseOrders = async (req, res) => {
   try {
-    const bodySizeInBytes = JSON.stringify(req.body).length;
-    console.log("Request body size:", bodySizeInBytes, "bytes");
+    const inputData = req.files;
 
+    const fieldsValue = req.fields;
+
+    const products = Object.keys(fieldsValue)
+      .filter((key) => key.startsWith("products"))
+      .map((key) => JSON.parse(fieldsValue[key]));
+
+    const assignedPeople = Object.keys(fieldsValue)
+      .filter((key) => key.startsWith("assignedPeople"))
+      .map((key) => JSON.parse(fieldsValue[key]));
+
+    const purchaseDoc = req.files.purchaseDoc;
     const {
       buyer,
       vendor,
@@ -14,12 +28,9 @@ const purchaseOrders = async (req, res) => {
       shiptoAdd,
       shipVia,
       shipDate,
-      assignedPeople,
-      products,
-      purchaseDoc,
       status,
       poNumber,
-    } = req.body;
+    } = req.fields;
     if (
       !buyer ||
       !vendor ||
@@ -38,8 +49,7 @@ const purchaseOrders = async (req, res) => {
       });
     }
 
-    const PuracheseOrderImage = await imageUploadToBase64(purchaseDoc);
-
+    const PuracheseOrderImage = await ImageUploadByFile(purchaseDoc);
     let NewPurchaseOrder = new PurchaseOrder({
       purchaseDoc: PuracheseOrderImage,
       buyer,
@@ -95,7 +105,25 @@ const purchaseOrders = async (req, res) => {
         Error.push(`Product ${i + 1} fields are required`);
       }
 
-      const productImages = await imageUploadToBase64(images);
+      let SetData = [];
+
+      if (images.length > 0) {
+        let filterImages = images.filter((value) => value.file != "");
+        for (let j = 0; j < filterImages.length; j++) {
+          const ArrayImageData = Object.keys(inputData).filter((key) =>
+            key.startsWith(`productImage[${i}][${j}].${filterImages[j].name}`)
+          );
+          const ArrayImageDataValue = ArrayImageData.map(
+            (key) => inputData[key]
+          );
+
+          let data = await ImageUploadByFile(ArrayImageDataValue[0]);
+          SetData.push({
+            name: filterImages[j].name,
+            image: data,
+          });
+        }
+      }
 
       NewPurchaseOrder.products.push({
         styleId,
@@ -112,14 +140,13 @@ const purchaseOrders = async (req, res) => {
         widthTolerance,
         heightTolerance,
         comments,
-        images: productImages,
+        images: SetData,
       });
     }
 
     if (Error.length > 0) {
       return res.status(400).json({ status: 422, Error });
     }
-    console.log(Error);
 
     await NewPurchaseOrder.save();
 
@@ -204,7 +231,19 @@ const PuracheseOrderDraft = async (req, res) => {
         comments,
       } = products[i];
 
-      const productImages = (await imageUploadToBase64(images)) || "";
+      // const productImages = (await imageUploadToBase64(images)) || "";
+
+      let SetData = [];
+
+      if (images.length > 0) {
+        for (let j = 0; j < images.length; j++) {
+          let data = await imageUploadToBase64(images[j].file);
+          SetData.push({
+            name: images[j].name,
+            image: data,
+          });
+        }
+      }
 
       NewPurchaseOrder.products.push({
         styleId,
@@ -221,7 +260,7 @@ const PuracheseOrderDraft = async (req, res) => {
         widthTolerance,
         heightTolerance,
         comments,
-        images: productImages,
+        images: SetData,
       });
     }
 
@@ -329,6 +368,13 @@ const purchesOrderVerifiedPeople=async(req,res)=>{
 //     res.status(500).json({ error: "Server error in fetching branch " });
 //   }
 // };
+
+const PurchaseOrderDelete = async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export {
   purchaseOrders,
