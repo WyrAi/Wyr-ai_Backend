@@ -227,11 +227,12 @@ router.route("/deletesocketuser/:username").delete(deleteSocketUser);
 router.route("/getuser").get(getusername);
 router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
+router.route("/get-emails-employees").get(getemailsofempolyes)
 
 //dashboard routes.
-router.route("/postatuslist").post(getPoStatus);
-router.route("/usercount").post(getusercount);
-router.route("/getrecentaddeduser").post(getlatestaddeduser);
+router.route("/postatuslist").get(getPoStatus);
+router.route("/usercount").get(getusercount);
+router.route("/getrecentaddeduser").get(getlatestaddeduser);
 
 // router.route("/testing").post(async (req, res) => {
 //   const { multiple } = req.body;
