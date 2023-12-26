@@ -187,7 +187,6 @@ const getNotification = async (req, res) => {
       msg: "notification data",
       data: flattenedNotifications,
     });
-    s;
   } catch (error) {
     console.log(error);
   }
