@@ -89,6 +89,7 @@ import {
   deleteSocketUser,
   getNotification,
   getUserByUsername,
+  getemailsofempolyes,
   getusername,
   updateSeenStatus,
 } from "../controller/notificationUser.js";
