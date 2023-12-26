@@ -78,8 +78,11 @@ import {
 
 
 //import dashboard controller methods.
-import { getPoStatus } from "../controller/dashboardController.js";
-import { Notification1, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
+
+import { getPoStatus, getlatestaddeduser, getusercount } from "../controller/dashboardController.js";
+
+import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
+
 // import User from "../models/users.js";
 import formidable from "express-formidable";
 import {
@@ -184,6 +187,7 @@ router
 
 //-------------------------------//
 
+
 //VideoLink
 router.route("/createVideoLink").post(createVideoLink);
 router
@@ -195,6 +199,7 @@ router.route("/VideoCheck").get(VideoCheck);
 //   { name: "image", maxCount: 1 },
 //   { name: "documents", maxCount: 8 },
 // ]),
+
 router.route("/message").post(message);
 router.route("/packinglist").post(Packinglist);
 router.route("/deleteEmploye").delete(deleteEmploye);
@@ -205,7 +210,12 @@ router.route("/login").post(login);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
 
+
+
+//notification route
+
 router.route("/socketuser").post(Notification1)
+
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
@@ -215,6 +225,8 @@ router.route("/updatenotifactionstatus").post(updateSeenStatus);
 
 //dashboard routes.
 router.route("/postatuslist").post(getPoStatus);
+router.route("/usercount").post(getusercount);
+router.route("/getrecentaddeduser").post(getlatestaddeduser);
 
 
 

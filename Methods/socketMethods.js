@@ -13,7 +13,6 @@ const socket = (io) => {
         onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
       };
       
-
     async function saveMessage(sender, receiver, text) {
         const existingNotification = await Notification.findOne({ receiverid: receiver });
       
@@ -112,45 +111,76 @@ const socket = (io) => {
               username: emailsWithAddEditCompanyPermission
             },
           })
-          if (receivers.length) {
-            receivers.forEach((receiver) => {
-              console.log("receiver>id",receiver.socket);
-              io.to(receiver.socket).emit("getText", {
-                senderName,
-                text,
-              });
-            });
-          } 
+
+          io.emit("getText", {
+            senderName,
+            text,
           });
 
-        socket.on("purchesText", async ({data} ) => {
+          // if (receivers.length) {
+          //   receivers.forEach((receiver) => {
+          //     console.log("receiver>id",receiver.socket);
+          //   });
+          // } 
 
-            const { senderName, text } = data ||[] ;      
-            const targetEmail = senderName;
-            const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
-            const companyId = usersWithEmail[0]?.companyId;
-            const usersWithCompanyId = await User.find({ companyId: companyId })
-              .populate({
-                path: 'role',
-                model: 'Role',
-              })
-              .lean() 
-              .exec();
+          });
+
+        // socket.on("purchesText", async ({data} ) => {
+        //     const { senderName, text,reciveremail } = data ||[] ;      
+        //     const targetEmail = senderName;
+        //     const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
+        //     const companyId = usersWithEmail[0]?.companyId;
+        //     const usersWithCompanyId = await User.find({ companyId: companyId })
+        //       .populate({
+        //         path: 'role',
+        //         model: 'Role',
+        //       })
+        //       .lean() 
+        //       .exec();
+
         
-            const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(user => {
-              const role = user.role;
+        //     const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(user => {
+        //       const role = user.role;
         
-              if (role && role.SelectAccess.purchaseOrder) {
-                const relationshipManagementStrings = role.SelectAccess.purchaseOrder.map(value => value.toString());
-                return relationshipManagementStrings.includes('Approve');
-              }
+        //       if (role && role.SelectAccess.purchaseOrder) {
+        //         const relationshipManagementStrings = role.SelectAccess.purchaseOrder.map(value => value.toString());
+        //         return relationshipManagementStrings.includes('Approve');
+        //       }
         
-              return false;
-            });
+        //       return false;
+        //     });
   
-          const emailsWithAddEditCompanyPermission = usersWithAddEditCompanyPermission.map(user => user.email);
-                if (Array.isArray(emailsWithAddEditCompanyPermission)) {
-              for (const receiver of emailsWithAddEditCompanyPermission) {
+        //   const emailsWithAddEditCompanyPermission = usersWithAddEditCompanyPermission.map(user => user.email);
+        //         if (Array.isArray(emailsWithAddEditCompanyPermission)) {
+        //       for (const receiver of emailsWithAddEditCompanyPermission) {
+        //         await saveMessage(senderName, receiver, text);
+        //       }
+        //     } else {
+        //       await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
+        //     }
+           
+        //     const receivers = await getUserByUsername({
+        //       body: {
+        //         username: emailsWithAddEditCompanyPermission
+        //       },
+        //     });
+           
+        //     if (receivers.length) {
+        //       receivers.forEach((receiver) => {
+        //         io.to(receiver.socket).emit("getText", {
+        //           senderName,
+        //           text,
+        //         });
+        //       });
+        //     } 
+        //   });
+
+          socket.on("purchesText", async ({data} ) => {
+            const { senderName, text,reciveremail } = data ||[] ;      
+            const targetEmail = senderName;
+            
+                if (Array.isArray(reciveremail)) {
+              for (const receiver of reciveremail) {
                 await saveMessage(senderName, receiver, text);
               }
             } else {
@@ -159,7 +189,7 @@ const socket = (io) => {
            
             const receivers = await getUserByUsername({
               body: {
-                username: emailsWithAddEditCompanyPermission
+                username: reciveremail
               },
             });
            
@@ -174,7 +204,8 @@ const socket = (io) => {
           });
 
           socket.on("RoleText", async ({data} ) => {
-            const { senderName, text } = data ;      
+            const { senderName, text } = data ;  
+            console.log("43====>",senderName,data);    
             const targetEmail = senderName;
             const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
             const companyId = usersWithEmail[0]?.companyId;
@@ -214,7 +245,7 @@ const socket = (io) => {
            
             if (receivers.length) {
               receivers.forEach((receiver) => {
-                io.to(receiver.socket).emit("getText", {
+                io.emit("getText", {
                   senderName,
                   text,
                 });
@@ -329,7 +360,6 @@ const socket = (io) => {
           });
 
           console.log("user with disconnected with", socket);
-          //localStorage.removeItem("socketId");
           });
 
       });
