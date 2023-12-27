@@ -193,45 +193,32 @@ const getNotification = async (req, res) => {
           data: "",
         });
       }
+
   } catch (error) {
     console.log(error);
   }
 };
 
-  const updateSeenStatus = async (req, res) => {
-    try {
-      const { receiverid } = req.body;
-      console.log("receiverid",req.body);
-      const receiver = await Notification.findOne({ receiverid: receiverid });
-  
-      if (!receiver) {
-        return res.status(404).json({ message: "Receiver not found" });
-      }
-  
-      receiver.messages.forEach((message) => {
-        message.seen = true;
-      });
-      await receiver.save();
-      res.json({ message: "Notification status updated successfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  };
+const updateSeenStatus = async (req, res) => {
+  try {
+    const { receiverid } = req.body;
+    console.log("receiverid", req.body);
+    const receiver = await Notification.findOne({ receiverid: receiverid });
 
-  const getemailsofempolyes=async(req,res)=>{
-    try {
-      const { employeeIds } = req.body;
-      if (!employeeIds || !Array.isArray(employeeIds)) {
-        return res.status(400).json({ error: "Invalid input. 'employeeIds' should be an array." });
-      }
-      const emails = await User.find({ _id: { $in: employeeIds } }).select("email");
-      const emailArray = emails.map(employee => employee.email);
-      res.json({ emails: emailArray });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
+    if (!receiver) {
+      return res.status(404).json({ message: "Receiver not found" });
     }
+
+    receiver.messages.forEach((message) => {
+      message.seen = true;
+    });
+    await receiver.save();
+
+    res.json({ message: "Notification status updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
+}
   
 export {Notification1,getUserByUsername,deleteSocketUser,getusername,getNotification,updateSeenStatus,getemailsofempolyes};

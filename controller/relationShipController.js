@@ -7,7 +7,7 @@ import { HashMethod } from "../Methods/HashMethods.js";
 export const companyRelationShip = async (req, res) => {
   try {
     const { role, reciverEmail, senderCompanyId } = req.body || [];
-    console.log("10========>",reciverEmail);
+    console.log("10========>", reciverEmail);
     const userCheck = await User.findOne({ email: reciverEmail })
       .populate("role", "name")
       .populate("companyId", "_id ");
@@ -79,7 +79,7 @@ export const companyRelationShip = async (req, res) => {
 // export const companyRelationShip = async (req, res) => {
 //   try {
 //     const { role, reciverEmail, senderCompanyId } = req.body || [];
-    
+
 //     // Ensure reciverEmail is an array
 //     if (!Array.isArray(reciverEmail)) {
 //       return res.status(400).json({ message: "ReciverEmail should be an array", status: 400 });
@@ -153,30 +153,30 @@ export const companyRelationShip = async (req, res) => {
 //   }
 // };
 
-
 //Display RelationShips by Companyies
-
 export const displayRelations = async (req, res) => {
   try {
     const { id } = req.params;
-
-    if (!id)
+    // console.log(data);
+    // console.log(data.id === "undefined");
+    if (id == "undefined") {
       return res.status(400).json({ message: "Id is required", status: 400 });
+    } else {
+      const AllData = await Companydetails.find(
+        {
+          _id: id,
+        },
+        { companyRelations: 1 }
+      )
+        .populate("companyRelations.relationId")
+        .populate(
+          "companyRelations.companyId",
+          "name address country city pincode companyimage"
+        );
 
-    const AllData = await Companydetails.find(
-      {
-        _id: id,
-      },
-      { companyRelations: 1 }
-    )
-      .populate("companyRelations.relationId")
-      .populate(
-        "companyRelations.companyId",
-        "name address country city pincode companyimage"
-      );
-
-    if (AllData.length > 0)
-      return res.status(200).json({ message: "Data", status: 200, AllData });
+      if (AllData.length > 0)
+        return res.status(200).json({ message: "Data", status: 200, AllData });
+    }
   } catch (error) {
     console.log(error);
   }

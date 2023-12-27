@@ -76,12 +76,24 @@ import {
   InformationComentUpdate,
 } from "../controller/informationController.js";
 
-
 //import dashboard controller methods.
 
-import { getPoStatus, getlatestaddeduser, getusercount } from "../controller/dashboardController.js";
+import {
+  getPoStatus,
+  getlatestaddeduser,
+  getusercount,
+} from "../controller/dashboardController.js";
 
-import {Notification1, deleteSocketUser, getNotification, getUserByUsername, getemailsofempolyes, getusername, updateSeenStatus } from "../controller/notificationUser.js";
+import {
+ Notification11,
+  deleteSocketUser,
+  getNotification,
+  getUserByUsername,
+  getemailsofempolyes,
+  getusername,
+  updateSeenStatus,
+} from "../controller/notificationUser.js";
+
 // import User from "../models/users.js";
 import formidable from "express-formidable";
 import {
@@ -153,7 +165,7 @@ router
   .post(formidable({ multiples: true }), purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
-router.route("/purchesOrderpeopleList",).post(purchesOrderVerifiedPeople)
+router.route("/purchesOrderpeopleList").post(purchesOrderVerifiedPeople);
 //--------------------------------//
 
 //Packing List
@@ -186,7 +198,6 @@ router
 
 //-------------------------------//
 
-
 //VideoLink
 router.route("/createVideoLink").post(createVideoLink);
 router
@@ -208,12 +219,10 @@ router.route("/login").post(login);
 // router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
-
-
-
 //notification route
 
 router.route("/socketuser").post(Notification1)
+
 router.route("/getsocketuser").get(getUserByUsername)
 router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
@@ -221,13 +230,10 @@ router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
 router.route("/get-emails-employees").get(getemailsofempolyes)
 
-
 //dashboard routes.
 router.route("/postatuslist").get(getPoStatus);
 router.route("/usercount").get(getusercount);
 router.route("/getrecentaddeduser").get(getlatestaddeduser);
-
-
 
 // router.route("/testing").post(async (req, res) => {
 //   const { multiple } = req.body;

@@ -234,10 +234,11 @@ const UserPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
     const UserInformation = await Users.findOne({ email });
-
+    console.log(UserInformation, new Date());
     if (UserInformation) {
       const detail = { _id: UserInformation._id, email: UserInformation.email };
       const token = await ResetTokenGernate(detail);
+      console.log(token, new Date());
       const link = `${process.env.CLIENT_URL}/resetPassword/${token}/`;
       mailTransport().sendMail({
         from: process.env.EMAIL,

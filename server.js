@@ -11,14 +11,14 @@ import morgan from "morgan";
 const app = express();
 const port = process.env.PORT || 5000;
 
-
 //import socket connection.
 import { socket } from "./Methods/socketMethods.js";
+console.log(process.env.SOCKETADD);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: process.env.VERCEL_URL,
-    origin: "http://localhost:5173/" ,
+    origin: process.env.SOCKETADD,
     methods: ["GET", "POST"],
   },
 });
@@ -36,16 +36,13 @@ import User from "./models/users.js";
 import Role from "./models/role.js";
 app.use("/api", router);
 
-
-const uri = process.env.ATLAS_URI; 
+const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);
 
 const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("connection established successfully");
 });
-
-
 
 server.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
