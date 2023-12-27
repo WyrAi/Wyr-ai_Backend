@@ -13,6 +13,7 @@ const port = process.env.PORT || 5000;
 
 //import socket connection.
 import { socket } from "./Methods/socketMethods.js";
+console.log(process.env.SOCKETADD);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
