@@ -85,7 +85,7 @@ import {
 } from "../controller/dashboardController.js";
 
 import {
-  Notification1,
+ Notification11,
   deleteSocketUser,
   getNotification,
   getUserByUsername,
@@ -106,7 +106,7 @@ import logs, { getLogFile } from "../controller/logsController.cjs";
 
 const { logsCreate } = logs;
 // const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage }); 
 
 const router = express.Router();
 
@@ -223,10 +223,10 @@ router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
 //notification route
 
-router.route("/socketuser").post(Notification1);
+router.route("/socketuser").post(Notification1)
 
-router.route("/getsocketuser").get(getUserByUsername);
-router.route("/deletesocketuser/:username").delete(deleteSocketUser);
+router.route("/getsocketuser").get(getUserByUsername)
+router.route("/deletesocketuser/:username").delete(deleteSocketUser)
 router.route("/getuser").get(getusername);
 router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);

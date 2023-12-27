@@ -50,7 +50,6 @@ const Notification1 = async (req, res) => {
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.body;
-
     //console.log("51======>",username);
 
     if (!username || !Array.isArray(username)) {
@@ -164,30 +163,37 @@ const getNotification = async (req, res) => {
       })
       .lean()
       .exec();
+      if(notifications){
+        const flattenedNotifications = notifications.reduce(
+          (result, notification) => {
+            if (notification.messages && notification.messages.length > 0) {
+              result.push(
+                ...notification.messages.map((message) => ({
+                  messageId: message._id,
+                  message: message.message,
+                  seen: message.seen,
+                }))
+              );
+            }
+            return result;
+          },
+          []
+        );
+        console.log("Flattened Notifications:", flattenedNotifications);
+        res.status(200).json({
+          status: 200,
+          msg: "notification data",
+          data: flattenedNotifications,
+        });
+      }
+      else{
+        res.status(200).json({
+          status: 200,
+          msg: "notification data",
+          data: "",
+        });
+      }
 
-    const flattenedNotifications = notifications.reduce(
-      (result, notification) => {
-        if (notification.messages && notification.messages.length > 0) {
-          result.push(
-            ...notification.messages.map((message) => ({
-              messageId: message._id,
-              message: message.message,
-              seen: message.seen,
-            }))
-          );
-        }
-        return result;
-      },
-      []
-    );
-
-    console.log("Flattened Notifications:", flattenedNotifications);
-
-    res.status(200).json({
-      status: 200,
-      msg: "notification data",
-      data: flattenedNotifications,
-    });
   } catch (error) {
     console.log(error);
   }
