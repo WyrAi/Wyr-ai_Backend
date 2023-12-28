@@ -24,37 +24,40 @@ export function mailTransport() {
 }
 
 export const downloadLinkTemplate = (downloadLink) =>
-  ` <!DOCTYPE html>
- <html>
- <head>
-   <meta charset="UTF-8">
-   <title>Download PDF</title> 
- </head>
- <body>
-   <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
-     <tr>
-       <td align="center" bgcolor="#f8f8f8" style="padding: 40px 0;">
-         <h1>Download Your PDF</h1>
-       </td>
-     </tr>
-     <tr>
-       <td bgcolor="#ffffff" style="padding: 40px 30px;">
-         <p>Click the link below to download your PDF:</p>
-         <p>${downloadLink}</p>
-         <p>If you did not request this download, please ignore this email.</p>
-         <p>Best regards,</p>
-         <p>Your Platform Team</p>
-       </td>
-     </tr>
-     <tr>
-       <td bgcolor="#f8f8f8" align="center" style="padding: 20px 0;">
-         <p style="margin: 0; font-size: 12px;">&copy; ${new Date().getFullYear()} Your Platform. All rights reserved.</p>
-       </td>
-     </tr>
-   </table>
- </body>
- </html>
-`;
+  `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Download Video</title>
+</head>
+<body>
+  <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
+    <tr>
+      <td align="center" bgcolor="#f8f8f8" style="padding: 40px 0;">
+        <h1>Inspection Report & Video</h1>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" style="padding: 40px 30px;">
+        <p>We are pleased to provide you with the inspection report and accompanying video related to your inquiry.</p>
+        <p>Please <a href="${downloadLink}" download="Ispection Video">click here</a> to download the video.</p>
+        <p>If you did not request these details, kindly disregard this email.</p>
+        <p>Attached below, you will find the inspection report for your reference.</p>
+        <p>Best regards,</p>
+        <p>Wyr.AI Team</p>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#f8f8f8" align="center" style="padding: 20px 0;">
+        <p style="margin: 0; font-size: 12px;">&copy; ${new Date().getFullYear()} Wyr.AI. All rights reserved.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+
+
 
 export const resetpasswordTemplet = (link) =>
   ` <!DOCTYPE html>
