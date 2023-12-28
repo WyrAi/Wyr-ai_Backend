@@ -20,11 +20,19 @@ const __dirname = dirname(__filename);
 import { socket } from "./Methods/socketMethods.js";
 console.log(process.env.VERCEL_URL);
 const server = http.createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     // origin: process.env.VERCEL_URL,
+//     origin: true,
+//     methods: ["GET", "POST"],
+//   },
+// });
+
 const io = new Server(server, {
   cors: {
-    // origin: process.env.VERCEL_URL,
-    origin: process.env.VERCEL_URL || process.env.SOCKETADD || "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 socket(io);
@@ -37,7 +45,8 @@ app.set("view engine", "hbs");
 app.use(morgan("dev"));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+// app.use(cors());
+app.use(cors({origin: true, credentials: true}));
 import Notification from "./models/notificationMessageModel.js";
 import User from "./models/users.js";
 import Role from "./models/role.js";
