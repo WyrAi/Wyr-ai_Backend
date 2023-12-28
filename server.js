@@ -18,12 +18,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 //import socket connection.
 import { socket } from "./Methods/socketMethods.js";
-console.log(process.env.SOCKETADD);
+console.log(process.env.VERCEL_URL);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: process.env.VERCEL_URL,
-    origin: process.env.SOCKETADD,
+    origin: process.env.VERCEL_URL,
     methods: ["GET", "POST"],
   },
 });
