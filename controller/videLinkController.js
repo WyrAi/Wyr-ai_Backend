@@ -11,9 +11,11 @@ const createVideoLink = async (req, res) => {
     const newVideoLink = new VideoLink({ link: link.video_url });
     await newVideoLink.save();
     if (!newVideoLink) {
-      res.status(400).json({ message: "link upload failed", status: false });
+      return res
+        .status(400)
+        .json({ message: "link upload failed", status: false });
     }
-    res
+    return res
       .status(201)
       .json({ message: "link upload", status: true, newVideoLink });
   } catch (error) {
@@ -25,9 +27,13 @@ const VideoCheck = async (req, res) => {
   try {
     const Data = await VideoLink.find();
     if (Data.length === 0) {
-      res.status(200).json({ message: "Video not gernate", status: false });
+      return res
+        .status(200)
+        .json({ message: "Video not gernate", status: false });
     }
-    res.status(200).json({ message: "Video gernate", status: true, Data });
+    return res
+      .status(200)
+      .json({ message: "Video gernate", status: true, Data });
   } catch (error) {
     console.log(error);
   }
