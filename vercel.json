@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/socket.io",
-      "dest": "socketMethods.js"
+      "dest": "/socketMethods.js"
     },
     {
       "src": "/(.*)",
