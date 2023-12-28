@@ -85,7 +85,7 @@ import {
 } from "../controller/dashboardController.js";
 
 import {
- Notification11,
+ Notification1,
   deleteSocketUser,
   getNotification,
   getUserByUsername,
@@ -235,14 +235,5 @@ router.route("/postatuslist").get(getPoStatus);
 router.route("/usercount").get(getusercount);
 router.route("/getrecentaddeduser").get(getlatestaddeduser);
 
-// router.route("/testing").post(async (req, res) => {
-//   const { multiple } = req.body;
-
-//   const data = await User.find({
-//     _id: multiple,
-//   });
-
-//   console.log(data);
-// });
 
 export default router;
