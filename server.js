@@ -23,7 +23,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: process.env.VERCEL_URL,
-    origin: process.env.VERCEL_URL,
+    origin: process.env.VERCEL_URL || process.env.SOCKETADD || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
