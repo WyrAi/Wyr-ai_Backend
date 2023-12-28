@@ -85,7 +85,7 @@ import {
 } from "../controller/dashboardController.js";
 
 import {
- Notification1,
+  Notification1,
   deleteSocketUser,
   getNotification,
   getUserByUsername,
@@ -102,9 +102,11 @@ import {
   createVideoLink,
 } from "../controller/videLinkController.js";
 import multer from "multer";
+import logs, { getLogFile } from "../controller/logsController.cjs";
 
+const { logsCreate } = logs;
 // const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage }); 
+// const upload = multer({ storage: storage });
 
 const router = express.Router();
 
@@ -221,19 +223,23 @@ router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
 //notification route
 
-router.route("/socketuser").post(Notification1)
+router.route("/socketuser").post(Notification1);
 
-router.route("/getsocketuser").get(getUserByUsername)
-router.route("/deletesocketuser/:username").delete(deleteSocketUser)
+router.route("/getsocketuser").get(getUserByUsername);
+router.route("/deletesocketuser/:username").delete(deleteSocketUser);
 router.route("/getuser").get(getusername);
 router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
-router.route("/get-emails-employees").get(getemailsofempolyes)
+router.route("/get-emails-employees").get(getemailsofempolyes);
 
 //dashboard routes.
 router.route("/postatuslist").get(getPoStatus);
 router.route("/usercount").get(getusercount);
 router.route("/getrecentaddeduser").get(getlatestaddeduser);
+
+//logs routes
+router.route("/logsCreate").post(logsCreate);
+router.route("/getLogFile").get(getLogFile);
 
 
 export default router;

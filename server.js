@@ -8,21 +8,28 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import router from "./routes/auth.js";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 const app = express();
 const port = process.env.PORT || 5000;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 //import socket connection.
 import { socket } from "./Methods/socketMethods.js";
-console.log(process.env.SOCKETADD);
+console.log(process.env.VERCEL_URL);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: process.env.VERCEL_URL,
-    origin: process.env.SOCKETADD,
+    origin: process.env.VERCEL_URL || process.env.SOCKETADD || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
 socket(io);
+const publicpath = path.join(__dirname, "./Public/logs");
+app.use(express.static(publicpath));
 
 // Middlewares
 // app.use(express.static(publicDir));
