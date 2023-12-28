@@ -20,11 +20,19 @@ const __dirname = dirname(__filename);
 import { socket } from "./Methods/socketMethods.js";
 console.log(process.env.VERCEL_URL);
 const server = http.createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     // origin: process.env.VERCEL_URL,
+//     origin: true,
+//     methods: ["GET", "POST"],
+//   },
+// });
+
 const io = new Server(server, {
   cors: {
-    // origin: process.env.VERCEL_URL,
-    origin: true,
+    origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 socket(io);
