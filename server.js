@@ -110,7 +110,6 @@ const io = new Server(server, {
   },
   allowEIO3: true,
 });
-// socket(io);
 
 const publicpath = path.join(__dirname, "./Public/logs");
 app.use(express.static(publicpath));
@@ -133,4 +132,3 @@ connection.once("open", () => {
 server.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
-
