@@ -1,4 +1,7 @@
 import PurchaseOrder from "../models/purchaseOrder.js"
+import Role from "../models/role.js";
+import User from "../models/users.js";
+import Companydetails from "../models/companydetails.js";
 
 const getPoStatus=async(req,res)=>{
     try {
@@ -69,10 +72,51 @@ const getPoStatus=async(req,res)=>{
 // };
 
 const getusercount=async(req,res)=>{
+    try {
+        const distinctUserCount = await User.distinct('email').countDocuments();
+        const totalRoles = await Role.countDocuments();
+        const unregisterOrganizations = await User.find({ companyId: null }).countDocuments();
+        const totalOrganizations = await User.distinct('companyId').countDocuments();
+    
+        res.json({
+          distinctUserCount,
+          totalRoles,
+          unregisterOrganizations,
+          totalOrganizations,
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+}
 
+const getlatestaddeduser=async(req,res)=>{
+    try {
+        const mostRecentUser = await User.findOne().sort({ CreatedDate: -1 });
+        if (mostRecentUser) {
+          const { name, email, phone, companyId } = mostRecentUser;
+          const role = await Role.findById(mostRecentUser.role);
+          const roleName = role ? role.name : null;
+          const organisation = await Companydetails.findById(companyId);
+          const organisationLocation = organisation ? organisation.address : null;
+    
+          res.json({
+            name,
+            roleName,
+            organisationLocation,
+            phone,
+            email,
+          });
+        } else {
+          res.json({ message: 'No users found' });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    
 }
 
 
 
-
-export {getPoStatus,getusercount}
+export {getPoStatus,getusercount,getlatestaddeduser}

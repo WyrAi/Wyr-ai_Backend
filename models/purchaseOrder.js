@@ -65,12 +65,7 @@ const purchaseOrderSchema = new mongoose.Schema({
         // min: -100,
         // max: 100,
       },
-      comments: [
-        {
-          id: Number,
-          comment: String,
-        },
-      ],
+      comments: [String],
     },
   ],
   status: {

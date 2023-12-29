@@ -6,6 +6,7 @@ import {
   UserPasswordSave,
   BranchEmployee,
   registerEmployeeDelete,
+  UserPasswordReset,
   getAllPurmishReciver,
 } from "../controller/user.js";
 import { roles, roleDelete } from "../controller/role.js";
@@ -76,10 +77,37 @@ import {
 } from "../controller/informationController.js";
 
 //import dashboard controller methods.
-import { getPoStatus } from "../controller/dashboardController.js";
 
-import { Notification, deleteSocketUser, getNotification, getUserByUsername, getusername, updateSeenStatus } from "../controller/notificationUser.js";
+import {
+  getPoStatus,
+  getlatestaddeduser,
+  getusercount,
+} from "../controller/dashboardController.js";
+
+import {
+  Notification1,
+  deleteSocketUser,
+  getNotification,
+  getUserByUsername,
+  getemailsofempolyes,
+  getusername,
+  updateSeenStatus,
+} from "../controller/notificationUser.js";
+
 // import User from "../models/users.js";
+import formidable from "express-formidable";
+import {
+  ReportEmailSend,
+  VideoCheck,
+  createVideoLink,
+} from "../controller/videLinkController.js";
+import multer from "multer";
+import logs, { getLogFile } from "../controller/logsController.cjs";
+
+const { logsCreate } = logs;
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
 const router = express.Router();
 
 // Signup Page Routes
@@ -104,6 +132,8 @@ router.route("/getAllEmployessWithBranch/:id").get(BranchEmployee);
 router.route("/registerEmployee").post(TokenVerify, registerEmployee);
 router.route("/UserInformationDelete").post(TokenVerify, UserInformationDelete);
 router.route("/registerEmployeeDelete").delete(registerEmployeeDelete);
+router.route("/UserPasswordReset").post(UserPasswordReset);
+
 router.route("/listAllReciverPurmished").post(getAllPurmishReciver);
 
 //-------------------------//
@@ -132,10 +162,12 @@ router.route("/getAllCompanyByRole/:id").get(getAllCompanyByRole);
 router
   .route("/getAllEmployess/:buyer_id/:vender_id")
   .get(getEmployeesFromBuVen);
-router.route("/purchaseOrder").post(purchaseOrders);
+router
+  .route("/purchaseOrder")
+  .post(formidable({ multiples: true }), purchaseOrders);
 router.route("/purchaseOrder/:id").get(purchaseOrderGet);
 router.route("/PuracheseOrderDraft/:id").post(PuracheseOrderDraft);
-router.route("/purchesOrderpeopleList",).post(purchesOrderVerifiedPeople)
+router.route("/purchesOrderpeopleList").post(purchesOrderVerifiedPeople);
 //--------------------------------//
 
 //Packing List
@@ -168,10 +200,18 @@ router
 
 //-------------------------------//
 
+//VideoLink
+router.route("/createVideoLink").post(createVideoLink);
+router
+  .route("/ReportEmailSend")
+  .post(formidable({ multiples: true }), ReportEmailSend);
+router.route("/VideoCheck").get(VideoCheck);
+// formidable({ multiples: true })
 // upload.fields([
 //   { name: "image", maxCount: 1 },
 //   { name: "documents", maxCount: 8 },
 // ]),
+
 router.route("/message").post(message);
 router.route("/packinglist").post(Packinglist);
 router.route("/deleteEmploye").delete(deleteEmploye);
@@ -181,29 +221,25 @@ router.route("/login").post(login);
 // router.route("/getpurchaseOrder/:fields").get(getPurchaseOrder);
 router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 
+//notification route
 
-router.route("/socketuser").post(Notification)
-router.route("/getsocketuser").get(getUserByUsername)
-router.route("/deletesocketuser/:username").delete(deleteSocketUser)
+router.route("/socketuser").post(Notification1);
+
+router.route("/getsocketuser").get(getUserByUsername);
+router.route("/deletesocketuser/:username").delete(deleteSocketUser);
 router.route("/getuser").get(getusername);
 router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
-
+router.route("/get-emails-employees").get(getemailsofempolyes);
 
 //dashboard routes.
-router.route("/postatuslist").post(getPoStatus);
+router.route("/postatuslist").get(getPoStatus);
+router.route("/usercount").get(getusercount);
+router.route("/getrecentaddeduser").get(getlatestaddeduser);
 
+//logs routes
+router.route("/logsCreate").post(logsCreate);
+router.route("/getLogFile").get(getLogFile);
 
-//jnsdknjbsdiuh 
-
-// router.route("/testing").post(async (req, res) => {
-//   const { multiple } = req.body;
-
-//   const data = await User.find({
-//     _id: multiple,
-//   });
-
-//   console.log(data);
-// });
 
 export default router;

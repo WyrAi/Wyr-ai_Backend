@@ -42,7 +42,7 @@ const registerEmployee = async (req, res) => {
         .json({ status: false, error: "All fields are required" });
     }
 
-    const Emailcheck = await Users.findOne({ email });
+    const Emailcheck = await Users.findOne({ email: email.toLowerCase() });
     if (Emailcheck)
       return res
         .status(409)
@@ -50,7 +50,7 @@ const registerEmployee = async (req, res) => {
     const NewUser = new Users({
       name,
       employeeID,
-      email,
+      email: email.toLowerCase(),
       phone,
       role,
       officeBranch,
@@ -230,41 +230,74 @@ const registerEmployeeDelete = async (req, res) => {
   }
 };
 
-const getAllPurmishReciver=async(req,res)=>{
+const UserPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const UserInformation = await Users.findOne({ email });
+    console.log(UserInformation, new Date());
+    if (UserInformation) {
+      const detail = { _id: UserInformation._id, email: UserInformation.email };
+      const token = await ResetTokenGernate(detail);
+      console.log(token, new Date());
+      const link = `${process.env.CLIENT_URL}/resetPassword/${token}/`;
+      mailTransport().sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Password Create",
+        html: resetpasswordTemplet(link),
+      });
+      console.log("email send");
+      return res.status(200).json({ message: "Reset password link send" });
+    }
+    return res.status(404).json({ message: "User not found" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getAllPurmishReciver = async (req, res) => {
   try {
     const targetEmail = req.body.email;
 
-    const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
+    const usersWithEmail = await User.find({ email: targetEmail })
+      .select("companyId")
+      .exec();
     //console.log("231=====>",usersWithEmail)
     const companyId = usersWithEmail[0]?.companyId;
     //console.log("234====>",companyId);
     const usersWithCompanyId = await User.find({ companyId: companyId })
       .populate({
-        path: 'role',
-        model: 'Role',
+        path: "role",
+        model: "Role",
       })
-      .lean() 
+      .lean()
       .exec();
 
-    const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(user => {
-      const role = user.role;
+    const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
+      (user) => {
+        const role = user.role;
 
-      if (role && role.SelectAccess.relationshipManagement) {
-        const relationshipManagementStrings = role.SelectAccess.relationshipManagement.map(value => value.toString());
-        return relationshipManagementStrings.includes('Add/Edit Company');
+        if (role && role.SelectAccess.relationshipManagement) {
+          const relationshipManagementStrings =
+            role.SelectAccess.relationshipManagement.map((value) =>
+              value.toString()
+            );
+          return relationshipManagementStrings.includes("Add/Edit Company");
+        }
+
+        return false;
       }
-
-      return false;
-    });
-  console.log("258====>",usersWithAddEditCompanyPermission);
-    const emailsWithAddEditCompanyPermission = usersWithAddEditCompanyPermission.map(user => user.email);
+    );
+    console.log("258====>", usersWithAddEditCompanyPermission);
+    const emailsWithAddEditCompanyPermission =
+      usersWithAddEditCompanyPermission.map((user) => user.email);
 
     res.json({ success: true, emails: emailsWithAddEditCompanyPermission });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ success: false, error: 'Internal Server Error' });
+    console.error("Error:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
-}
+};
 
 export {
   registerEmployee,
@@ -273,5 +306,6 @@ export {
   UserPasswordSave,
   registerEmployeeDelete,
   BranchEmployee,
-  getAllPurmishReciver
+  UserPasswordReset,
+  getAllPurmishReciver,
 };
