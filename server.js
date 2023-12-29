@@ -28,6 +28,7 @@ const server = http.createServer(app);
 //   },
 // });
 
+socket(io);
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
@@ -47,7 +48,7 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
-// app.use(cors({origin: true, credentials: true}));
+app.use(cors({origin: true, credentials: true}));
 import Notification from "./models/notificationMessageModel.js";
 import User from "./models/users.js";
 import Role from "./models/role.js";
