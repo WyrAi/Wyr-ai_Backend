@@ -30,9 +30,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
-    methods: ["GET", "POST"],
-    credentials: true,
+    origin: "*",
+    //   methods: ["GET", "POST"],
+    //   credentials: true,
   },
 });
 socket(io);
