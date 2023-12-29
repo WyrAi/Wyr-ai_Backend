@@ -28,7 +28,6 @@ const server = http.createServer(app);
 //   },
 // });
 
-socket(io);
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
