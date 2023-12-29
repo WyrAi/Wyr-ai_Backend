@@ -28,6 +28,15 @@ const server = http.createServer(app);
 //   },
 // });
 
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+socket(io);
+
 const publicpath = path.join(__dirname, "./Public/logs");
 app.use(express.static(publicpath));
 
@@ -39,16 +48,6 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
 app.use(cors({ origin: true, credentials: true }));
-
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-socket(io);
-
 app.use("/api", router);
 
 const uri = process.env.ATLAS_URI;
