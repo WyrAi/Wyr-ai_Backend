@@ -110,7 +110,7 @@ const io = new Server(server, {
   },
   allowEIO3: true,
 });
-socket(io);
+// socket(io);
 
 const publicpath = path.join(__dirname, "./Public/logs");
 app.use(express.static(publicpath));
