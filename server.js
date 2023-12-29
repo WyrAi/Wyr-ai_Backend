@@ -1,8 +1,7 @@
 // Import the required modules using ES6 import syntax
 import express from "express";
 import mongoose from "mongoose";
-import http from "http";
-import { Server } from "socket.io";
+
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
