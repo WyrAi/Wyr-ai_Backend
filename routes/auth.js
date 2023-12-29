@@ -241,14 +241,5 @@ router.route("/getrecentaddeduser").get(getlatestaddeduser);
 router.route("/logsCreate").post(logsCreate);
 router.route("/getLogFile").get(getLogFile);
 
-// router.route("/testing").post(async (req, res) => {
-//   const { multiple } = req.body;
-
-//   const data = await User.find({
-//     _id: multiple,
-//   });
-
-//   console.log(data);
-// });
 
 export default router;
