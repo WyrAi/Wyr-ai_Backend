@@ -28,14 +28,14 @@ const server = http.createServer(app);
 //   },
 // });
 
+socket(io);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://wyr-ai.vercel.app"], // Adjust the localhost port as needed
+    origin: ["http://localhost:5173", "https://wyr-ai.vercel.app"], // Adjust the localhost port as needed
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
-socket(io);
 const publicpath = path.join(__dirname, "./Public/logs");
 app.use(express.static(publicpath));
 
