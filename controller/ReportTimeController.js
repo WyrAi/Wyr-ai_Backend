@@ -16,13 +16,15 @@ export const ReportTimeCreate = async (req, res) => {
 
     const reportTime = new ReportTime({
       Name,
-      Time: Time || new Date(),
+      Time: new Date(),
       Comment: Comment || "",
     });
 
-    reportTime.save();
-
-    return res.status(200).json({ msg: "Report Time Created" });
+    if (reportTime) {
+      await reportTime.save();
+      return res.status(200).json({ msg: "Report Time Created" });
+    }
+    return res.status(400).json({ msg: "Something went wrong" });
   } catch (error) {
     console.log(error);
   }

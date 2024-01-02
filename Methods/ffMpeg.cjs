@@ -2,6 +2,7 @@ const moment = require("moment");
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const fs = require("fs");
+const BufferStream = require("bufferstreams");
 
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -66,13 +67,48 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
 
   // });
 
+  // ffmpeg(inputVideoPath)
+  //   .seekInput(timestamp)
+  //   .frames(1)
+  //   .output(outputPath)
+  //   .on("end", () => {
+  //     console.log(outputPath);
+  //   })
+  //   .run();
+  // ffmpeg(inputVideoPath)
+  //   .seekInput(timestamp)
+  //   .frames(1)
+  //   .output(new BufferStream({ encoding: "binary" }))
+  //   .on("end", (stdout, stderr) => {
+  //     // 'stdout' now contains the image data as a Buffer
+  //     // You can do something with the image data here
+
+  //     // For example, you can save it to a file if needed
+  //     fs.writeFileSync(outputPath, stdout);
+
+  //     // Log or process the image data as needed
+  //     console.log("Image data:", stdout.length, "bytes");
+  //   })
+  //   .run();
+
+
+  // Use a buffer to store the image data
+
   ffmpeg(inputVideoPath)
     .seekInput(timestamp)
     .frames(1)
-    .output(outputPath)
+    .toFormat("image2")
     .on("end", () => {
-      console.log(outputPath);
+      // 'stdout' now contains the image data as a Buffer
+      // You can do something with the image data here
+
+      // For example, you can save it to a file if needed
+      fs.writeFileSync(outputPath, Buffer.concat(capture.data));
+
+      // Log or process the image data as needed
+      console.log("Image data:", Buffer.concat(capture.data).length, "bytes");
     })
+    .capture()
     .run();
 
   return nameOfImages;
