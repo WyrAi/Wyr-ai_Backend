@@ -112,6 +112,19 @@ const socket = (io) => {
       });
     });
 
+    socket.on("RejectAndApprove",async(data)=>{
+      console.log("116=========>",data);
+  
+      const emailsWithAddEditCompanyPermission =
+      usersWithAddEditCompanyPermission.map((user) => user.email);
+    if (Array.isArray(emailsWithAddEditCompanyPermission)) {
+      for (const receiver of emailsWithAddEditCompanyPermission) {
+        await saveMessage(senderName, receiver, text);
+      }
+    } else {
+      await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
+    }
+    })
     // socket.on("purchesText", async ({data} ) => {
     //     const { senderName, text,reciveremail } = data ||[] ;
     //     const targetEmail = senderName;
@@ -371,7 +384,7 @@ const socket = (io) => {
       });
       console.log("user with disconnected with", socket);
     });
-    
+
   });
 };
 
