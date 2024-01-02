@@ -9,8 +9,8 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 
 // const OutputDirectory = path.join(__dirname, "../public/ReportImages");
 // const parentDirectory = path.join(__dirname, "../public/");
-const OutputDirectory = path.join(process.cwd(), "public/ReportImages");
-const parentDirectory = path.join(process.cwd(), "public");
+const OutputDirectory = path.join(process.cwd(), "../public/ReportImages");
+const parentDirectory = path.join(process.cwd(), "../public");
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
   // const OutputDirectory =
@@ -20,7 +20,7 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   // timestamps.forEach((timestamp, index) => {
 
   if (!fs.existsSync(parentDirectory)) {
-    fs.mkdirSync(parentDirectory, { recursive: true });
+    fs.mkdirSync(parentDirectory, { recursive: true }, (err) => {console.log(err)});
   }
 
   // if (!fs.existsSync(OutputDirectory)) {
