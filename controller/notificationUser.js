@@ -50,7 +50,6 @@ const Notification1 = async (req, res) => {
 const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.body;
-    //console.log("51======>",username);
 
     if (!username || !Array.isArray(username)) {
       return res.status(400).json({ message: "Invalid input", status: 400 });
