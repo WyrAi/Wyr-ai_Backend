@@ -7,10 +7,13 @@ const fs = require("fs");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 
-const OutputDirectory = path.join(__dirname, "../public/ReportImages");
-const parentDirectory = path.join(__dirname, "../public/");
+// const OutputDirectory = path.join(__dirname, "../public/ReportImages");
+// const parentDirectory = path.join(__dirname, "../public/");
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
+  const OutputDirectory =
+    process.env.OUTPUT_DIRECTORY || "./public/ReportImages";
+  const parentDirectory = process.env.PARENT_DIRECTORY || "./public/";
   let nameOfImages = "";
   // timestamps.forEach((timestamp, index) => {
 
