@@ -103,6 +103,10 @@ import {
 } from "../controller/videLinkController.js";
 import multer from "multer";
 import logs, { getLogFile } from "../controller/logsController.cjs";
+import {
+  ReportImageCreate,
+  ReportTimeCreate,
+} from "../controller/ReportTimeController.js";
 
 const { logsCreate } = logs;
 // const storage = multer.memoryStorage();
@@ -236,10 +240,16 @@ router.route("/get-emails-employees").get(getemailsofempolyes);
 router.route("/postatuslist").get(getPoStatus);
 router.route("/usercount").get(getusercount);
 router.route("/getrecentaddeduser").get(getlatestaddeduser);
+//------------------------//
 
 //logs routes
 router.route("/logsCreate").post(logsCreate);
 router.route("/getLogFile").get(getLogFile);
+//--------------------------//
 
+//New Report Routes
+router.route("/ReportTimeCreate").post(ReportTimeCreate);
+router.route("/ReportImageCreate").get(ReportImageCreate);
+//------------------------//
 
 export default router;

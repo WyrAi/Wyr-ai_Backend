@@ -17,14 +17,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const publicpath = path.join(__dirname, "./Public/logs");
-app.use(express.static(publicpath));
+const publicpath2 = path.join(__dirname, "./Public/ReportImages");
+app.use("/Public/logs", express.static(publicpath));
+app.use("/Public/ReportImages", express.static(publicpath2));
 
 // Middlewares
 app.set("view engine", "hbs");
 app.use(morgan("dev"));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: true, credentials: true }));;
+app.use(cors({ origin: true, credentials: true }));
 app.use("/api", router);
 
 const uri = process.env.ATLAS_URI;
