@@ -53,6 +53,8 @@ export const getPlData = async (req, res) => {
   }
 };
 
+
+
 export const updatePlData = async (req, res) => {
   try {
     const { id } = req.params;

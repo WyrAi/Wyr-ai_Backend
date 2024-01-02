@@ -224,7 +224,6 @@ router.route("/getAllCompanyRoles/:id").get(GetRolesByCompany);
 //notification route
 
 router.route("/socketuser").post(Notification1);
-
 router.route("/getsocketuser").get(getUserByUsername);
 router.route("/deletesocketuser/:username").delete(deleteSocketUser);
 router.route("/getuser").get(getusername);
