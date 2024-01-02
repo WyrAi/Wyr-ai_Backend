@@ -245,9 +245,7 @@ const findemailofsender = async (req, res) => {
   try {
   const {id}=req.body;
   const usersWithEmail = await Relationship.find({ _id: id });
-  // console.log("248=====>",usersWithEmail);
   const companyId = usersWithEmail[0]?.SenderRelationId;
-  //console.log("250======>",companyId);
   const usersWithCompanyId = await User.find({ companyId: companyId })
     .populate({
       path: "role",
@@ -267,16 +265,12 @@ const findemailofsender = async (req, res) => {
           );
         return relationshipManagementStrings.includes("Add/Edit Company");
       }
-
       return false;
     }
   );
-//console.log("274====>",usersWithAddEditCompanyPermission);
   const emailsWithAddEditCompanyPermission =
     usersWithAddEditCompanyPermission.map((user) => user.email);
-    res.send(emailsWithAddEditCompanyPermission);
-
-
+     res.send(emailsWithAddEditCompanyPermission);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

@@ -7,7 +7,7 @@ import User from "../models/users.js";
 import Notification from "../models/notificationMessageModel.js";
 import Role from "../models/role.js";
 import NotificationUser from "../models/notificationUser.js";
-
+import Relationship from "../models/relationshipModel.js";
 const socket = (io) => {
   let onlineUsers = [];
   const offlineMessages = {};
@@ -17,7 +17,7 @@ const socket = (io) => {
     onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
   };
 
-  async function saveMessage(sender, receiver, text) {
+  async function saveMessage(receiver, text) {
     const existingNotification = await Notification.findOne({
       receiverid: receiver,
     });
@@ -94,10 +94,10 @@ const socket = (io) => {
         usersWithAddEditCompanyPermission.map((user) => user.email);
       if (Array.isArray(emailsWithAddEditCompanyPermission)) {
         for (const receiver of emailsWithAddEditCompanyPermission) {
-          await saveMessage(senderName, receiver, text);
+          await saveMessage(receiver, text);
         }
       } else {
-        await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
+        await saveMessage(emailsWithAddEditCompanyPermission, text);
       }
 
       const receivers = await getUserByUsername({
@@ -113,12 +113,11 @@ const socket = (io) => {
     });
 
     socket.on("RejectAndApprove",async(data)=>{
-      console.log("116=========>",data);
-      const id=data.Relation_id;
+      // console.log("116=========>",data.data);
+      //console.log("117====>",data.data.Relation_id);
+       const id=data.data.Relation_id;
       const usersWithEmail = await Relationship.find({ _id: id });
-      // console.log("248=====>",usersWithEmail);
       const companyId = usersWithEmail[0]?.SenderRelationId;
-      //console.log("250======>",companyId);
       const usersWithCompanyId = await User.find({ companyId: companyId })
         .populate({
           path: "role",
@@ -138,19 +137,17 @@ const socket = (io) => {
               );
             return relationshipManagementStrings.includes("Add/Edit Company");
           }
-    
           return false;
         }
       );
-    //console.log("274====>",usersWithAddEditCompanyPermission);
       const emailsWithAddEditCompanyPermission =
       usersWithAddEditCompanyPermission.map((user) => user.email);
     if (Array.isArray(emailsWithAddEditCompanyPermission)) {
       for (const receiver of emailsWithAddEditCompanyPermission) {
-        await saveMessage(senderName, receiver, text);
+        await saveMessage(receiver, data.data.text);
       }
     } else {
-      await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
+      await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
     }
     })
 
