@@ -92,6 +92,7 @@ import {
   getemailsofempolyes,
   getusername,
   updateSeenStatus,
+  findemailofsender
 } from "../controller/notificationUser.js";
 
 // import User from "../models/users.js";
@@ -230,6 +231,7 @@ router.route("/getuser").get(getusername);
 router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
 router.route("/get-emails-employees").get(getemailsofempolyes);
+router.route("/findemailofsender").get(findemailofsender);
 
 //dashboard routes.
 router.route("/postatuslist").get(getPoStatus);

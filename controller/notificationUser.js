@@ -2,6 +2,7 @@
 import NotificationUser from "../models/notificationUser.js";
 import Notification from "../models/notificationMessageModel.js";
 import User from "../models/users.js";
+import Relationship from "../models/relationshipModel.js";
 
 const Notification1 = async (req, res) => {
   try {
@@ -240,6 +241,50 @@ const getemailsofempolyes = async (req, res) => {
   }
 };
 
+const findemailofsender = async (req, res) => {
+  try {
+  const {id}=req.body;
+  const usersWithEmail = await Relationship.find({ _id: id });
+  // console.log("248=====>",usersWithEmail);
+  const companyId = usersWithEmail[0]?.SenderRelationId;
+  //console.log("250======>",companyId);
+  const usersWithCompanyId = await User.find({ companyId: companyId })
+    .populate({
+      path: "role",
+      model: "Role",
+    })
+    .lean()
+    .exec();
+
+  const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
+    (user) => {
+      const role = user.role;
+
+      if (role && role.SelectAccess.relationshipManagement) {
+        const relationshipManagementStrings =
+          role.SelectAccess.relationshipManagement.map((value) =>
+            value.toString()
+          );
+        return relationshipManagementStrings.includes("Add/Edit Company");
+      }
+
+      return false;
+    }
+  );
+//console.log("274====>",usersWithAddEditCompanyPermission);
+  const emailsWithAddEditCompanyPermission =
+    usersWithAddEditCompanyPermission.map((user) => user.email);
+    res.send(emailsWithAddEditCompanyPermission);
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
 export {
   Notification1,
   getUserByUsername,
@@ -248,4 +293,5 @@ export {
   getNotification,
   updateSeenStatus,
   getemailsofempolyes,
+  findemailofsender
 };

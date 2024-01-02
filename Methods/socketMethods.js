@@ -114,7 +114,35 @@ const socket = (io) => {
 
     socket.on("RejectAndApprove",async(data)=>{
       console.log("116=========>",data);
-  
+      const id=data.Relation_id;
+      const usersWithEmail = await Relationship.find({ _id: id });
+      // console.log("248=====>",usersWithEmail);
+      const companyId = usersWithEmail[0]?.SenderRelationId;
+      //console.log("250======>",companyId);
+      const usersWithCompanyId = await User.find({ companyId: companyId })
+        .populate({
+          path: "role",
+          model: "Role",
+        })
+        .lean()
+        .exec();
+    
+      const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
+        (user) => {
+          const role = user.role;
+    
+          if (role && role.SelectAccess.relationshipManagement) {
+            const relationshipManagementStrings =
+              role.SelectAccess.relationshipManagement.map((value) =>
+                value.toString()
+              );
+            return relationshipManagementStrings.includes("Add/Edit Company");
+          }
+    
+          return false;
+        }
+      );
+    //console.log("274====>",usersWithAddEditCompanyPermission);
       const emailsWithAddEditCompanyPermission =
       usersWithAddEditCompanyPermission.map((user) => user.email);
     if (Array.isArray(emailsWithAddEditCompanyPermission)) {
@@ -125,54 +153,6 @@ const socket = (io) => {
       await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
     }
     })
-    // socket.on("purchesText", async ({data} ) => {
-    //     const { senderName, text,reciveremail } = data ||[] ;
-    //     const targetEmail = senderName;
-    //     const usersWithEmail = await User.find({ email: targetEmail }).select('companyId').exec();
-    //     const companyId = usersWithEmail[0]?.companyId;
-    //     const usersWithCompanyId = await User.find({ companyId: companyId })
-    //       .populate({
-    //         path: 'role',
-    //         model: 'Role',
-    //       })
-    //       .lean()
-    //       .exec();
-
-    //     const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(user => {
-    //       const role = user.role;
-
-    //       if (role && role.SelectAccess.purchaseOrder) {
-    //         const relationshipManagementStrings = role.SelectAccess.purchaseOrder.map(value => value.toString());
-    //         return relationshipManagementStrings.includes('Approve');
-    //       }
-
-    //       return false;
-    //     });
-
-    //   const emailsWithAddEditCompanyPermission = usersWithAddEditCompanyPermission.map(user => user.email);
-    //         if (Array.isArray(emailsWithAddEditCompanyPermission)) {
-    //       for (const receiver of emailsWithAddEditCompanyPermission) {
-    //         await saveMessage(senderName, receiver, text);
-    //       }
-    //     } else {
-    //       await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
-    //     }
-
-    //     const receivers = await getUserByUsername({
-    //       body: {
-    //         username: emailsWithAddEditCompanyPermission
-    //       },
-    //     });
-
-    //     if (receivers.length) {
-    //       receivers.forEach((receiver) => {
-    //         io.to(receiver.socket).emit("getText", {
-    //           senderName,
-    //           text,
-    //         });
-    //       });
-    //     }
-    //   });
 
     socket.on("purchesText", async (data) => {
         console.log('purchesText methods called====>165');
@@ -210,7 +190,7 @@ const socket = (io) => {
       }
     });
 
-    socket.on("RoleText", async (data) => {
+    socket.on("RoleText/Branch", async (data) => {
         console.log('RoleText methods called !=====>201');
       const { senderName, text } = data;
       const targetEmail = senderName;
