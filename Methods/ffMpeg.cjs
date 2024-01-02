@@ -72,6 +72,7 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
       .output(outputPath)
       .on("end", () => {
         console.log(outputPath);
+        nameOfImages = `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
       })
       .run();
 
