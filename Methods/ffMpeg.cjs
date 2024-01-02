@@ -1,6 +1,7 @@
 const moment = require("moment");
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const fs = require("fs");
 
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -10,6 +11,9 @@ const OutputDirectory = path.join(__dirname, "../Public/ReportImages");
 const extractImages = async (timestamp, name, inputVideoPath) => {
   let nameOfImages = "";
   // timestamps.forEach((timestamp, index) => {
+  if (!fs.existsSync(OutputDirectory)) {
+    fs.mkdirSync(OutputDirectory, { recursive: true });
+  }
   const updateDate = moment(new Date()).format("YYYY-MM-DD_HH-mm-ss");
   const outputFilename = `${updateDate}_${name}.jpg`; // Output image filename
   const outputPath = path.join(OutputDirectory, outputFilename);
