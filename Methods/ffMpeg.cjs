@@ -7,8 +7,8 @@ const BufferStream = require("bufferstreams");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 
-const OutputDirectory = path.join(__dirname, "../Public/ReportImages");
-const parentDirectory = path.join(__dirname, "../Public/");
+const OutputDirectory = path.join(__dirname, "../public/ReportImages");
+const parentDirectory = path.join(__dirname, "../public/");
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
   let nameOfImages = "";
@@ -121,7 +121,7 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
         .output(outputPath)
         .on("end", () => {
           console.log(`Image ${name} extracted at timestamp ${timestamp}s`);
-          nameOfImages = `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
+          nameOfImages = `${process.env.SERVER_LINK}/public/ReportImages/${outputFilename}`;
           resolve();
         })
         .on("error", (err) => {

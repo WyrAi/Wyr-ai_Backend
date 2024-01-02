@@ -2,7 +2,7 @@ const fs = require("fs");
 const moment = require("moment");
 const path = require("path");
 
-const logsDirectory = path.join(__dirname, "../Public/logs");
+const logsDirectory = path.join(__dirname, "../public/logs");
 
 // const logsCreate = async (req, res) => {
 //   try {
