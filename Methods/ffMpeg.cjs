@@ -7,13 +7,23 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const OutputDirectory = path.join(__dirname, "../Public/ReportImages");
+const parentDirectory = path.join(__dirname, "../Public/");
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
   let nameOfImages = "";
   // timestamps.forEach((timestamp, index) => {
+
+  if (!fs.existsSync(parentDirectory)) {
+    fs.mkdirSync(parentDirectory, { recursive: true });
+  }
+
   if (!fs.existsSync(OutputDirectory)) {
     fs.mkdirSync(OutputDirectory, { recursive: true });
   }
+
+  console.log("Current Working Directory:", process.cwd());
+  console.log("Parent Directory:", parentDirectory);
+  console.log("Report Images Directory:", OutputDirectory);
   const updateDate = moment(new Date()).format("YYYY-MM-DD_HH-mm-ss");
   const outputFilename = `${updateDate}_${name}.jpg`; // Output image filename
   const outputPath = path.join(OutputDirectory, outputFilename);
