@@ -106,6 +106,7 @@ import logs, { getLogFile } from "../controller/logsController.cjs";
 import {
   ReportImageCreate,
   ReportTimeCreate,
+  // imageRemove,
 } from "../controller/ReportTimeController.js";
 
 const { logsCreate } = logs;
@@ -250,6 +251,7 @@ router.route("/getLogFile").get(getLogFile);
 //New Report Routes
 router.route("/ReportTimeCreate").post(ReportTimeCreate);
 router.route("/ReportImageCreate").get(ReportImageCreate);
+// router.route("/imageRemove").post(imageRemove);
 //------------------------//
 
 export default router;
