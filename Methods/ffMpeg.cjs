@@ -22,9 +22,9 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
     fs.mkdirSync(OutputDirectory, { recursive: true });
   }
 
-  // console.log("Current Working Directory:", process.cwd());
-  // console.log("Parent Directory:", parentDirectory);
-  // console.log("Report Images Directory:", OutputDirectory);
+  console.log("Current Working Directory:", process.cwd());
+  console.log("Parent Directory:", parentDirectory);
+  console.log("Report Images Directory:", OutputDirectory);
   const updateDate = moment(new Date()).format("YYYY-MM-DD_HH-mm-ss");
   const outputFilename = `${updateDate}_${name}.jpg`; // Output image filename
   const outputPath = path
