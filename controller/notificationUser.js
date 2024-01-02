@@ -178,7 +178,8 @@ const getNotification = async (req, res) => {
           },
           []
         );
-        console.log("Flattened Notifications:", flattenedNotifications);
+        // console.log("Flattened Notifications:", flattenedNotifications);
+        console.log("notification fetch successfully !");
         res.status(200).json({
           status: 200,
           msg: "notification data",
