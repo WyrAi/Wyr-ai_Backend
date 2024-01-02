@@ -67,14 +67,14 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
 
   // });
 
-  // ffmpeg(inputVideoPath)
-  //   .seekInput(timestamp)
-  //   .frames(1)
-  //   .output(outputPath)
-  //   .on("end", () => {
-  //     console.log(outputPath);
-  //   })
-  //   .run();
+  ffmpeg(inputVideoPath)
+    .seekInput(timestamp)
+    .frames(1)
+    .output(outputPath)
+    .on("end", () => {
+      console.log(outputPath);
+    })
+    .run();
   // ffmpeg(inputVideoPath)
   //   .seekInput(timestamp)
   //   .frames(1)
@@ -94,22 +94,22 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
 
   // Use a buffer to store the image data
 
-  ffmpeg(inputVideoPath)
-    .seekInput(timestamp)
-    .frames(1)
-    .toFormat("image2")
-    .on("end", () => {
-      // 'stdout' now contains the image data as a Buffer
-      // You can do something with the image data here
+  // ffmpeg(inputVideoPath)
+  //   .seekInput(timestamp)
+  //   .frames(1)
+  //   .toFormat("image2")
+  //   .on("end", () => {
+  //     // 'stdout' now contains the image data as a Buffer
+  //     // You can do something with the image data here
 
-      // For example, you can save it to a file if needed
-      fs.writeFileSync(outputPath, Buffer.concat(capture.data));
+  //     // For example, you can save it to a file if needed
+  //     fs.writeFileSync(outputPath, Buffer.concat(capture.data));
 
-      // Log or process the image data as needed
-      console.log("Image data:", Buffer.concat(capture.data).length, "bytes");
-    })
-    .capture()
-    .run();
+  //     // Log or process the image data as needed
+  //     console.log("Image data:", Buffer.concat(capture.data).length, "bytes");
+  //   })
+  //   .capture()
+  //   .run();
 
   return nameOfImages;
 };
