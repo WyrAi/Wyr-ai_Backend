@@ -16,10 +16,10 @@ const port = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const publicpath = path.join(__dirname, "./Public/logs");
-const publicpath2 = path.join(__dirname, "./Public/ReportImages");
-app.use("/Public/logs", express.static(publicpath));
-app.use("/Public/ReportImages", express.static(publicpath2));
+const publicpath = path.join(__dirname, "./public/logs");
+const publicpath2 = path.join(__dirname, "./public/ReportImages");
+app.use("/public/logs", express.static(publicpath));
+app.use("/public/ReportImages", express.static(publicpath2));
 
 // Middlewares
 app.set("view engine", "hbs");
