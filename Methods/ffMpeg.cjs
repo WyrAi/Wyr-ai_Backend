@@ -30,7 +30,6 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   const outputPath = path
     .join(OutputDirectory, outputFilename)
     .replace(/\\/g, "/");
-  nameOfImages = `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
 
   // Run FFmpeg command to extract image
   // ffmpeg(inputVideoPath)
@@ -67,14 +66,18 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
 
   // });
 
-  ffmpeg(inputVideoPath)
-    .seekInput(timestamp)
-    .frames(1)
-    .output(outputPath)
-    .on("end", () => {
-      console.log(outputPath);
-    })
-    .run();
+  // const data = ffmpeg(inputVideoPath)
+  //   .seekInput(timestamp)
+  //   .frames(1)
+  //   .output(outputPath)
+  //   .on("end", () => {
+  //     console.log(outputPath);
+  //     return `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
+  //   })
+  //   .on("error", (err) => {
+  //     console.error("Error generating image:", err);
+  //   })
+  //   .run();
   // ffmpeg(inputVideoPath)
   //   .seekInput(timestamp)
   //   .frames(1)
@@ -90,7 +93,6 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   //     console.log("Image data:", stdout.length, "bytes");
   //   })
   //   .run();
-
 
   // Use a buffer to store the image data
 
@@ -110,6 +112,28 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   //   })
   //   .capture()
   //   .run();
+
+  try {
+    await new Promise((resolve, reject) => {
+      ffmpeg(inputVideoPath)
+        .seekInput(timestamp)
+        .frames(1)
+        .output(outputPath)
+        .on("end", () => {
+          console.log(`Image ${name} extracted at timestamp ${timestamp}s`);
+          nameOfImages = `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
+          resolve();
+        })
+        .on("error", (err) => {
+          console.error(`Error extracting image: ${err}`);
+          reject(err);
+        })
+        .run();
+    });
+  } catch (error) {
+    console.error("Exception during image generation:", error);
+  }
+  // console.log(data, "jhg");
 
   return nameOfImages;
 };
