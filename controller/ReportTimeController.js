@@ -66,7 +66,7 @@ export const ReportImageCreate = async (req, res) => {
           videoLink[0].link
         );
         console.log(ImagesName);
-        await Information.create({ image: ImagesName,comment:  Comment });
+        await Information.create({ image: ImagesName, comment: Comment });
       }
       // const times = timeStamps.map((item) => item.Time);
       // console.log(times);
@@ -82,3 +82,19 @@ export const ReportImageCreate = async (req, res) => {
     console.log(error);
   }
 };
+
+// export const imageRemove = async (req, res) => {
+//   try {
+//     const data = await Information.find();
+//     const imagesAddress = data.map((val) => val.image);
+//     console.log(typeof imagesAddress[0].split(":5000")[1]);
+
+//     for (let i = 0; i < imagesAddress.length; i++) {
+//       fs.unlinkSync(imagesAddress[i].split(":5000")[1]);
+//     }
+
+//     res.status(200).json({ msg: "Images removed" });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
