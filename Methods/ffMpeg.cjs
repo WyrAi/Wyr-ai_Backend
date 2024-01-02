@@ -11,6 +11,7 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 // const parentDirectory = path.join(__dirname, "../public/");
 const OutputDirectory = path.join(process.cwd(), "../public/ReportImages");
 const parentDirectory = path.join(process.cwd(), "../public");
+const tempDirectory = "/tmp";
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
   // const OutputDirectory =
@@ -20,7 +21,9 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   // timestamps.forEach((timestamp, index) => {
 
   if (!fs.existsSync(parentDirectory)) {
-    fs.mkdirSync(parentDirectory, { recursive: true }, (err) => {console.log(err)});
+    fs.mkdirSync(parentDirectory, { recursive: true }, (err) => {
+      console.log(err);
+    });
   }
 
   // if (!fs.existsSync(OutputDirectory)) {
@@ -34,6 +37,9 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   const outputFilename = `${updateDate}_${name}.jpg`; // Output image filename
   const outputPath = path
     .join(OutputDirectory, outputFilename)
+    .replace(/\\/g, "/");
+  const tempOutputPath = path
+    .join(tempDirectory, outputFilename)
     .replace(/\\/g, "/");
 
   // Run FFmpeg command to extract image
@@ -123,7 +129,7 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
       ffmpeg(inputVideoPath)
         .seekInput(timestamp)
         .frames(1)
-        .output(outputPath)
+        .output(tempOutputPath)
         .on("end", () => {
           console.log(`Image ${name} extracted at timestamp ${timestamp}s`);
           nameOfImages = `${process.env.SERVER_LINK}/public/ReportImages/${outputFilename}`;
@@ -135,6 +141,8 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
         })
         .run();
     });
+    // Move the file from /tmp to the final destination
+    fs.renameSync(tempOutputPath, outputPath);
   } catch (error) {
     console.error("Exception during image generation:", error);
   }
