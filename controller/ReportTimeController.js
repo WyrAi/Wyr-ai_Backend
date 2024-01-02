@@ -16,7 +16,7 @@ export const ReportTimeCreate = async (req, res) => {
 
     const reportTime = new ReportTime({
       Name,
-      Time: Time || "",
+      Time: Time || new Date(),
       Comment: Comment || "",
     });
 
