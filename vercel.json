@@ -7,8 +7,7 @@
     },
     {
       "src": "public/**/*",
-      "use": "@vercel/static",
-      "outputDirectory": "public" 
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,5 +15,6 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "public": true
 }
