@@ -9,11 +9,13 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 
 // const OutputDirectory = path.join(__dirname, "../public/ReportImages");
 // const parentDirectory = path.join(__dirname, "../public/");
+const OutputDirectory = "public/ReportImages"; // Vercel serves from the "public" directory
+const parentDirectory = "public";
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
-  const OutputDirectory =
-    process.env.OUTPUT_DIRECTORY || "./public/ReportImages";
-  const parentDirectory = process.env.PARENT_DIRECTORY || "./public/";
+  // const OutputDirectory =
+  //   process.env.OUTPUT_DIRECTORY || "./public/ReportImages";
+  // const parentDirectory = process.env.PARENT_DIRECTORY || "./public/";
   let nameOfImages = "";
   // timestamps.forEach((timestamp, index) => {
 
@@ -21,9 +23,9 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
     fs.mkdirSync(parentDirectory, { recursive: true });
   }
 
-  if (!fs.existsSync(OutputDirectory)) {
-    fs.mkdirSync(OutputDirectory, { recursive: true });
-  }
+  // if (!fs.existsSync(OutputDirectory)) {
+  //   fs.mkdirSync(OutputDirectory, { recursive: true });
+  // }
 
   console.log("Current Working Directory:", process.cwd());
   console.log("Parent Directory:", parentDirectory);
