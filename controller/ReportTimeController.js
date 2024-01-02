@@ -66,9 +66,9 @@ export const ReportImageCreate = async (req, res) => {
           videoLink[0].link
         );
         // console.log(ImagesName);
-        if (ImagesName) {
-          await Information.create({ image: ImagesName, comment: Comment });
-        }
+        // if (ImagesName) {
+        await Information.create({ image: ImagesName, comment: Comment });
+        // }
       }
       // const times = timeStamps.map((item) => item.Time);
       // console.log(times);
