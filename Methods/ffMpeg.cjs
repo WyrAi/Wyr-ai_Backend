@@ -9,8 +9,8 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 
 // const OutputDirectory = path.join(__dirname, "../public/ReportImages");
 // const parentDirectory = path.join(__dirname, "../public/");
-const OutputDirectory = "public/ReportImages"; // Vercel serves from the "public" directory
-const parentDirectory = "public";
+const OutputDirectory = path.join(process.cwd(), "public/ReportImages");
+const parentDirectory = path.join(process.cwd(), "public");
 
 const extractImages = async (timestamp, name, inputVideoPath) => {
   // const OutputDirectory =
