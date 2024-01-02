@@ -53,13 +53,14 @@ const socket = (io) => {
         socket.emit("sockeid", socket.id);
         console.log("socketId", socket.id);
 
-        console.log("User connected with", user, "and socket ID", socket.id);
+        console.log("User connected with====>56", user, "and socket ID", socket.id);
       } catch (error) {
         console.error("Error saving notification:", error);
       }
     });
 
     socket.on("RelationshipsText", async ({ data }) => {
+        console.log('relationshiptext methods called====>63');
       const { senderName, text } = data;
       const usersWithEmail = await User.find({ email: senderName })
         .select("companyId")
@@ -161,6 +162,7 @@ const socket = (io) => {
     //   });
 
     socket.on("purchesText", async (data) => {
+        console.log('purchesText methods called====>165');
       const { senderName, text, employeeIds } = data || [];
       if (!employeeIds || !Array.isArray(employeeIds)) {
         return res
@@ -196,6 +198,7 @@ const socket = (io) => {
     });
 
     socket.on("RoleText", async (data) => {
+        console.log('RoleText methods called !=====>201');
       const { senderName, text } = data;
       const targetEmail = senderName;
       const usersWithEmail = await User.find({ email: targetEmail })
@@ -250,6 +253,7 @@ const socket = (io) => {
     });
 
     socket.on("PackingText", async ({ data }) => {
+        console.log('PackingText methods called !=====>256');
       const { senderName, text } = data;
       const targetEmail = senderName;
       const usersWithEmail = await User.find({ email: targetEmail })
