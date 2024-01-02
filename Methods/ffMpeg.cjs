@@ -27,7 +27,6 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
   const updateDate = moment(new Date()).format("YYYY-MM-DD_HH-mm-ss");
   const outputFilename = `${updateDate}_${name}.jpg`; // Output image filename
   const outputPath = path.join(OutputDirectory, outputFilename);
-  nameOfImages = `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
   // Run FFmpeg command to extract image
   ffmpeg(inputVideoPath)
     .seekInput(timestamp)
@@ -36,6 +35,7 @@ const extractImages = async (timestamp, name, inputVideoPath) => {
     .videoCodec("mjpeg")
     .on("end", () => {
       console.log(`Image ${name} extracted at timestamp ${timestamp}s`);
+      nameOfImages = `${process.env.SERVER_LINK}/Public/ReportImages/${outputFilename}`;
     })
     .on("error", (err) => {
       console.error(`Error extracting image: ${err}`);
