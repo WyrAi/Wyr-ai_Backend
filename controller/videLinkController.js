@@ -8,12 +8,12 @@ const createVideoLink = async (req, res) => {
   try {
     const link = req.body;
     console.log(link);
-    const newVideoLink = "";
-    if (link.video_url) {
-      newVideoLink = new VideoLink({ link: link.video_url });
-    } else {
-      newVideoLink = new VideoLink({ link: link.command });
-    }
+    // const newVideoLink = "";
+    // if (link.video_url) {
+    const newVideoLink = new VideoLink({ link: link.video_url });
+    // } else {
+    //   newVideoLink = new VideoLink({ link: link.command });
+    // }
     await newVideoLink.save();
     if (!newVideoLink) {
       return res
