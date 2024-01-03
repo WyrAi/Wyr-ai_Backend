@@ -231,7 +231,7 @@ router.route("/getuser").get(getusername);
 router.route("/getnotification/:email").get(getNotification);
 router.route("/updatenotifactionstatus").post(updateSeenStatus);
 router.route("/get-emails-employees").get(getemailsofempolyes);
-router.route("/findemailofsender").get(findemailofsender);
+router.route("/findemailofsender").post(findemailofsender);
 
 //dashboard routes.
 router.route("/postatuslist").get(getPoStatus);

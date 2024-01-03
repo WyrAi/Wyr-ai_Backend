@@ -115,7 +115,7 @@ const socket = (io) => {
     socket.on("Reject/Approve/Delete",async(data)=>{
       // console.log("116=========>",data.data);
       //console.log("117====>",data.data.Relation_id);
-       const id=data.data.Relation_id;
+      const id=data.data.Relation_id;
       const usersWithEmail = await Relationship.find({ _id: id });
       const companyId = usersWithEmail[0]?.SenderRelationId;
       const usersWithCompanyId = await User.find({ companyId: companyId })
@@ -150,6 +150,49 @@ const socket = (io) => {
       await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
     }
     })
+
+    socket.on("DeleteRelation",async(data)=>{
+      console.log("155=======>",data);
+      const id=data.data.Relation_id;
+      const usersWithEmail = await Relationship.find({ _id: id });
+      const companyId = usersWithEmail[0]?.SenderRelationId;
+      const usersWithCompanyId = await User.find({ companyId: companyId })
+        .populate({
+          path: "role",
+          model: "Role",
+        })
+        .lean()
+        .exec();
+    
+      const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
+        (user) => {
+          const role = user.role;
+    
+          if (role && role.SelectAccess.relationshipManagement) {
+            const relationshipManagementStrings =
+              role.SelectAccess.relationshipManagement.map((value) =>
+                value.toString()
+              );
+            return relationshipManagementStrings.includes("Add/Edit Company");
+          }
+          return false;
+        }
+      );
+      const emailsWithAddEditCompanyPermission =
+      usersWithAddEditCompanyPermission.map((user) => user.email);
+
+      const users = await Relationship.find({ _id: id });
+
+    if (Array.isArray(emailsWithAddEditCompanyPermission) && !users) {
+      for (const receiver of emailsWithAddEditCompanyPermission) {
+        await saveMessage(receiver, data.data.text);
+      }
+    } else {
+      console.log('users deleted===>192');
+      await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+    }
+
+    });
 
     socket.on("purchesText", async (data) => {
         console.log('purchesText methods called====>165');
