@@ -107,13 +107,14 @@ const ReportEmailSend = async (req, res) => {
 
     const link = await VideoLink.find();
     const updateLink = link[0].link
+      .replace(".mkv", ".mp4")
       .split("/")
       .mailTransport()
       .sendMail({
         from: process.env.EMAIL,
         to: email,
         subject: "Report Share",
-        html: downloadLinkTemplate(link[0].link),
+        html: downloadLinkTemplate(updateLink),
         attachments: [
           {
             filename: "file.pdf",
