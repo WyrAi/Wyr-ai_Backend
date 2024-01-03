@@ -74,7 +74,6 @@ const getUserByUsername = async (req, res) => {
   }
 };
 
-
 const getusername = async (req, res) => {
   try {
     const receiverData = await NotificationUser.find({});
@@ -87,7 +86,6 @@ const getusername = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
 
 const deleteSocketUser = async (req, res) => {
   try {
@@ -123,7 +121,6 @@ const deleteSocketUser = async (req, res) => {
     }
   }
 };
-
 
 // const getNotification = async (req, res) => {
 //   try {
@@ -206,7 +203,6 @@ const getNotification = async (req, res) => {
   }
 };
 
-
 const updateSeenStatus = async (req, res) => {
   try {
     const { receiverid } = req.body;
@@ -229,7 +225,6 @@ const updateSeenStatus = async (req, res) => {
   }
 };
 
-
 const getemailsofempolyes = async (req, res) => {
   try {
     const { employeeIds } = req.body;
@@ -248,7 +243,6 @@ const getemailsofempolyes = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 const findemailofsender = async (req, res) => {
   try {
@@ -285,7 +279,6 @@ const findemailofsender = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
 
 export {
   Notification1,

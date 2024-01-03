@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const InformationSchema = new mongoose.Schema({
   image: {
     type: String,

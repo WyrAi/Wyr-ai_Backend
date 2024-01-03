@@ -112,7 +112,7 @@ const socket = (io) => {
       });
     });
 
-    socket.on("RejectAndApprove",async(data)=>{
+    socket.on("Reject/Approve/Delete",async(data)=>{
       // console.log("116=========>",data.data);
       //console.log("117====>",data.data.Relation_id);
        const id=data.data.Relation_id;
