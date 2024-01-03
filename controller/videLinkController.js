@@ -8,7 +8,12 @@ const createVideoLink = async (req, res) => {
   try {
     const link = req.body;
     console.log(link);
-    const newVideoLink = new VideoLink({ link: link.video_url });
+    const newVideoLink = "";
+    if (link.video_url) {
+      newVideoLink = new VideoLink({ link: link.video_url });
+    } else {
+      newVideoLink = new VideoLink({ link: link.command });
+    }
     await newVideoLink.save();
     if (!newVideoLink) {
       return res
@@ -39,6 +44,55 @@ const VideoCheck = async (req, res) => {
   }
 };
 
+const CreateDataSet = async (req, res) => {
+  try {
+    const Data = await VideoLink.find();
+    if (Data.length > 0) {
+      for (let i = 0; i < Data.length; i++) {
+        let checkType = Data[i].link.split("/");
+        let checkType1 = checkType[checkType.length - 1].includes(".png");
+        if (checkType1) {
+          const Report = Information({
+            image: Data[i].link,
+          });
+          await VideoLink.deleteOne({ _id: Data[i]._id });
+          for (let j = i + 1; j < Data.length; j++) {
+            let commentType = Data[j].link.split("/");
+            let commentType1 =
+              commentType[commentType.length - 1].includes(".png");
+            let videoType =
+              commentType[commentType.length - 1].includes(".mkv");
+            if (!commentType1 && !videoType) {
+              console.log("image");
+              Report.comment.push(Data[j].link);
+              await VideoLink.deleteOne({ _id: Data[j]._id });
+            } else {
+              await Report.save();
+              // await VideoLink.deleteOne({ _id: Data[j]._id });
+              break;
+            }
+          }
+        }
+      }
+      return res
+        .status(200)
+        .json({ message: "Data set created", status: true });
+    } else {
+      const response = await Information.find();
+      if (response.length > 0) {
+        return res
+          .status(200)
+          .json({ message: "Data set created", status: true });
+      }
+    }
+    return res
+      .status(200)
+      .json({ message: "Data set not created", status: false });
+  } catch (error) {
+    console.log(error);
+  }
+};
+// CreateDataSet();
 const ReportEmailSend = async (req, res) => {
   try {
     const { email } = req.fields;
@@ -52,20 +106,22 @@ const ReportEmailSend = async (req, res) => {
     // const PDFLink = await ImageUploadByFile(file);
 
     const link = await VideoLink.find();
-
-    mailTransport().sendMail({
-      from: process.env.EMAIL,
-      to: email,
-      subject: "Report Share",
-      html: downloadLinkTemplate(link[0].link),
-      attachments: [
-        {
-          filename: "file.pdf",
-          content: base64Data,
-          encoding: "base64",
-        },
-      ],
-    });
+    const updateLink = link[0].link
+      .split("/")
+      .mailTransport()
+      .sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Report Share",
+        html: downloadLinkTemplate(link[0].link),
+        attachments: [
+          {
+            filename: "file.pdf",
+            content: base64Data,
+            encoding: "base64",
+          },
+        ],
+      });
     // fileStream.close();
     res.status(200).json({ message: "Email sent successfully", status: true });
 
@@ -76,4 +132,4 @@ const ReportEmailSend = async (req, res) => {
   }
 };
 
-export { createVideoLink, ReportEmailSend, VideoCheck };
+export { createVideoLink, ReportEmailSend, VideoCheck, CreateDataSet };
