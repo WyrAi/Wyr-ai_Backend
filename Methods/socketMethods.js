@@ -8,6 +8,7 @@ import Notification from "../models/notificationMessageModel.js";
 import Role from "../models/role.js";
 import NotificationUser from "../models/notificationUser.js";
 import Relationship from "../models/relationshipModel.js";
+import Companydetails from "../models/companydetails.js";
 const socket = (io) => {
   let onlineUsers = [];
   const offlineMessages = {};
@@ -180,10 +181,28 @@ const socket = (io) => {
       );
       const emailsWithAddEditCompanyPermission =
       usersWithAddEditCompanyPermission.map((user) => user.email);
+      console.log('184========>',emailsWithAddEditCompanyPermission);
+       //delete relation
+       if (id) {
+        await Relationship.findByIdAndDelete({
+          _id: id,
+        });
+  
+        await Companydetails.updateMany(
+          {
+            "companyRelations.relationId": id,
+          },
+          {
+            $pull: {
+              companyRelations: {
+                relationId:id,
+              },
+            },
+          }
+        );
+       }
 
-      const users = await Relationship.find({ _id: id });
-
-    if (Array.isArray(emailsWithAddEditCompanyPermission) && !users) {
+    if (Array.isArray(emailsWithAddEditCompanyPermission)) {
       for (const receiver of emailsWithAddEditCompanyPermission) {
         await saveMessage(receiver, data.data.text);
       }
