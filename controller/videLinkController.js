@@ -106,23 +106,20 @@ const ReportEmailSend = async (req, res) => {
     // const PDFLink = await ImageUploadByFile(file);
 
     const link = await VideoLink.find();
-    const updateLink = link[0].link
-      .replace(".mkv", ".mp4")
-      .split("/")
-      .mailTransport()
-      .sendMail({
-        from: process.env.EMAIL,
-        to: email,
-        subject: "Report Share",
-        html: downloadLinkTemplate(updateLink),
-        attachments: [
-          {
-            filename: "file.pdf",
-            content: base64Data,
-            encoding: "base64",
-          },
-        ],
-      });
+    const updateLink = link[0].link.replace(".mkv", ".mp4");
+    mailTransport().sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Report Share",
+      html: downloadLinkTemplate(updateLink),
+      attachments: [
+        {
+          filename: "file.pdf",
+          content: base64Data,
+          encoding: "base64",
+        },
+      ],
+    });
     // fileStream.close();
     res.status(200).json({ message: "Email sent successfully", status: true });
 
