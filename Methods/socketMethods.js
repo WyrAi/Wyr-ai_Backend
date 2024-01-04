@@ -53,15 +53,19 @@ const socket = (io) => {
         await notification.save();
         socket.emit("sockeid", socket.id);
         console.log("socketId", socket.id);
-
-        console.log("User connected with====>56", user, "and socket ID", socket.id);
+        console.log(
+          "User connected with====>56",
+          user,
+          "and socket ID",
+          socket.id
+        );
       } catch (error) {
         console.error("Error saving notification:", error);
       }
     });
 
     socket.on("RelationshipsText", async ({ data }) => {
-        console.log('relationshiptext methods called====>63');
+      console.log("relationshiptext methods called====>63");
       const { senderName, text } = data;
       const usersWithEmail = await User.find({ email: senderName })
         .select("companyId")
@@ -113,10 +117,10 @@ const socket = (io) => {
       });
     });
 
-    socket.on("Reject/Approve/Delete",async(data)=>{
+    socket.on("Reject/Approve/Delete", async (data) => {
       // console.log("116=========>",data.data);
       //console.log("117====>",data.data.Relation_id);
-      const id=data.data.Relation_id;
+      const id = data.data.Relation_id;
       const usersWithEmail = await Relationship.find({ _id: id });
       const companyId = usersWithEmail[0]?.SenderRelationId;
       const usersWithCompanyId = await User.find({ companyId: companyId })
@@ -126,49 +130,11 @@ const socket = (io) => {
         })
         .lean()
         .exec();
-    
-      const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
-        (user) => {
-          const role = user.role;
-    
-          if (role && role.SelectAccess.relationshipManagement) {
-            const relationshipManagementStrings =
-              role.SelectAccess.relationshipManagement.map((value) =>
-                value.toString()
-              );
-            return relationshipManagementStrings.includes("Add/Edit Company");
-          }
-          return false;
-        }
-      );
-      const emailsWithAddEditCompanyPermission =
-      usersWithAddEditCompanyPermission.map((user) => user.email);
-    if (Array.isArray(emailsWithAddEditCompanyPermission)) {
-      for (const receiver of emailsWithAddEditCompanyPermission) {
-        await saveMessage(receiver, data.data.text);
-      }
-    } else {
-      await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
-    }
-    })
 
-    socket.on("DeleteRelation",async(data)=>{
-      console.log("155=======>",data);
-      const id=data.data.Relation_id;
-      const usersWithEmail = await Relationship.find({ _id: id });
-      const companyId = usersWithEmail[0]?.SenderRelationId;
-      const usersWithCompanyId = await User.find({ companyId: companyId })
-        .populate({
-          path: "role",
-          model: "Role",
-        })
-        .lean()
-        .exec();
-    
       const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
         (user) => {
           const role = user.role;
-    
+
           if (role && role.SelectAccess.relationshipManagement) {
             const relationshipManagementStrings =
               role.SelectAccess.relationshipManagement.map((value) =>
@@ -180,14 +146,51 @@ const socket = (io) => {
         }
       );
       const emailsWithAddEditCompanyPermission =
-      usersWithAddEditCompanyPermission.map((user) => user.email);
-      console.log('184========>',emailsWithAddEditCompanyPermission);
-       //delete relation
-       if (id) {
+        usersWithAddEditCompanyPermission.map((user) => user.email);
+      if (Array.isArray(emailsWithAddEditCompanyPermission)) {
+        for (const receiver of emailsWithAddEditCompanyPermission) {
+          await saveMessage(receiver, data.data.text);
+        }
+      } else {
+        await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+      }
+      io.emit("getText", {});
+    });
+
+    socket.on("DeleteRelation", async (data) => {
+      const id = data.data.Relation_id;
+      const usersWithEmail = await Relationship.find({ _id: id });
+      const companyId = usersWithEmail[0]?.SenderRelationId;
+      const usersWithCompanyId = await User.find({ companyId: companyId })
+        .populate({
+          path: "role",
+          model: "Role",
+        })
+        .lean()
+        .exec();
+
+      const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
+        (user) => {
+          const role = user.role;
+
+          if (role && role.SelectAccess.relationshipManagement) {
+            const relationshipManagementStrings =
+              role.SelectAccess.relationshipManagement.map((value) =>
+                value.toString()
+              );
+            return relationshipManagementStrings.includes("Add/Edit Company");
+          }
+          return false;
+        }
+      );
+      const emailsWithAddEditCompanyPermission =
+        usersWithAddEditCompanyPermission.map((user) => user.email);
+      //delete relation
+      if (id) {
         await Relationship.findByIdAndDelete({
           _id: id,
         });
-  
+
         await Companydetails.updateMany(
           {
             "companyRelations.relationId": id,
@@ -195,26 +198,29 @@ const socket = (io) => {
           {
             $pull: {
               companyRelations: {
-                relationId:id,
+                relationId: id,
               },
             },
           }
         );
-       }
-
-    if (Array.isArray(emailsWithAddEditCompanyPermission)) {
-      for (const receiver of emailsWithAddEditCompanyPermission) {
-        await saveMessage(receiver, data.data.text);
       }
-    } else {
-      console.log('users deleted===>192');
-      await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
-    }
 
+      if (Array.isArray(emailsWithAddEditCompanyPermission)) {
+        for (const receiver of emailsWithAddEditCompanyPermission) {
+          await saveMessage(receiver, data.data.text);
+        }
+      } else {
+        await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+      }
+      io.emit("getText", {});
+    });
+
+    socket.on("EditUser", async (data) => {
+      console.log("215=======>", data);
     });
 
     socket.on("purchesText", async (data) => {
-        console.log('purchesText methods called====>165');
+      console.log("purchesText methods called====>165");
       const { senderName, text, employeeIds } = data || [];
       if (!employeeIds || !Array.isArray(employeeIds)) {
         return res
@@ -247,10 +253,11 @@ const socket = (io) => {
           });
         });
       }
+      io.emit("getText", {});
     });
 
     socket.on("RoleText/Branch", async (data) => {
-        console.log('RoleText methods called !=====>201');
+      console.log("RoleText methods called !=====>260");
       const { senderName, text } = data;
       const targetEmail = senderName;
       const usersWithEmail = await User.find({ email: targetEmail })
@@ -302,10 +309,11 @@ const socket = (io) => {
           });
         });
       }
+      io.emit("getText", {});
     });
 
     socket.on("PackingText", async ({ data }) => {
-        console.log('PackingText methods called !=====>256');
+      console.log("PackingText methods called !=====>316");
       const { senderName, text } = data;
       const targetEmail = senderName;
       const usersWithEmail = await User.find({ email: targetEmail })
@@ -358,6 +366,7 @@ const socket = (io) => {
           });
         });
       }
+      io.emit("getText", {});
     });
 
     socket.on("CompanybranchText", async ({ data }) => {
@@ -413,6 +422,7 @@ const socket = (io) => {
           });
         });
       }
+      io.emit("getText", {});
     });
 
     socket.on("remove", async (socket) => {
@@ -423,7 +433,6 @@ const socket = (io) => {
       });
       console.log("user with disconnected with", socket);
     });
-
   });
 };
 

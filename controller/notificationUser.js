@@ -23,7 +23,6 @@ const Notification1 = async (req, res) => {
   }
 };
 
-
 // const getUserByUsername = async (req, res) => {
 //     try {
 //       const { username } = req.params || req.body;
@@ -48,7 +47,6 @@ const Notification1 = async (req, res) => {
 //       }
 //     }
 //   };
-
 
 const getUserByUsername = async (req, res) => {
   try {
@@ -151,7 +149,6 @@ const deleteSocketUser = async (req, res) => {
 //   }
 // };
 
-
 const getNotification = async (req, res) => {
   try {
     const email = req.params.email;
@@ -166,38 +163,36 @@ const getNotification = async (req, res) => {
       })
       .lean()
       .exec();
-      if(notifications){
-        const flattenedNotifications = notifications.reduce(
-          (result, notification) => {
-            if (notification.messages && notification.messages.length > 0) {
-              result.push(
-                ...notification.messages.map((message) => ({
-                  messageId: message._id,
-                  message: message.message,
-                  seen: message.seen,
-                }))
-              );
-            }
-            return result;
-          },
-          []
-        );
-        // console.log("Flattened Notifications:", flattenedNotifications);
-        console.log("notification fetch successfully !");
-        res.status(200).json({
-          status: 200,
-          msg: "notification data",
-          data: flattenedNotifications,
-        });
-      }
-      else{
-        res.status(200).json({
-          status: 200,
-          msg: "notification data",
-          data: "",
-        });
-      }
-
+    if (notifications) {
+      const flattenedNotifications = notifications.reduce(
+        (result, notification) => {
+          if (notification.messages && notification.messages.length > 0) {
+            result.push(
+              ...notification.messages.map((message) => ({
+                messageId: message._id,
+                message: message.message,
+                seen: message.seen,
+              }))
+            );
+          }
+          return result;
+        },
+        []
+      );
+      // console.log("Flattened Notifications:", flattenedNotifications);
+      console.log("notification fetch successfully !");
+      res.status(200).json({
+        status: 200,
+        msg: "notification data",
+        data: flattenedNotifications,
+      });
+    } else {
+      res.status(200).json({
+        status: 200,
+        msg: "notification data",
+        data: "",
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -246,34 +241,34 @@ const getemailsofempolyes = async (req, res) => {
 
 const findemailofsender = async (req, res) => {
   try {
-  const {id}=req.body;
-  const usersWithEmail = await Relationship.find({ _id: id });
-  const companyId = usersWithEmail[0]?.SenderRelationId;
-  const usersWithCompanyId = await User.find({ companyId: companyId })
-    .populate({
-      path: "role",
-      model: "Role",
-    })
-    .lean()
-    .exec();
+    const { id } = req.body;
+    const usersWithEmail = await Relationship.find({ _id: id });
+    const companyId = usersWithEmail[0]?.SenderRelationId;
+    const usersWithCompanyId = await User.find({ companyId: companyId })
+      .populate({
+        path: "role",
+        model: "Role",
+      })
+      .lean()
+      .exec();
 
-  const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
-    (user) => {
-      const role = user.role;
+    const usersWithAddEditCompanyPermission = usersWithCompanyId.filter(
+      (user) => {
+        const role = user.role;
 
-      if (role && role.SelectAccess.relationshipManagement) {
-        const relationshipManagementStrings =
-          role.SelectAccess.relationshipManagement.map((value) =>
-            value.toString()
-          );
-        return relationshipManagementStrings.includes("Add/Edit Company");
+        if (role && role.SelectAccess.relationshipManagement) {
+          const relationshipManagementStrings =
+            role.SelectAccess.relationshipManagement.map((value) =>
+              value.toString()
+            );
+          return relationshipManagementStrings.includes("Add/Edit Company");
+        }
+        return false;
       }
-      return false;
-    }
-  );
-  const emailsWithAddEditCompanyPermission =
-    usersWithAddEditCompanyPermission.map((user) => user.email);
-     res.send(emailsWithAddEditCompanyPermission);
+    );
+    const emailsWithAddEditCompanyPermission =
+      usersWithAddEditCompanyPermission.map((user) => user.email);
+    res.send(emailsWithAddEditCompanyPermission);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -288,5 +283,5 @@ export {
   getNotification,
   updateSeenStatus,
   getemailsofempolyes,
-  findemailofsender
+  findemailofsender,
 };

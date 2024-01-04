@@ -92,7 +92,7 @@ import {
   getemailsofempolyes,
   getusername,
   updateSeenStatus,
-  findemailofsender
+  findemailofsender,
 } from "../controller/notificationUser.js";
 
 // import User from "../models/users.js";
@@ -241,6 +241,5 @@ router.route("/getrecentaddeduser").get(getlatestaddeduser);
 //logs routes
 router.route("/logsCreate").post(logsCreate);
 router.route("/getLogFile").get(getLogFile);
-
 
 export default router;

@@ -11,14 +11,13 @@ import morgan from "morgan";
 const app = express();
 const port = process.env.PORT || 5000;
 
-
 //import socket connection.
 import { socket } from "./Methods/socketMethods.js";
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: process.env.VERCEL_URL,
-    origin: "http://localhost:5173" ,
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
@@ -33,8 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use("/api", router);
 
-
-const uri = process.env.ATLAS_URI; 
+const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);
 
 const connection = mongoose.connection;
