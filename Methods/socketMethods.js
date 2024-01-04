@@ -108,8 +108,6 @@ const socket = (io) => {
       });
 
       io.emit("getText", {
-        senderName,
-        text,
       });
     });
 
@@ -150,6 +148,8 @@ const socket = (io) => {
     } else {
       await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
     }
+    io.emit("getText", {
+    });
     })
 
     socket.on("DeleteRelation",async(data)=>{
@@ -211,6 +211,8 @@ const socket = (io) => {
       await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
     }
 
+    io.emit("getText", {});
+
     });
 
     socket.on("purchesText", async (data) => {
@@ -239,14 +241,17 @@ const socket = (io) => {
         },
       });
 
-      if (receivers.length) {
-        receivers.forEach((receiver) => {
-          io.to(receiver.socket).emit("getText", {
-            senderName,
-            text,
-          });
-        });
-      }
+      // if (receivers.length) {
+      //   receivers.forEach((receiver) => {
+      //     io.emit("getText", {
+      //       senderName,
+      //       text,
+      //     });
+      //   });
+      // }
+
+      io.emit("getText", {
+      });
     });
 
     socket.on("RoleText/Branch", async (data) => {
@@ -278,30 +283,27 @@ const socket = (io) => {
         }
       );
 
+
       const emailsWithAddEditCompanyPermission =
         usersWithAddEditCompanyPermission.map((user) => user.email);
       if (Array.isArray(emailsWithAddEditCompanyPermission)) {
         for (const receiver of emailsWithAddEditCompanyPermission) {
-          await saveMessage(senderName, receiver, text);
+          await saveMessage( receiver, text);
         }
       } else {
-        await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
+        await saveMessage(emailsWithAddEditCompanyPermission, text);
       }
+
+      console.log("emailsWithAddEditCompanyPermission",emailsWithAddEditCompanyPermission)
 
       const receivers = await getUserByUsername({
         body: {
           username: emailsWithAddEditCompanyPermission,
         },
       });
-
-      if (receivers.length) {
-        receivers.forEach((receiver) => {
-          io.emit("getText", {
-            senderName,
-            text,
-          });
-        });
-      }
+      io.emit("getText", {
+      });
+     
     });
 
     socket.on("PackingText", async ({ data }) => {
@@ -350,14 +352,8 @@ const socket = (io) => {
         },
       });
 
-      if (receivers.length) {
-        receivers.forEach((receiver) => {
-          io.to(receiver.socket).emit("getText", {
-            senderName,
-            text,
-          });
-        });
-      }
+      io.emit("getText", {
+      });
     });
 
     socket.on("CompanybranchText", async ({ data }) => {
@@ -407,9 +403,7 @@ const socket = (io) => {
 
       if (receivers.length) {
         receivers.forEach((receiver) => {
-          io.to(receiver.socket).emit("getText", {
-            senderName,
-            text,
+          io.emit("getText", {
           });
         });
       }
