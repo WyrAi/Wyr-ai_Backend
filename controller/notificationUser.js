@@ -162,19 +162,23 @@ const getNotification = async (req, res) => {
         "messages._id": 1,
         "messages.message": 1,
         "messages.seen": 1,
+        "messages.createdAt":1,
         _id: 0,
       })
       .lean()
       .exec();
+    console.table("notification=====>",notifications);
       if(notifications){
         const flattenedNotifications = notifications.reduce(
           (result, notification) => {
             if (notification.messages && notification.messages.length > 0) {
+              console.log("174=============>",notification.messages)
               result.push(
                 ...notification.messages.map((message) => ({
                   messageId: message._id,
                   message: message.message,
                   seen: message.seen,
+                  createdAt:message.createdAt
                 }))
               );
             }
