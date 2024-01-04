@@ -112,8 +112,6 @@ const socket = (io) => {
       });
 
       io.emit("getText", {
-        senderName,
-        text,
       });
     });
 
@@ -146,16 +144,15 @@ const socket = (io) => {
         }
       );
       const emailsWithAddEditCompanyPermission =
-        usersWithAddEditCompanyPermission.map((user) => user.email);
-      if (Array.isArray(emailsWithAddEditCompanyPermission)) {
-        for (const receiver of emailsWithAddEditCompanyPermission) {
-          await saveMessage(receiver, data.data.text);
-        }
-      } else {
-        await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+      usersWithAddEditCompanyPermission.map((user) => user.email);
+    if (Array.isArray(emailsWithAddEditCompanyPermission)) {
+      for (const receiver of emailsWithAddEditCompanyPermission) {
+        await saveMessage(receiver, data.data.text);
       }
-      io.emit("getText", {});
-    });
+    } else {
+      await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+    }
+    })
 
     socket.on("DeleteRelation", async (data) => {
       const id = data.data.Relation_id;
@@ -205,15 +202,14 @@ const socket = (io) => {
         );
       }
 
-      if (Array.isArray(emailsWithAddEditCompanyPermission)) {
-        for (const receiver of emailsWithAddEditCompanyPermission) {
-          await saveMessage(receiver, data.data.text);
-        }
-      } else {
-        await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+    if (Array.isArray(emailsWithAddEditCompanyPermission)) {
+      for (const receiver of emailsWithAddEditCompanyPermission) {
+        await saveMessage(receiver, data.data.text);
       }
-      io.emit("getText", {});
-    });
+    } else {
+      console.log('users deleted===>192');
+      await saveMessage(emailsWithAddEditCompanyPermission, data.data.text);
+    }
 
     socket.on("EditUser", async (data) => {
       console.log("215=======>", data);
@@ -253,7 +249,6 @@ const socket = (io) => {
           });
         });
       }
-      io.emit("getText", {});
     });
 
     socket.on("RoleText/Branch", async (data) => {
@@ -285,15 +280,18 @@ const socket = (io) => {
         }
       );
 
+
       const emailsWithAddEditCompanyPermission =
         usersWithAddEditCompanyPermission.map((user) => user.email);
       if (Array.isArray(emailsWithAddEditCompanyPermission)) {
         for (const receiver of emailsWithAddEditCompanyPermission) {
-          await saveMessage(senderName, receiver, text);
+          await saveMessage( receiver, text);
         }
       } else {
-        await saveMessage(senderName, emailsWithAddEditCompanyPermission, text);
+        await saveMessage(emailsWithAddEditCompanyPermission, text);
       }
+
+      console.log("emailsWithAddEditCompanyPermission",emailsWithAddEditCompanyPermission)
 
       const receivers = await getUserByUsername({
         body: {
@@ -309,7 +307,6 @@ const socket = (io) => {
           });
         });
       }
-      io.emit("getText", {});
     });
 
     socket.on("PackingText", async ({ data }) => {
@@ -366,7 +363,6 @@ const socket = (io) => {
           });
         });
       }
-      io.emit("getText", {});
     });
 
     socket.on("CompanybranchText", async ({ data }) => {
@@ -416,9 +412,7 @@ const socket = (io) => {
 
       if (receivers.length) {
         receivers.forEach((receiver) => {
-          io.to(receiver.socket).emit("getText", {
-            senderName,
-            text,
+          io.emit("getText", {
           });
         });
       }
